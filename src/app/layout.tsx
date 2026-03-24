@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-[#FEFCF8] text-[#292524]">
         <div className="flex min-h-screen">
           <Sidebar />
-          <main className="min-h-screen min-w-0 flex-1 overflow-auto bg-[#FEFCF8]">{children}</main>
+          <main className="min-h-screen min-w-0 flex-1 overflow-auto bg-[#FEFCF8] pb-16 lg:pb-0">{children}</main>
         </div>
       </body>
     </html>

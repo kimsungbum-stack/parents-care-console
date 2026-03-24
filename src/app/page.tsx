@@ -124,6 +124,7 @@ export default async function DashboardPage() {
   } catch (err) {
     console.error("Upcoming contacts exception:", err);
   }
+  const overdueCount = upcomingContacts.filter((c) => isOverdue(c.scheduledDate)).length;
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
@@ -157,6 +158,34 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {upcomingContacts.length > 0 && (
+        <div
+          className={`mb-6 flex items-center gap-4 rounded-xl border px-5 py-4 ${
+            overdueCount > 0
+              ? "border-[#FCA5A5] bg-[#FEF2F2]"
+              : "border-[#FDE68A] bg-[#FFFBEB]"
+          }`}
+        >
+          <div
+            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${
+              overdueCount > 0 ? "bg-[#FEE2E2] text-[#DC2626]" : "bg-[#FEF3C7] text-[#D97706]"
+            }`}
+          >
+            <Phone size={20} />
+          </div>
+          <div>
+            <p className={`text-[16px] font-bold ${overdueCount > 0 ? "text-[#991B1B]" : "text-[#92400E]"}`}>
+              오늘 연락이 필요한 케이스 {upcomingContacts.length}건
+            </p>
+            <p className={`text-[14px] ${overdueCount > 0 ? "text-[#DC2626]" : "text-[#B45309]"}`}>
+              {overdueCount > 0
+                ? `기한 초과 ${overdueCount}건 포함 — 지금 바로 확인해 주세요.`
+                : "아래 케이스부터 먼저 확인해 주세요."}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="전체 케이스" value={totalCount} sub={totalCount > 0 ? `이번 주 신규 ${recentLeads.length}건 확인` : "등록된 케이스 없음"} tone="default" icon={<Users size={18} />} />

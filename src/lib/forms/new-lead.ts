@@ -141,10 +141,6 @@ export function validateNewLeadFormValues(
     errors.currentSituationSummary = "현재 상황 요약을 입력해 주세요.";
   }
 
-  if (!values.source.trim()) {
-    errors.source = "유입경로를 입력해 주세요.";
-  }
-
   return errors;
 }
 

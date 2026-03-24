@@ -15,11 +15,27 @@ type DetailManagementPanelProps = {
 
 const statusOptions: LeadStatus[] = ["신규", "1차답장", "인터뷰예정", "인터뷰완료", "소개대기", "보류"];
 
+const quickDates = [
+  { label: "오늘", days: 0 },
+  { label: "내일", days: 1 },
+  { label: "3일 후", days: 3 },
+  { label: "1주일 후", days: 7 },
+];
+
 function formatSavedAt(date: Date) {
   return new Intl.DateTimeFormat("ko-KR", {
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+}
+
+function addDays(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export function DetailManagementPanel({
@@ -37,14 +53,7 @@ export function DetailManagementPanel({
 
   const hasChanges = draftStatus !== savedStatus || draftNextContactDate !== savedNextContactDate;
 
-  const handleSave = async () => {
-    if (!hasChanges || isSaving) return;
-
-    if (!isValidLeadManagementDate(draftNextContactDate)) {
-      setFeedback({ tone: "error", message: "다음 연락일 형식을 다시 확인해 주세요." });
-      return;
-    }
-
+  const saveValues = async (status: LeadStatus, nextContactDate: string) => {
     setIsSaving(true);
     setFeedback(null);
 
@@ -52,7 +61,7 @@ export function DetailManagementPanel({
       const response = await fetch(`/api/leads/${leadId}/management`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: draftStatus, nextContactDate: draftNextContactDate }),
+        body: JSON.stringify({ status, nextContactDate }),
       });
 
       const payload = (await response.json()) as {
@@ -67,7 +76,7 @@ export function DetailManagementPanel({
       }
 
       const nextState = {
-        status: payload.status ?? draftStatus,
+        status: payload.status ?? status,
         nextContactDate: payload.nextContactDate ?? null,
       };
 
@@ -84,6 +93,24 @@ export function DetailManagementPanel({
     }
   };
 
+  const handleSave = async () => {
+    if (!hasChanges || isSaving) return;
+
+    if (!isValidLeadManagementDate(draftNextContactDate)) {
+      setFeedback({ tone: "error", message: "다음 연락일 형식을 다시 확인해 주세요." });
+      return;
+    }
+
+    await saveValues(draftStatus, draftNextContactDate);
+  };
+
+  const handleQuickDate = async (days: number) => {
+    if (isSaving) return;
+    const date = addDays(days);
+    setDraftNextContactDate(date);
+    await saveValues(draftStatus, date);
+  };
+
   return (
     <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
       <div className="flex items-center justify-between gap-4 border-b border-[#E7E0D5] pb-4">
@@ -94,8 +121,8 @@ export function DetailManagementPanel({
           disabled={!hasChanges || isSaving}
           className={
             hasChanges && !isSaving
-              ? "control-button-primary inline-flex text-[14px]"
-              : "inline-flex cursor-not-allowed rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-2 text-[14px] font-medium text-[#A8A29E]"
+              ? "control-button-primary inline-flex min-h-[44px] items-center text-[14px]"
+              : "inline-flex min-h-[44px] cursor-not-allowed items-center rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-2 text-[14px] font-medium text-[#A8A29E]"
           }
         >
           {isSaving ? "저장 중..." : hasChanges ? "변경 저장" : "저장됨"}
@@ -104,14 +131,40 @@ export function DetailManagementPanel({
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-[13px] font-medium text-[#292524]">상태</span>
-          <select value={draftStatus} onChange={(e) => setDraftStatus(e.target.value as LeadStatus)} className="control-input">
-            {statusOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+          <span className="mb-2 block text-[14px] font-medium text-[#292524]">상태</span>
+          <select
+            value={draftStatus}
+            onChange={(e) => setDraftStatus(e.target.value as LeadStatus)}
+            className="control-input min-h-[44px]"
+          >
+            {statusOptions.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
+
         <label className="block">
-          <span className="mb-2 block text-[13px] font-medium text-[#292524]">다음 연락일</span>
-          <input type="date" value={draftNextContactDate} onChange={(e) => setDraftNextContactDate(e.target.value)} className="control-input" />
+          <span className="mb-2 block text-[14px] font-medium text-[#292524]">다음 연락일</span>
+          <input
+            type="date"
+            value={draftNextContactDate}
+            onChange={(e) => setDraftNextContactDate(e.target.value)}
+            className="control-input min-h-[44px]"
+          />
+          {/* 빠른 날짜 선택 — 1클릭 저장 */}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {quickDates.map(({ label, days }) => (
+              <button
+                key={days}
+                type="button"
+                onClick={() => handleQuickDate(days)}
+                disabled={isSaving}
+                className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-3 py-1.5 text-[13px] font-medium text-[#78716C] transition-colors hover:border-[#D97706] hover:bg-[#FEF3C7] hover:text-[#D97706] disabled:opacity-50"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </label>
       </div>
 
