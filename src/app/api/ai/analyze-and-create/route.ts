@@ -16,12 +16,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!recordingUrl || typeof recordingUrl !== "string") {
-      return NextResponse.json(
-        { error: "recordingUrl은 필수 문자열입니다." },
-        { status: 400 }
-      );
-    }
+    // recordingUrl is optional (text-input flow won't have it)
+    const safeRecordingUrl =
+      recordingUrl && typeof recordingUrl === "string" ? recordingUrl : null;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
@@ -41,7 +38,7 @@ export async function POST(request: NextRequest) {
         status: "신규" as const,
         current_situation_summary: analysis.summary,
         source: "AI 녹음 분석",
-        recording_url: recordingUrl,
+        recording_url: safeRecordingUrl,
         transcript,
         ai_analysis: JSON.parse(JSON.stringify(analysis)) as Json,
         ai_analyzed_at: new Date().toISOString(),
