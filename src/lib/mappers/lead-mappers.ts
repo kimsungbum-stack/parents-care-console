@@ -158,9 +158,9 @@ export function mapLeadRowsToLeadDetail(input: {
     overviewSummary:
       reportRecord?.thisWeekTasks ??
       leadRecord.consultationMemo ??
-      "운영 메모가 아직 정리되지 않았습니다.",
+      "아직 운영 메모가 없어요.",
     progressStatus:
-      reportRecord?.nextAction ?? `${leadRecord.status} 상태로 관리 중입니다.`,
+      reportRecord?.nextAction ?? `${leadRecord.status} 상태로 관리 중이에요.`,
     guardianReport:
       reportRecord?.neededHelp ?? leadRecord.currentSituationSummary,
     reportRecord,

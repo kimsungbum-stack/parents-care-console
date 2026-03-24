@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, UserPlus, Heart, Kanban } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Heart, Kanban, CreditCard } from "lucide-react";
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -13,6 +13,7 @@ const mainNavItems = [
   { href: "/pipeline", label: "파이프라인", shortLabel: "파이프라인", icon: Kanban },
   { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users },
   { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus },
+  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard },
 ] as const;
 
 function SidebarContent() {

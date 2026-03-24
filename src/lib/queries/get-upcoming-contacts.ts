@@ -15,7 +15,7 @@ function isSupabaseConfigured() {
 
 export async function getUpcomingContacts(): Promise<UpcomingContactsResult> {
   if (!isSupabaseConfigured()) {
-    return { contacts: [], error: "데이터 연결이 설정되지 않았습니다." };
+    return { contacts: [], error: "데이터 연결이 설정되지 않았어요." };
   }
 
   try {
@@ -34,7 +34,7 @@ export async function getUpcomingContacts(): Promise<UpcomingContactsResult> {
     if (error) {
       return {
         contacts: [],
-        error: "알림 데이터를 불러오지 못했습니다.",
+        error: "알림 데이터를 불러오지 못했어요.",
       };
     }
 
@@ -49,7 +49,7 @@ export async function getUpcomingContacts(): Promise<UpcomingContactsResult> {
   } catch {
     return {
       contacts: [],
-      error: "알림 조회 중 문제가 발생했습니다.",
+      error: "알림 조회 중 문제가 발생했어요.",
     };
   }
 }

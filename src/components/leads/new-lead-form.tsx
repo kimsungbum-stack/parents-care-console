@@ -93,7 +93,7 @@ export function NewLeadForm() {
         }
         setSubmitState({
           tone: "error",
-          message: payload.message ?? "리드를 저장하지 못했어요. 입력값을 다시 확인해 주세요.",
+          message: payload.message ?? "케이스를 저장하지 못했어요. 입력값을 다시 확인해 주세요.",
         });
         return;
       }

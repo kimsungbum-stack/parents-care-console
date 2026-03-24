@@ -6,8 +6,22 @@ import {
   type NewLeadFormValues,
 } from "@/lib/forms/new-lead";
 import { createLead } from "@/lib/mutations/create-lead";
+import { getOrgUsage, incrementLeadCount } from "@/lib/usage";
 
 export async function POST(request: Request) {
+  // 무료 플랜 한도 체크
+  const usage = await getOrgUsage();
+  if (usage?.isAtLimit) {
+    return NextResponse.json(
+      {
+        error:
+          "이번 달 무료 등록 한도를 초과했어요. 스탠다드로 업그레이드하면 무제한으로 등록할 수 있어요.",
+        code: "LIMIT_EXCEEDED",
+      },
+      { status: 429 },
+    );
+  }
+
   let payload: Partial<Record<keyof NewLeadFormValues, unknown>>;
 
   try {
@@ -27,6 +41,7 @@ export async function POST(request: Request) {
   const result = await createLead(values);
 
   if (result.status === "success") {
+    await incrementLeadCount();
     revalidatePath("/");
     revalidatePath("/leads");
     return NextResponse.json(

@@ -172,6 +172,8 @@ export type Database = {
           name: string;
           plan: PlanTier;
           max_leads: number;
+          leads_count_this_month: number;
+          usage_reset_at: string;
           created_at: string;
           updated_at: string;
         };
@@ -180,6 +182,8 @@ export type Database = {
           name: string;
           plan?: PlanTier;
           max_leads?: number;
+          leads_count_this_month?: number;
+          usage_reset_at?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -188,6 +192,8 @@ export type Database = {
           name?: string;
           plan?: PlanTier;
           max_leads?: number;
+          leads_count_this_month?: number;
+          usage_reset_at?: string;
           created_at?: string;
           updated_at?: string;
         };

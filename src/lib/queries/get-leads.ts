@@ -42,7 +42,7 @@ export async function getLeadsPageData(): Promise<LeadsPageResult> {
         notice: {
           tone: "error",
           message:
-            "리드 목록을 불러오지 못했습니다. 연결 상태를 확인해 주세요.",
+            "케이스 목록을 불러오지 못했어요. 연결 상태를 확인해 주세요.",
         },
       };
     }
@@ -82,7 +82,7 @@ export async function getLeadsPageData(): Promise<LeadsPageResult> {
       notice: {
         tone: "error",
         message:
-          "리드 목록 조회 중 문제가 발생했습니다. 연결 상태를 확인해 주세요.",
+          "케이스 목록 조회 중 문제가 발생했어요. 연결 상태를 확인해 주세요.",
       },
     };
   }

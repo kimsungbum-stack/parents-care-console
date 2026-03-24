@@ -53,7 +53,7 @@ export async function createLeadNote(
     return {
       status: "error",
       message:
-        "데이터 연결이 아직 완료되지 않아 메모를 저장할 수 없습니다.",
+        "데이터 연결이 아직 완료되지 않아 메모를 저장할 수 없어요.",
     };
   }
 
@@ -80,14 +80,14 @@ export async function createLeadNote(
     if (leadError) {
       return {
         status: "error",
-        message: "메모를 저장하기 전에 리드 정보를 확인하지 못했습니다.",
+        message: "메모를 저장하기 전에 케이스 정보를 확인하지 못했어요.",
       };
     }
 
     if (!leadRow) {
       return {
         status: "not_found",
-        message: "해당 리드를 찾을 수 없어 메모를 저장하지 못했습니다.",
+        message: "해당 케이스를 찾을 수 없어 메모를 저장하지 못했어요.",
       };
     }
 
@@ -105,7 +105,7 @@ export async function createLeadNote(
       return {
         status: "error",
         message:
-          "메모를 저장하지 못했습니다. 연결 상태를 확인해 주세요.",
+          "메모를 저장하지 못했어요. 연결 상태를 확인해 주세요.",
       };
     }
 
@@ -117,7 +117,7 @@ export async function createLeadNote(
     return {
       status: "error",
       message:
-        "메모 저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        "메모 저장 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
     };
   }
 }

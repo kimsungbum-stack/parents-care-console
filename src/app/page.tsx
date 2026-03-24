@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Phone, Users, FileText, CheckCircle } from "lucide-react";
 import { FunnelChart, type FunnelDataItem } from "@/components/dashboard/funnel-chart";
 import { RecordingUploadButton } from "@/components/dashboard/recording-upload-button";
+import { UsageBanner } from "@/components/dashboard/usage-banner";
+import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
@@ -156,6 +158,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="px-5 py-6 lg:px-8 lg:py-8">
+      <OnboardingGuide />
+      <UsageBanner />
       <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
         <div>
           <p className="text-[15px] text-[#78716C]">{today}</p>
@@ -231,7 +235,7 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-3 border-b border-[#E7E0D5] px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-[18px] font-bold text-[#292524]">케이스 현황</h2>
-              <p className="mt-1 text-[13px] text-[#78716C]">운영 중인 케이스를 한눈에 보고, 필요한 리드부터 바로 들어가면 돼요.</p>
+              <p className="mt-1 text-[13px] text-[#78716C]">운영 중인 케이스를 한눈에 보고, 필요한 케이스부터 바로 들어가면 돼요.</p>
             </div>
             <Link href="/leads" className="text-[14px] font-medium text-[#D97706] hover:text-[#B45309]">
               전체 보기 →

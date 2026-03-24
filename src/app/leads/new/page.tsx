@@ -5,8 +5,8 @@ export default function NewLeadPage() {
   return (
     <AppShell
       currentPath="/leads/new"
-      title="신규 리드 등록"
-      description="필수 정보를 먼저 등록하고, 생성된 상세 화면에서 후속 관리까지 이어가는 운영 화면입니다."
+      title="신규 케이스 등록"
+      description="보호자 이름과 연락처만 입력하면 바로 시작할 수 있어요."
     >
       <NewLeadForm />
     </AppShell>

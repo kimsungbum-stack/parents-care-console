@@ -63,7 +63,7 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
         notice: {
           tone: "error",
           message:
-            "대시보드 데이터를 불러오지 못했습니다. 연결 상태를 확인해 주세요.",
+            "대시보드 데이터를 불러오지 못했어요. 연결 상태를 확인해 주세요.",
         },
       };
     }
@@ -100,7 +100,7 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
         notice: {
           tone: "error",
           message:
-            "최근 상담 기록을 불러오지 못해 이 섹션만 비어 있습니다.",
+            "최근 상담 기록을 불러오지 못했어요.",
         },
       };
     }
@@ -125,7 +125,7 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
       notice: {
         tone: "error",
         message:
-          "대시보드 조회 중 문제가 발생했습니다. 연결 상태를 확인해 주세요.",
+          "대시보드 조회 중 문제가 발생했어요. 연결 상태를 확인해 주세요.",
       },
     };
   }

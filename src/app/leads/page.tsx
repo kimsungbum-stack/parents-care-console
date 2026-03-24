@@ -10,8 +10,8 @@ export default async function LeadsPage() {
   return (
     <AppShell
       currentPath="/leads"
-      title="리드 목록"
-      description="보호자 리드를 검색하고 상태별로 빠르게 살펴볼 수 있는 운영 목록 화면입니다."
+      title="케이스 목록"
+      description="보호자 케이스를 검색하고 상태별로 빠르게 살펴볼 수 있어요."
     >
       <LeadListView leads={leads} notice={notice} />
     </AppShell>

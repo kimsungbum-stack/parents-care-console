@@ -74,7 +74,7 @@ export function validateLeadConsultationPayload(
   const errors: LeadConsultationErrors = {};
 
   if (!UUID_REGEX.test(values.leadId)) {
-    errors.leadId = "유효한 리드 ID가 아닙니다.";
+    errors.leadId = "유효한 케이스 ID가 아닙니다.";
   }
 
   if (!DATETIME_LOCAL_REGEX.test(values.consultedAt)) {

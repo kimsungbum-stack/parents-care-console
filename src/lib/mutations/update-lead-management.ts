@@ -54,7 +54,7 @@ export async function updateLeadManagement(
     return {
       status: "error",
       message:
-        "데이터 연결이 아직 완료되지 않아 상태를 저장할 수 없습니다.",
+        "데이터 연결이 아직 완료되지 않아 상태를 저장할 수 없어요.",
     };
   }
 
@@ -86,14 +86,14 @@ export async function updateLeadManagement(
       return {
         status: "error",
         message:
-          "상태 변경 내용을 저장하지 못했습니다. 연결 상태를 확인해 주세요.",
+          "상태 변경 내용을 저장하지 못했어요. 연결 상태를 확인해 주세요.",
       };
     }
 
     if (!data) {
       return {
         status: "not_found",
-        message: "해당 리드를 찾을 수 없어 저장하지 못했습니다.",
+        message: "해당 케이스를 찾을 수 없어 저장하지 못했어요.",
       };
     }
 
@@ -107,7 +107,7 @@ export async function updateLeadManagement(
     return {
       status: "error",
       message:
-        "상태 저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        "상태 저장 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
     };
   }
 }

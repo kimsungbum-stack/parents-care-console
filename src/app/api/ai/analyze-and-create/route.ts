@@ -20,13 +20,6 @@ export async function POST(request: NextRequest) {
     const safeRecordingUrl =
       recordingUrl && typeof recordingUrl === "string" ? recordingUrl : null;
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY가 설정되지 않았습니다." },
-        { status: 500 }
-      );
-    }
-
     const analysis = await analyzeConsultation(transcript);
 
     const supabase = createSupabasePlainClient();
@@ -51,7 +44,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error("리드 생성 오류:", error);
       return NextResponse.json(
-        { error: "분석 결과를 저장하지 못했습니다." },
+        { error: "분석 결과를 저장하지 못했어요." },
         { status: 500 }
       );
     }

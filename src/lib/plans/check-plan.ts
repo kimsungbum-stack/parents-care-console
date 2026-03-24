@@ -10,7 +10,7 @@ type PlanCheckResult =
   | { allowed: true; plan: PlanTier }
   | { allowed: false; plan: PlanTier; reason: string };
 
-const DEFAULT_PLAN: PlanTier = "basic";
+const DEFAULT_PLAN: PlanTier = "free";
 
 export async function getOrganizationPlan(
   organizationId: string,
@@ -54,7 +54,7 @@ export async function checkFeatureAccess(
   return {
     allowed: false,
     plan,
-    reason: `이 기능은 현재 요금제(${plan})에서 사용할 수 없습니다. 업그레이드가 필요합니다.`,
+    reason: `이 기능은 현재 요금제(${plan})에서 쓸 수 없어요. 요금제를 올리면 이용할 수 있어요.`,
   };
 }
 
@@ -72,6 +72,6 @@ export async function checkLeadLimit(
   return {
     allowed: false,
     plan,
-    reason: `리드 등록 한도(${limit}건)에 도달했습니다. 요금제 업그레이드가 필요합니다.`,
+    reason: `이번 달 케이스 등록 한도(${limit}건)에 도달했어요. 요금제를 올리면 계속 쓸 수 있어요.`,
   };
 }

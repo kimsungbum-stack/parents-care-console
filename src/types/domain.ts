@@ -1,20 +1,21 @@
-﻿export type PlanTier = "basic" | "standard" | "premium";
+﻿export type PlanTier = "free" | "standard" | "premium";
 
 export type PlanFeature =
   | "ai_analysis"
   | "report_generation"
   | "unlimited_leads"
-  | "notifications";
+  | "notifications"
+  | "csv_export";
 
 export const PLAN_FEATURES: Record<PlanTier, PlanFeature[]> = {
-  basic: [],
-  standard: ["notifications"],
-  premium: ["ai_analysis", "report_generation", "unlimited_leads", "notifications"],
+  free: [],
+  standard: ["notifications", "csv_export"],
+  premium: ["ai_analysis", "report_generation", "unlimited_leads", "notifications", "csv_export"],
 };
 
 export const PLAN_LEAD_LIMITS: Record<PlanTier, number> = {
-  basic: 50,
-  standard: 200,
+  free: 15,
+  standard: Infinity,
   premium: Infinity,
 };
 

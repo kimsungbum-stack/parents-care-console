@@ -29,7 +29,7 @@ export async function getLeadDetailPageData(
     return {
       status: "error",
       message:
-        "데이터 연결이 아직 완료되지 않아 상세 정보를 불러올 수 없습니다.",
+        "데이터 연결이 아직 완료되지 않아 상세 정보를 불러올 수 없어요.",
     };
   }
 
@@ -45,7 +45,7 @@ export async function getLeadDetailPageData(
       return {
         status: "error",
         message:
-          "리드 상세 정보를 불러오지 못했습니다. 연결 상태를 확인해 주세요.",
+          "케이스 상세 정보를 불러오지 못했어요. 연결 상태를 확인해 주세요.",
       };
     }
 
@@ -72,7 +72,7 @@ export async function getLeadDetailPageData(
       return {
         status: "error",
         message:
-          "상세 화면에 필요한 상담, 리포트, 메모 데이터를 불러오지 못했습니다.",
+          "상담, 리포트, 메모 데이터를 불러오지 못했어요.",
       };
     }
 
@@ -89,7 +89,7 @@ export async function getLeadDetailPageData(
     return {
       status: "error",
       message:
-        "리드 상세 조회 중 문제가 발생했습니다. 연결 상태를 확인해 주세요.",
+        "케이스 상세 조회 중 문제가 발생했어요. 연결 상태를 확인해 주세요.",
     };
   }
 }

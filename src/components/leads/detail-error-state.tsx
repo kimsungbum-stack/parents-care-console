@@ -14,7 +14,7 @@ export function DetailErrorState({ message }: DetailErrorStateProps) {
         message={`상세 정보를 불러오지 못했어요. ${message}`}
       />
       <Link href="/leads" className="control-button-primary inline-flex">
-        리드 목록으로 이동
+        케이스 목록으로 이동
       </Link>
     </section>
   );

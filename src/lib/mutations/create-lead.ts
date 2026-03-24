@@ -43,7 +43,7 @@ export async function createLead(
   if (!isSupabaseConfigured()) {
     return {
       status: "error",
-      message: "데이터 연결이 아직 완료되지 않아 리드를 저장할 수 없습니다.",
+      message: "데이터 연결이 아직 완료되지 않아 케이스를 저장할 수 없어요.",
     };
   }
 
@@ -59,14 +59,14 @@ export async function createLead(
       console.error("Supabase insert error:", error);
       return {
         status: "error",
-        message: "리드를 저장하지 못했습니다. 연결 상태를 다시 확인해 주세요.",
+        message: "케이스를 저장하지 못했어요. 연결 상태를 다시 확인해 주세요.",
       };
     }
 
     if (!data) {
       return {
         status: "error",
-        message: "리드를 저장하지 못했습니다. 연결 상태를 다시 확인해 주세요.",
+        message: "케이스를 저장하지 못했어요. 연결 상태를 다시 확인해 주세요.",
       };
     }
 
@@ -78,7 +78,7 @@ export async function createLead(
     console.error("Lead creation exception:", err);
     return {
       status: "error",
-      message: "저장 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      message: "저장 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
     };
   }
 }

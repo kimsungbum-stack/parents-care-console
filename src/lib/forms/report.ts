@@ -57,7 +57,7 @@ export function validateLeadReportPayload(
   const errors: LeadReportErrors = {};
 
   if (!UUID_REGEX.test(values.leadId)) {
-    errors.leadId = "유효한 리드 ID가 아닙니다.";
+    errors.leadId = "유효한 케이스 ID가 아닙니다.";
   }
 
   const hasInvalidField = Object.values(values.report).some(
