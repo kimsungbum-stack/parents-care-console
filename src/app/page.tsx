@@ -247,8 +247,9 @@ export default async function DashboardPage() {
               <tbody>
                 {allLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-16 text-center text-[15px] text-[#78716C]">
-                      아직 케이스가 없어요. 첫 케이스를 등록해볼까요?
+                    <td colSpan={5} className="px-5 py-16 text-center">
+                      <p className="text-[16px] font-semibold text-[#292524]">아직 케이스가 없어요</p>
+                      <p className="mt-1 text-[14px] text-[#78716C]">첫 문의가 들어오면 바로 여기에 등록하면 돼요.</p>
                     </td>
                   </tr>
                 ) : (
@@ -321,38 +322,25 @@ export default async function DashboardPage() {
           </section>
 
           <section className="rounded-xl border border-[#E7E0D5] bg-white px-5 py-5">
-            <h2 className="text-[16px] font-bold text-[#292524]">이렇게 쓰면 돼요</h2>
-            <div className="mt-4 space-y-3">
-              {[
-                { step: "01", title: "신규 케이스 등록", desc: "전화나 문의가 들어오면 보호자명, 연락처, 현재 상황만 먼저 저장해요." },
-                { step: "02", title: "상태와 다음 연락일 정리", desc: "상세 화면에서 현재 단계와 다음 연락일만 정리해도 운영 흐름이 바로 생겨요." },
-                { step: "03", title: "상담 기록과 메모 남기기", desc: "후속 통화 뒤에는 상담 기록, 운영 메모, 보호자 리포트를 차례대로 남기면 돼요." },
-              ].map((item) => (
-                <div key={item.step} className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-[#D97706] px-2 py-0.5 text-[13px] font-bold text-white">{item.step}</span>
-                    <p className="text-[15px] font-semibold text-[#292524]">{item.title}</p>
-                  </div>
-                  <p className="mt-2 text-[13px] leading-[1.6] text-[#78716C]">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-xl border border-[#E7E0D5] bg-white px-5 py-5">
             <h2 className="text-[16px] font-bold text-[#292524]">최근 등록 케이스</h2>
-            <div className="mt-4 space-y-3">
-              {recentLeads.length === 0 ? (
-                <p className="text-[15px] leading-[1.6] text-[#78716C]">아직 등록된 케이스가 없어요.</p>
-              ) : (
-                recentLeads.map((lead) => (
-                  <Link key={lead.id} href={`/leads/${lead.id}`} className="block rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3 transition-colors hover:bg-[#FEF3C7]/30">
-                    <p className="text-[15px] font-semibold text-[#292524]">{lead.guardian_name}</p>
-                    <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">{lead.current_situation_summary}</p>
+            {recentLeads.length === 0 ? (
+              <div className="mt-4 py-6 text-center">
+                <p className="text-[15px] font-medium text-[#292524]">아직 케이스가 없어요</p>
+                <p className="mt-1 text-[13px] text-[#78716C]">첫 문의가 들어오면 여기에 바로 나타나요.</p>
+              </div>
+            ) : (
+              <div className="mt-3 divide-y divide-[#F5F0E8]">
+                {recentLeads.map((lead) => (
+                  <Link key={lead.id} href={`/leads/${lead.id}`} className="flex items-center justify-between py-3 transition-colors hover:text-[#D97706]">
+                    <div className="min-w-0 pr-3">
+                      <p className="text-[15px] font-semibold text-[#292524]">{lead.guardian_name}</p>
+                      <p className="mt-0.5 line-clamp-1 text-[13px] text-[#78716C]">{lead.current_situation_summary}</p>
+                    </div>
+                    <span className="flex-shrink-0 text-[#A8A29E]">→</span>
                   </Link>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>
@@ -361,31 +349,33 @@ export default async function DashboardPage() {
 }
 
 function MetricCard({ label, value, sub, tone, icon }: { label: string; value: number; sub: string; tone: "default" | "amber" | "success"; icon: React.ReactNode }) {
-  const barColor =
-    tone === "amber"
-      ? "bg-[#D97706]"
-      : tone === "success"
-        ? "bg-[#16A34A]"
-        : "bg-[#A8A29E]";
+  const isUrgent = tone === "amber" && value > 0;
+  const isSuccess = tone === "success" && value > 0;
 
-  const valueColor =
-    tone === "amber"
-      ? "text-[#D97706]"
-      : tone === "success"
-        ? "text-[#16A34A]"
-        : "text-[#D97706]";
+  const containerClass = isUrgent
+    ? "rounded-xl border border-[#FDE68A] bg-[#FFFBEB] p-5"
+    : isSuccess
+      ? "rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-5"
+      : "rounded-xl border border-[#E7E0D5] bg-white p-5";
+
+  const iconClass = isUrgent
+    ? "flex h-9 w-9 items-center justify-center rounded-lg bg-[#FEF3C7] text-[#D97706]"
+    : isSuccess
+      ? "flex h-9 w-9 items-center justify-center rounded-lg bg-[#DCFCE7] text-[#16A34A]"
+      : "flex h-9 w-9 items-center justify-center rounded-lg bg-[#F5F0E8] text-[#78716C]";
+
+  const valueClass = isUrgent
+    ? "text-[#D97706]"
+    : isSuccess
+      ? "text-[#16A34A]"
+      : "text-[#292524]";
 
   return (
-    <div className="flex overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
-      <div className={`w-1 ${barColor}`} />
-      <div className="flex-1 px-5 py-4">
-        <div className="flex items-center gap-2 text-[#78716C]">
-          {icon}
-          <p className="text-[13px] font-medium">{label}</p>
-        </div>
-        <p className={`mt-2 text-[32px] font-bold leading-none ${valueColor}`}>{value}</p>
-        <p className="mt-2 text-[13px] text-[#78716C]">{sub}</p>
-      </div>
+    <div className={containerClass}>
+      <div className={iconClass}>{icon}</div>
+      <p className={`mt-3 text-[32px] font-bold leading-none ${valueClass}`}>{value}</p>
+      <p className="mt-2 text-[14px] font-semibold text-[#292524]">{label}</p>
+      <p className="mt-1 text-[13px] text-[#78716C]">{sub}</p>
     </div>
   );
 }

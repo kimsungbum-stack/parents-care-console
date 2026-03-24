@@ -3,6 +3,25 @@ import Link from "next/link";
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import type { LeadListItem } from "@/lib/mock-data";
 
+function isOverdue(dateStr: string | null) {
+  if (!dateStr) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(dateStr) < today;
+}
+
+function isToday(dateStr: string | null) {
+  if (!dateStr) return false;
+  return new Date(dateStr).toDateString() === new Date().toDateString();
+}
+
+function NextContactLabel({ date }: { date: string | null }) {
+  if (!date) return <p className="text-[13px] text-[#A8A29E]">미정</p>;
+  if (isOverdue(date)) return <p className="text-[13px] font-semibold text-[#DC2626]">기한 초과</p>;
+  if (isToday(date)) return <p className="text-[13px] font-semibold text-[#D97706]">오늘</p>;
+  return <p className="text-[13px] font-medium text-[#292524]">{date}</p>;
+}
+
 type LeadListProps = {
   leads: LeadListItem[];
 };
@@ -29,7 +48,7 @@ function LeadCard({ lead }: { lead: LeadListItem }) {
         </div>
         <div>
           <p className="text-[13px] font-medium text-[#A8A29E]">다음 연락</p>
-          <p className="text-[13px] font-medium text-[#292524]">{lead.nextContactDate || "-"}</p>
+          <NextContactLabel date={lead.nextContactDate} />
         </div>
         <div className="col-span-2 sm:col-span-1">
           <p className="text-[13px] font-medium text-[#A8A29E]">최근 상담</p>
@@ -49,7 +68,7 @@ function LeadTableRow({ lead }: { lead: LeadListItem }) {
         <p className="text-[15px] leading-[1.6] text-[#78716C]">{lead.careSummary}</p>
         <p className="text-[15px] text-[#78716C]">{lead.source}</p>
         <div><LeadStatusBadge status={lead.status} /></div>
-        <p className="text-[15px] font-medium text-[#292524]">{lead.nextContactDate || "-"}</p>
+        <div>{lead.nextContactDate ? <NextContactLabel date={lead.nextContactDate} /> : <p className="text-[15px] text-[#A8A29E]">미정</p>}</div>
         <p className="text-[15px] font-medium text-[#292524]">{lead.latestConsultationDate || "-"}</p>
       </div>
     </Link>

@@ -37,19 +37,17 @@ export function LeadListView({ leads, notice }: LeadListViewProps) {
     <div className="space-y-5">
       {notice ? <FeedbackNotice tone={notice.tone} message={notice.message} /> : null}
 
-      <section className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-4 sm:px-5 sm:py-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-[18px] font-bold text-[#292524] sm:text-[20px]">케이스 목록</p>
-            <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">
-              오늘 처리할 케이스부터 찾아서 상세 화면으로 들어가면 돼요.
-            </p>
-          </div>
-          <div className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-3 py-2 text-[13px] text-[#78716C]">
-            조회 결과 <span className="font-semibold text-[#D97706]">{filteredLeads.length}</span>건
-          </div>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+        <div>
+          <h1 className="text-[22px] font-bold text-[#292524]">케이스 목록</h1>
+          <p className="mt-1 text-[14px] text-[#78716C]">
+            오늘 처리할 케이스부터 찾아서 상세 화면으로 들어가면 돼요.
+          </p>
         </div>
-      </section>
+        <p className="text-[14px] text-[#78716C]">
+          <span className="font-bold text-[#D97706]">{filteredLeads.length}</span>건
+        </p>
+      </div>
 
       <LeadFilters
         query={query}

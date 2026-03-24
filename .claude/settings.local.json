@@ -21,7 +21,13 @@
       "Bash(where gh:*)",
       "Bash(winget list:*)",
       "Bash(\"C:/Program Files/GitHub CLI/gh.exe\" --version)",
-      "Bash(\"C:/Program Files \\(x86\\)/GitHub CLI/gh.exe\" --version)"
+      "Bash(\"C:/Program Files \\(x86\\)/GitHub CLI/gh.exe\" --version)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(find temp-impeccable:*)",
+      "Bash(mkdir -p .claude/skills)",
+      "Bash(cp -r temp-impeccable/.agents/skills/* .claude/skills/)",
+      "Bash(rm -rf temp-impeccable)"
     ]
   }
 }
