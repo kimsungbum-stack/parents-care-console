@@ -20,48 +20,87 @@ function SidebarContent() {
 
   return (
     <>
-      <div className="border-b border-white/10 px-6 py-6">
+      {/* 로고 */}
+      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "24px" }}>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D97706] text-white">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl"
+            style={{ backgroundColor: "#D97706", color: "#FFFFFF" }}
+          >
             <Heart size={20} />
           </div>
           <div>
-            <p className="text-[16px] font-bold tracking-tight text-white">부모안심90</p>
-            <p className="text-[13px] text-white/50">운영 콘솔</p>
+            <p style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.01em" }}>
+              부모안심90
+            </p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 1 }}>운영 콘솔</p>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-6">
-        <div className="mb-6">
-          <p className="mb-3 px-3 text-[13px] font-medium text-white">메인</p>
-          <div className="space-y-1">
-            {mainNavItems.map((item) => {
-              const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-              const Icon = item.icon;
+      {/* 내비게이션 */}
+      <nav style={{ flex: 1, overflowY: "auto", padding: "20px 12px" }}>
+        <p
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.35)",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            padding: "0 12px",
+            marginBottom: 8,
+          }}
+        >
+          메뉴
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {mainNavItems.map((item) => {
+            const isActive =
+              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const Icon = item.icon;
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-colors",
-                    isActive
-                      ? "bg-[#F59E0B]/15 text-[#F59E0B]"
-                      : "text-white hover:bg-white/10 hover:text-white",
-                  )}
-                >
-                  <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                style={
+                  isActive
+                    ? {
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        borderRadius: 12,
+                        padding: "10px 12px",
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: "#F59E0B",
+                        backgroundColor: "rgba(245,158,11,0.12)",
+                        textDecoration: "none",
+                      }
+                    : {
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        borderRadius: 12,
+                        padding: "10px 12px",
+                        fontSize: 15,
+                        fontWeight: 500,
+                        color: "#FFFFFF",
+                        textDecoration: "none",
+                      }
+                }
+              >
+                <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </nav>
 
-      <div className="mt-auto border-t border-white/10 px-5 py-4">
-        <p className="text-[13px] leading-6 text-white">
+      {/* 하단 */}
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "16px 20px" }}>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>
           신규 등록 → 상태 정리 → 상담 기록 저장
         </p>
       </div>
@@ -71,12 +110,12 @@ function SidebarContent() {
 
 function BottomTabBar() {
   const pathname = usePathname();
-  const tabItems = mainNavItems.slice(0, 4);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-[#E7E0D5] bg-white lg:hidden">
-      {tabItems.map((item) => {
-        const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+      {mainNavItems.map((item) => {
+        const isActive =
+          item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         const Icon = item.icon;
 
         return (
@@ -100,8 +139,11 @@ function BottomTabBar() {
 export default function Sidebar() {
   return (
     <>
-      {/* 데스크탑 사이드바 */}
-      <aside className="sticky top-0 hidden h-screen w-[260px] flex-shrink-0 flex-col bg-[#1C1917] lg:flex">
+      {/* 데스크탑 사이드바 — Tailwind text-white 대신 inline style로 강제 */}
+      <aside
+        className="sticky top-0 hidden h-screen w-[260px] flex-shrink-0 flex-col lg:flex"
+        style={{ backgroundColor: "#1C1917" }}
+      >
         <SidebarContent />
       </aside>
 

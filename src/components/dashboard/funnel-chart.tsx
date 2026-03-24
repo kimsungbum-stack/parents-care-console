@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Cell,
-  ResponsiveContainer,
-  LabelList,
-} from "recharts";
+import dynamic from "next/dynamic";
 
 export type FunnelDataItem = {
   label: string;
@@ -17,43 +9,19 @@ export type FunnelDataItem = {
   color: string;
 };
 
-export function FunnelChart({ data }: { data: FunnelDataItem[] }) {
-  if (data.every((d) => d.count === 0)) {
-    return (
-      <div className="flex h-[200px] items-center justify-center text-[14px] text-[#A8A29E]">
-        아직 등록된 케이스가 없어요.
+// recharts는 SSR에서 window를 참조해 오류 발생 → ssr: false로 lazy-load
+const FunnelChartInner = dynamic(
+  () => import("./funnel-chart-inner").then((m) => ({ default: m.FunnelChartInner })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[200px] items-center justify-center">
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#D97706] border-t-transparent" />
       </div>
-    );
-  }
+    ),
+  },
+);
 
-  return (
-    <ResponsiveContainer width="100%" height={data.length * 52 + 16}>
-      <BarChart
-        layout="vertical"
-        data={data}
-        margin={{ top: 4, right: 140, left: 8, bottom: 4 }}
-        barSize={28}
-      >
-        <XAxis type="number" hide />
-        <YAxis
-          type="category"
-          dataKey="label"
-          width={76}
-          tick={{ fontSize: 13, fill: "#78716C" }}
-          axisLine={false}
-          tickLine={false}
-        />
-        <Bar dataKey="count" radius={[0, 4, 4, 0]} isAnimationActive={false}>
-          {data.map((entry, index) => (
-            <Cell key={index} fill={entry.color} />
-          ))}
-          <LabelList
-            dataKey="displayLabel"
-            position="right"
-            style={{ fontSize: 13, fontWeight: 600, fill: "#292524" }}
-          />
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  );
+export function FunnelChart({ data }: { data: FunnelDataItem[] }) {
+  return <FunnelChartInner data={data} />;
 }

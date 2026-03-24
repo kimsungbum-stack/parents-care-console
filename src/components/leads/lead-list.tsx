@@ -29,8 +29,16 @@ type LeadListProps = {
 const columns = ["보호자", "연락처", "케어 대상", "유입경로", "상태", "다음 연락", "최근 상담"];
 
 function LeadCard({ lead }: { lead: LeadListItem }) {
+  const overdue = isOverdue(lead.nextContactDate);
+  const todayContact = isToday(lead.nextContactDate);
+  const borderClass = overdue
+    ? "border-[#DC2626]"
+    : todayContact
+      ? "border-[#D97706]"
+      : "border-[#E7E0D5]";
+
   return (
-    <Link href={`/leads/${lead.id}`} className="group block rounded-xl border border-[#E7E0D5] bg-white p-4 transition-colors hover:bg-[#FEF3C7]/30 sm:p-5">
+    <Link href={`/leads/${lead.id}`} className={`group block rounded-xl border ${borderClass} bg-white p-4 transition-colors hover:bg-[#FEF3C7]/30 sm:p-5`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-[15px] font-semibold text-[#292524]">{lead.guardianName}</p>
