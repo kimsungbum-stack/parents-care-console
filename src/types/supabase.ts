@@ -66,6 +66,7 @@ export type Database = {
           key_issues: string | null;
           mobility_level: string | null;
           next_contact_date: string | null;
+          organization_id: string | null;
           payment_assistance_required: boolean | null;
           phone: string;
           source: string;
@@ -94,6 +95,7 @@ export type Database = {
           key_issues?: string | null;
           mobility_level?: string | null;
           next_contact_date?: string | null;
+          organization_id?: string | null;
           payment_assistance_required?: boolean | null;
           phone: string;
           source: string;
@@ -122,6 +124,7 @@ export type Database = {
           key_issues?: string | null;
           mobility_level?: string | null;
           next_contact_date?: string | null;
+          organization_id?: string | null;
           payment_assistance_required?: boolean | null;
           phone?: string;
           source?: string;
@@ -133,7 +136,14 @@ export type Database = {
           transport_method?: string | null;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "leads_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       notes: {
         Row: {
@@ -198,6 +208,34 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      users: {
+        Row: {
+          id: string;
+          organization_id: string;
+          role: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          organization_id: string;
+          role?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          role?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "users_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       reports: {
         Row: {

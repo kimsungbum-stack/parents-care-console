@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
-        { error: "OPENAI_API_KEY가 설정되지 않았습니다." },
+        { error: "음성 변환 서비스가 아직 설정되지 않았습니다. 관리자에게 문의해 주세요." },
         { status: 500 }
       );
     }

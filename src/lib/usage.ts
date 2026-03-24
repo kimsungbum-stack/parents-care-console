@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { PlanTier } from "@/types/domain";
 import { PLAN_LEAD_LIMITS } from "@/types/domain";
@@ -12,7 +13,27 @@ export type OrgUsage = {
   isNearLimit: boolean;
 };
 
-async function getFirstOrg() {
+async function getUserOrg() {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data } = await supabase
+        .from("organizations")
+        .select("id, plan, leads_count_this_month")
+        .limit(1)
+        .single();
+
+      if (data) return data;
+    }
+  } catch {
+    // auth not available (e.g., external API call) — fall through
+  }
+
+  // Fallback: MVP 모드 (인증 없이 첫 번째 조직 사용)
   const supabase = createSupabasePlainClient();
   const { data, error } = await supabase
     .from("organizations")
@@ -20,15 +41,12 @@ async function getFirstOrg() {
     .limit(1)
     .single();
 
-  if (error || !data) {
-    return null;
-  }
-
+  if (error || !data) return null;
   return data;
 }
 
 export async function getOrgUsage(): Promise<OrgUsage | null> {
-  const org = await getFirstOrg();
+  const org = await getUserOrg();
   if (!org) return null;
 
   const plan = org.plan as PlanTier;
@@ -46,7 +64,7 @@ export async function getOrgUsage(): Promise<OrgUsage | null> {
 }
 
 export async function incrementLeadCount(): Promise<void> {
-  const org = await getFirstOrg();
+  const org = await getUserOrg();
   if (!org) return;
 
   const supabase = createSupabasePlainClient();

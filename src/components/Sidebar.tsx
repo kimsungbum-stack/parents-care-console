@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, UserPlus, Heart, Kanban, CreditCard } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, Users, UserPlus, Heart, Kanban, CreditCard, Settings, LogOut } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -14,10 +16,42 @@ const mainNavItems = [
   { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users },
   { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus },
   { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard },
+  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings },
 ] as const;
+
+const authPaths = ["/login", "/auth/callback", "/onboarding/org-setup"];
+
+function useUserInfo() {
+  const [info, setInfo] = useState<{ name: string | null; email: string | null }>({
+    name: null,
+    email: null,
+  });
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+    supabase.auth.getUser().then(({ data }) => {
+      const user = data.user;
+      setInfo({
+        name: user?.user_metadata?.full_name ?? null,
+        email: user?.email ?? null,
+      });
+    });
+  }, []);
+
+  return info;
+}
 
 function SidebarContent() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { name, email } = useUserInfo();
+
+  async function handleLogout() {
+    const supabase = createSupabaseBrowserClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <>
@@ -99,11 +133,42 @@ function SidebarContent() {
         </div>
       </nav>
 
-      {/* 하단 */}
+      {/* 하단 — 사용자 정보 + 로그아웃 */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "16px 20px" }}>
-        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>
-          신규 등록 → 상태 정리 → 상담 기록 저장
-        </p>
+        {(name || email) ? (
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              {name && (
+                <p
+                  className="truncate"
+                  style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}
+                >
+                  {name}
+                </p>
+              )}
+              {email && (
+                <p
+                  className="truncate"
+                  style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: name ? 1 : 0 }}
+                >
+                  {email}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="ml-2 flex-shrink-0 rounded-lg p-1.5 transition-colors hover:bg-white/10"
+              style={{ color: "rgba(255,255,255,0.45)" }}
+              aria-label="로그아웃"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
+        ) : (
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>
+            신규 등록 → 상태 정리 → 상담 기록 저장
+          </p>
+        )}
       </div>
     </>
   );
@@ -138,6 +203,11 @@ function BottomTabBar() {
 }
 
 export default function Sidebar() {
+  const pathname = usePathname();
+  const isAuthPage = authPaths.some((p) => pathname.startsWith(p));
+
+  if (isAuthPage) return null;
+
   return (
     <>
       {/* 데스크탑 사이드바 — Tailwind text-white 대신 inline style로 강제 */}
