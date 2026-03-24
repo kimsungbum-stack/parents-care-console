@@ -5,6 +5,7 @@
   LeadListItem,
   LeadNote,
   LeadRecord,
+  RecordingAiAnalysis,
 } from "@/types/domain";
 import type { Database } from "@/types/supabase";
 
@@ -165,5 +166,7 @@ export function mapLeadRowsToLeadDetail(input: {
     reportRecord,
     consultations,
     notes,
+    aiAnalysis: (input.lead as Record<string, unknown>).ai_analysis as RecordingAiAnalysis | null | undefined,
+    aiAnalyzedAt: (input.lead as Record<string, unknown>).ai_analyzed_at as string | null | undefined,
   };
 }

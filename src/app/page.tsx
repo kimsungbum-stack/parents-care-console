@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, Users, FileText, CheckCircle } from "lucide-react";
 import { FunnelChart, type FunnelDataItem } from "@/components/dashboard/funnel-chart";
+import { RecordingUploadButton } from "@/components/dashboard/recording-upload-button";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
@@ -207,6 +208,10 @@ export default async function DashboardPage() {
           </div>
         </div>
       )}
+
+      <div className="mb-6">
+        <RecordingUploadButton />
+      </div>
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="전체 케이스" value={totalCount} sub={totalCount > 0 ? `이번 주 신규 ${recentLeads.length}건 확인` : "등록된 케이스 없음"} tone="default" icon={<Users size={18} />} />

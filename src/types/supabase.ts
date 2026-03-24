@@ -70,6 +70,10 @@ export type Database = {
           phone: string;
           source: string;
           status: LeadStatus;
+          recording_url: string | null;
+          transcript: string | null;
+          ai_analysis: Json | null;
+          ai_analyzed_at: string | null;
           transport_method: string | null;
           updated_at: string;
         };
@@ -94,6 +98,10 @@ export type Database = {
           phone: string;
           source: string;
           status?: LeadStatus;
+          recording_url?: string | null;
+          transcript?: string | null;
+          ai_analysis?: Json | null;
+          ai_analyzed_at?: string | null;
           transport_method?: string | null;
           updated_at?: string;
         };
@@ -118,6 +126,10 @@ export type Database = {
           phone?: string;
           source?: string;
           status?: LeadStatus;
+          recording_url?: string | null;
+          transcript?: string | null;
+          ai_analysis?: Json | null;
+          ai_analyzed_at?: string | null;
           transport_method?: string | null;
           updated_at?: string;
         };

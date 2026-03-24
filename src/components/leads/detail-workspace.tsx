@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { AiAnalysisCard } from "@/components/leads/ai-analysis-card";
+import { RecordingAiAnalysisSection } from "@/components/leads/recording-ai-analysis-section";
 import { DetailHeader } from "@/components/leads/detail-header";
 import { DetailManagementPanel } from "@/components/leads/detail-management-panel";
 import { DetailTabs } from "@/components/leads/detail-tabs";
@@ -34,14 +35,21 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
           setCurrentNextContactDate(nextContactDate);
         }}
       />
-      <AiAnalysisCard
-        leadId={lead.id}
-        latestConsultationDetails={
-          lead.consultations.length > 0
-            ? lead.consultations[0].details || lead.consultations[0].summary
-            : undefined
-        }
-      />
+      {lead.aiAnalysis ? (
+        <RecordingAiAnalysisSection
+          analysis={lead.aiAnalysis}
+          analyzedAt={lead.aiAnalyzedAt}
+        />
+      ) : (
+        <AiAnalysisCard
+          leadId={lead.id}
+          latestConsultationDetails={
+            lead.consultations.length > 0
+              ? lead.consultations[0].details || lead.consultations[0].summary
+              : undefined
+          }
+        />
+      )}
       <DetailTabs lead={lead} />
     </div>
   );

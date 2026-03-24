@@ -133,6 +133,8 @@ export type LeadDetail = LeadListItem &
     reportRecord?: GuardianReportRecord | null;
     consultations: LeadConsultation[];
     notes: LeadNote[];
+    aiAnalysis?: RecordingAiAnalysis | null;
+    aiAnalyzedAt?: string | null;
   };
 
 export type DashboardStatusSummaryItem = {
@@ -152,6 +154,21 @@ export type RecentConsultationItem = {
   guardianName: string;
   channel: string;
   recordedAt: string;
+  summary: string;
+};
+
+// AI 녹음 분석 결과 타입 (녹음 업로드 → 분석 → 케이스 생성)
+export type RecordingAiAnalysis = {
+  guardianName: string | null;
+  phone: string | null;
+  relationship: string | null;
+  careRecipientName: string | null;
+  careRecipientAge: string | null;
+  currentSituation: string;
+  urgency: "높음" | "보통" | "낮음";
+  coreNeeds: string;
+  recommendedNextContactDate: string | null;
+  recommendedAction: string;
   summary: string;
 };
 

@@ -111,7 +111,7 @@ export function AiAnalysisCard({ leadId, latestConsultationDetails, planTier }: 
           className="mt-3 inline-flex items-center gap-2 rounded-lg border border-[#D97706]/30 bg-[#FFFBEB] px-4 py-2 text-[13px] font-medium text-[#D97706] transition-colors hover:bg-[#FEF3C7] disabled:opacity-50"
         >
           <Sparkles size={14} />
-          {isLoading ? "분석 중..." : "AI 분석 실행"}
+          {isLoading ? "상담 내용을 정리하고 있어요..." : "AI로 상담 분석하기"}
         </button>
       </div>
     );
@@ -142,7 +142,9 @@ export function AiAnalysisCard({ leadId, latestConsultationDetails, planTier }: 
             urgencyStyles[result.urgencyLevel],
           ].join(" ")}
         >
-          긴급도: {result.urgencyLevel}
+          {result.urgencyLevel === "높음" && "빨리 연락 필요 🔴"}
+          {result.urgencyLevel === "보통" && "이번 주 내 연락 🟡"}
+          {result.urgencyLevel === "낮음" && "여유 있음 🟢"}
         </span>
       </div>
 
@@ -173,7 +175,7 @@ export function AiAnalysisCard({ leadId, latestConsultationDetails, planTier }: 
         disabled={isLoading}
         className="mt-3 inline-flex items-center gap-2 rounded-lg border border-[#E7E0D5] bg-white px-3 py-1.5 text-[13px] text-[#78716C] transition-colors hover:bg-[#FEFCF8] hover:text-[#292524] disabled:opacity-50"
       >
-        {isLoading ? "재분석 중..." : "다시 분석"}
+        {isLoading ? "상담 내용을 정리하고 있어요..." : "다시 분석하기"}
       </button>
     </div>
   );
