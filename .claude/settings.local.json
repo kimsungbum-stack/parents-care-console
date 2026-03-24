@@ -27,7 +27,8 @@
       "Bash(find temp-impeccable:*)",
       "Bash(mkdir -p .claude/skills)",
       "Bash(cp -r temp-impeccable/.agents/skills/* .claude/skills/)",
-      "Bash(rm -rf temp-impeccable)"
+      "Bash(rm -rf temp-impeccable)",
+      "Bash(find C:/Users/김성범/.claude/teams/ -name *.json)"
     ]
   }
 }
