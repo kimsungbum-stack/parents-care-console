@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(vercel --version)",
+      "Bash(vercel --prod)",
+      "Bash(xargs ls:*)",
+      "Bash(curl:*)",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(sed -i 's|import { createSupabaseServerClient } from \"\"@/lib/supabase/server\"\";|import { createSupabasePlainClient } from \"\"@/lib/supabase/plain\"\";|g' \"C:/Users/김성범/OneDrive/바탕 화면/parents-care-console/$f\")",
+      "Bash(sed -i 's|await createSupabaseServerClient\\(\\)|createSupabasePlainClient\\(\\)|g' \"C:/Users/김성범/OneDrive/바탕 화면/parents-care-console/$f\")",
+      "Bash(echo \"Fixed: $f\")",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \":*)",
+      "Bash(netstat -ano)",
+      "Bash(vercel --prod --yes)",
+      "Bash(vercel env:*)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)"
+    ]
+  }
+}
