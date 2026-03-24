@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, Users, FileText, CheckCircle } from "lucide-react";
+import { FunnelChart, type FunnelDataItem } from "@/components/dashboard/funnel-chart";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
@@ -125,6 +126,26 @@ export default async function DashboardPage() {
     console.error("Upcoming contacts exception:", err);
   }
   const overdueCount = upcomingContacts.filter((c) => isOverdue(c.scheduledDate)).length;
+
+  const funnelStages: { label: string; status: LeadStatus; color: string }[] = [
+    { label: "신규", status: "신규", color: "#3B82F6" },
+    { label: "1차답장", status: "1차답장", color: "#F59E0B" },
+    { label: "인터뷰예정", status: "인터뷰예정", color: "#8B5CF6" },
+    { label: "인터뷰완료", status: "인터뷰완료", color: "#10B981" },
+    { label: "소개대기", status: "소개대기", color: "#6B7280" },
+  ];
+  const funnelData: FunnelDataItem[] = funnelStages.map((stage, i, arr) => {
+    const count = statusCounts[stage.status] ?? 0;
+    const prevCount = i === 0 ? null : statusCounts[arr[i - 1].status] ?? 0;
+    const conversion = prevCount === null ? null : prevCount > 0 ? Math.round((count / prevCount) * 100) : 0;
+    return {
+      label: stage.label,
+      count,
+      color: stage.color,
+      displayLabel: conversion !== null ? `${count}건 (${conversion}%)` : `${count}건`,
+    };
+  });
+
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
@@ -192,6 +213,12 @@ export default async function DashboardPage() {
         <MetricCard label="오늘 연락 필요" value={upcomingContacts.length} sub={upcomingContacts.length > 0 ? `${upcomingContacts.length}건 연락 대기` : "오늘 연락 우선순위 없음"} tone="amber" icon={<Phone size={18} />} />
         <MetricCard label="리포트 발송 대기" value={statusCounts["소개대기"] ?? 0} sub="설명 후 리포트 정리 대상" tone="default" icon={<FileText size={18} />} />
         <MetricCard label="서비스 연계 완료" value={statusCounts["인터뷰완료"] ?? 0} sub="인터뷰 완료 기준" tone="success" icon={<CheckCircle size={18} />} />
+      </div>
+
+      <div className="mb-6 rounded-xl border border-[#E7E0D5] bg-white px-5 py-5">
+        <h2 className="text-[16px] font-bold text-[#292524]">전환율 퍼널</h2>
+        <p className="mb-4 mt-1 text-[13px] text-[#78716C]">단계별 케이스 수와 이전 단계 대비 전환율이에요.</p>
+        <FunnelChart data={funnelData} />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">

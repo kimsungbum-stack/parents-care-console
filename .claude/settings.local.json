@@ -16,7 +16,12 @@
       "Bash(vercel --prod --yes)",
       "Bash(vercel env:*)",
       "Bash(npm install:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(gh auth:*)",
+      "Bash(where gh:*)",
+      "Bash(winget list:*)",
+      "Bash(\"C:/Program Files/GitHub CLI/gh.exe\" --version)",
+      "Bash(\"C:/Program Files \\(x86\\)/GitHub CLI/gh.exe\" --version)"
     ]
   }
 }
