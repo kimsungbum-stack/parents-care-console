@@ -44,7 +44,7 @@ function SidebarContent() {
       <nav className="flex-1 overflow-y-auto px-3 py-6">
         {navSections.map((section) => (
           <div key={section.label} className="mb-6">
-            <p className="mb-3 px-3 text-[13px] font-medium text-[#78716C]">{section.label}</p>
+            <p className="mb-3 px-3 text-[13px] font-medium text-[#F5F0E8]">{section.label}</p>
             <div className="space-y-1">
               {section.items.map((item) => {
                 const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -72,7 +72,7 @@ function SidebarContent() {
       </nav>
 
       <div className="mt-auto border-t border-white/10 px-5 py-4">
-        <p className="text-[13px] leading-6 text-[#78716C]">
+        <p className="text-[13px] leading-6 text-[#F5F0E8]">
           신규 등록 → 상태 정리 → 상담 기록 저장
         </p>
       </div>
