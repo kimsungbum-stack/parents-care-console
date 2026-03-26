@@ -295,14 +295,14 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={confirmAndCreate}
-            className="flex-1 rounded-xl bg-[#D97706] px-4 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+            className="flex-1 min-h-[44px] rounded-lg bg-[#D97706] px-4 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
           >
             이대로 등록하기
           </button>
           <button
             type="button"
             onClick={resetState}
-            className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
           >
             취소
           </button>
@@ -323,14 +323,14 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={handleGoToCase}
-            className="flex-1 rounded-xl bg-[#D97706] px-4 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+            className="flex-1 min-h-[44px] rounded-lg bg-[#D97706] px-4 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
           >
             케이스 상세 보기
           </button>
           <button
             type="button"
             onClick={resetState}
-            className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
           >
             하나 더 올리기
           </button>
@@ -354,14 +354,14 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={resetState}
-            className="rounded-xl border border-[#FCA5A5] bg-white px-4 py-3 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
+            className="min-h-[44px] rounded-lg border border-[#FCA5A5] bg-white px-4 py-3 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
           >
             다시 시도
           </button>
           <button
             type="button"
             onClick={() => { resetState(); setActiveTab("text"); }}
-            className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
           >
             직접 입력으로 전환
           </button>
@@ -414,7 +414,7 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={handleFileSelect}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#D97706] px-6 py-4 text-[16px] font-bold text-white shadow-sm transition-colors hover:bg-[#B45309] active:bg-[#92400E]"
+            className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-lg bg-[#D97706] px-6 py-4 text-[16px] font-bold text-white shadow-sm transition-colors hover:bg-[#B45309] active:bg-[#92400E]"
           >
             <Mic size={20} />
             통화 녹음 올리기
@@ -439,7 +439,7 @@ export function RecordingUploadButton() {
             type="button"
             onClick={handleTextSubmit}
             disabled={!textInput.trim()}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#D97706] px-6 py-3.5 text-[15px] font-bold text-white shadow-sm transition-colors hover:bg-[#B45309] active:bg-[#92400E] disabled:cursor-not-allowed disabled:bg-[#D4C5A9]"
+            className="mt-3 flex w-full min-h-[44px] items-center justify-center gap-2 rounded-lg bg-[#D97706] px-6 py-3.5 text-[15px] font-bold text-white shadow-sm transition-colors hover:bg-[#B45309] active:bg-[#92400E] disabled:cursor-not-allowed disabled:bg-[#D4C5A9]"
           >
             AI로 상담 분석하기
           </button>

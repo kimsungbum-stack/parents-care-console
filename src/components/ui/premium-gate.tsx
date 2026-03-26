@@ -11,7 +11,7 @@ export function PremiumGate({ onUpgrade }: PremiumGateProps) {
       <button
         type="button"
         onClick={onUpgrade}
-        className="mt-4 rounded-xl bg-[#D97706] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309] active:bg-[#92400E]"
+        className="mt-4 min-h-[44px] rounded-lg bg-[#D97706] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309] active:bg-[#92400E]"
       >
         프리미엄으로 올리기
       </button>

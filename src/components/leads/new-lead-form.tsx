@@ -30,7 +30,7 @@ type SubmitState =
 
 function getInputClass(hasError: boolean) {
   return [
-    "w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-[#292524] outline-none transition-colors placeholder:text-[#A8A29E] min-h-[44px]",
+    "w-full rounded-lg border bg-white px-4 py-3 text-[15px] text-[#292524] outline-none transition-colors placeholder:text-[#A8A29E] min-h-[44px]",
     hasError
       ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-1 focus:ring-[#DC2626]/20"
       : "border-[#E7E0D5] focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]/20",

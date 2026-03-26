@@ -38,13 +38,7 @@ export function LeadListView({ leads, notice }: LeadListViewProps) {
     <div className="space-y-5">
       {notice ? <FeedbackNotice tone={notice.tone} message={notice.message} /> : null}
 
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-        <div>
-          <h1 className="text-[22px] font-bold text-[#292524]">케이스 목록</h1>
-          <p className="mt-1 text-[14px] text-[#78716C]">
-            오늘 처리할 케이스부터 찾아서 상세 화면으로 들어가면 돼요.
-          </p>
-        </div>
+      <div className="flex items-center justify-end">
         <p className="text-[14px] text-[#78716C]">
           <span className="font-bold text-[#D97706]">{filteredLeads.length}</span>건
         </p>

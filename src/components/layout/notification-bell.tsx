@@ -120,7 +120,7 @@ export function NotificationBell() {
           <div className="max-h-[360px] overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-[14px] text-[#78716C]">아직 알림이 없어요</p>
+                <p className="text-[14px] text-[#78716C]">새로운 알림이 없어요</p>
                 <p className="mt-1 text-[13px] text-[#A8A29E]">
                   연락 예정일이 되면 여기에 알려드릴게요
                 </p>

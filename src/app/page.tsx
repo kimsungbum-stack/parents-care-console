@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { Phone, Users, ChevronDown } from "lucide-react";
+import { Phone, Users } from "lucide-react";
 import { FunnelChart, type FunnelDataItem } from "@/components/dashboard/funnel-chart";
-import { RecordingUploadButton } from "@/components/dashboard/recording-upload-button";
-import { UsageBanner } from "@/components/dashboard/usage-banner";
+/* AI 기능 준비 중 - API 키 연동 후 활성화 */
+// import { RecordingUploadButton } from "@/components/dashboard/recording-upload-button";
+// import { UsageBanner } from "@/components/dashboard/usage-banner";
+import { PilotBanner } from "@/components/dashboard/pilot-banner";
 import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 import { DashboardFunnelToggle } from "@/components/dashboard/dashboard-funnel-toggle";
 
@@ -163,8 +165,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="px-5 py-6 lg:px-8 lg:py-8">
+      <PilotBanner />
       <OnboardingGuide />
-      <UsageBanner />
+      {/* AI 기능 준비 중 - API 키 연동 후 활성화 */}
+      {/* <UsageBanner /> */}
 
       {/* 1. 인사 + 오늘 할 일 요약 */}
       <div className="mb-5">
@@ -175,10 +179,10 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* 2. AI 녹음 업로드 — 최상단 히어로 위치 */}
-      <div className="mb-5">
+      {/* AI 기능 준비 중 - API 키 연동 후 활성화 */}
+      {/* <div className="mb-5">
         <RecordingUploadButton />
-      </div>
+      </div> */}
 
       {/* 3. 오늘 연락 필요 — 바로 아래 */}
       {upcomingContacts.length > 0 && (
@@ -260,7 +264,7 @@ export default async function DashboardPage() {
             <div className="px-5 py-14 text-center">
               <p className="text-[16px] font-semibold text-[#292524]">아직 케이스가 없어요</p>
               <p className="mt-1 text-[14px] text-[#78716C]">전화 끝나고 녹음을 올리거나, 직접 등록하면 돼요.</p>
-              <Link href="/leads/new" className="mt-4 inline-flex items-center gap-1 rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]">
+              <Link href="/leads/new" className="mt-4 inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]">
                 + 첫 케이스 등록하기
               </Link>
             </div>

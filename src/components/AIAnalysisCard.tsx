@@ -8,9 +8,9 @@ type Props = {
 };
 
 const urgencyColors: Record<string, string> = {
-  높음: "bg-red-100 text-red-700",
-  보통: "bg-yellow-100 text-yellow-700",
-  낮음: "bg-green-100 text-green-700",
+  높음: "bg-[#FEF2F2] text-[#DC2626]",
+  보통: "bg-[#FFFBEB] text-[#D97706]",
+  낮음: "bg-[#F0FDF4] text-[#16A34A]",
 };
 
 function SkeletonBlock({ className = "" }: { className?: string }) {
@@ -119,7 +119,7 @@ export default function AIAnalysisCard({ analysis, isLoading }: Props) {
             {consultation.key_needs.map((need, i) => (
               <span
                 key={i}
-                className="inline-block rounded-full border border-[#E7E0D5] bg-[#FAFAF9] px-2.5 py-0.5 text-xs text-[#292524]"
+                className="inline-block rounded-full border border-[#E7E0D5] bg-[#FEFCF8] px-2.5 py-0.5 text-xs text-[#292524]"
               >
                 {need}
               </span>

@@ -26,7 +26,7 @@ const plans = [
       "무제한 케이스 등록",
       "진행 현황 보기",
       "상담 기록 저장",
-      "AI 상담 분석 월 5회",
+      "AI 상담 분석 월 5회 (준비 중)",
       "알림톡 발송",
       "월간 리포트",
       "데이터 내보내기",
@@ -48,8 +48,8 @@ const plans = [
       "알림톡 발송",
       "월간 리포트",
       "데이터 내보내기",
-      "AI 상담 분석 무제한",
-      "다지점 관리",
+      "AI 상담 분석 무제한 (준비 중)",
+      "다지점 관리 (준비 중)",
       "전담 지원 매니저",
     ],
   },
@@ -62,8 +62,8 @@ const comparisonFeatures = [
   { label: "알림톡", free: false, standard: true, premium: true },
   { label: "리포트", free: false, standard: true, premium: true },
   { label: "내보내기", free: false, standard: true, premium: true },
-  { label: "AI 분석", free: false, standard: "월 5회", premium: "무제한" },
-  { label: "다지점", free: false, standard: false, premium: true },
+  { label: "AI 분석 (준비 중)", free: false, standard: "월 5회", premium: "무제한" },
+  { label: "다지점 (준비 중)", free: false, standard: false, premium: true },
   { label: "전담 지원", free: false, standard: false, premium: true },
 ];
 
@@ -122,7 +122,7 @@ export default function PricingPage() {
             </ul>
             <Link
               href={plan.ctaHref}
-              className="mt-6 block rounded-xl py-3 text-center text-[15px] font-bold transition-colors"
+              className="mt-6 block min-h-[44px] rounded-lg py-3 text-center text-[15px] font-bold transition-colors"
               style={
                 plan.highlight
                   ? { backgroundColor: "#D97706", color: "#FFFFFF" }
@@ -138,7 +138,7 @@ export default function PricingPage() {
       {/* Value Proposition */}
       <div className="mx-auto mb-10 max-w-4xl rounded-xl border border-[#FDE68A] bg-[#FFFBEB] px-6 py-5 text-center">
         <p className="text-[18px] font-bold text-[#92400E]">
-          어르신 1분만 더 모시면, 26배 가치
+          어르신 1명 추가 = 월 130만원. 구독료의 26배 가치
         </p>
         <p className="mt-1 text-[15px] text-[#B45309]">
           어르신 1분이 주간보호를 이용하시면 월 100~130만원.{" "}

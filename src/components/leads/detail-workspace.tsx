@@ -83,7 +83,7 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="mt-3 inline-flex items-center gap-2 rounded-xl border border-[#FCA5A5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
+            className="mt-3 inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-[#FCA5A5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
           >
             <Trash2 size={16} />
             케이스 삭제
@@ -99,7 +99,7 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="rounded-xl bg-[#DC2626] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B91C1C] disabled:opacity-50"
+                className="min-h-[44px] rounded-lg bg-[#DC2626] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B91C1C] disabled:opacity-50"
               >
                 {isDeleting ? "삭제 중..." : "네, 삭제할게요"}
               </button>
@@ -107,7 +107,7 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={isDeleting}
-                className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+                className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
               >
                 취소
               </button>

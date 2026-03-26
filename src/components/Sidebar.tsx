@@ -124,19 +124,19 @@ function SidebarContent() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
-                        borderRadius: 12,
+                        borderRadius: 8,
                         padding: "10px 12px",
                         fontSize: 15,
                         fontWeight: 600,
-                        color: "#F59E0B",
-                        backgroundColor: "rgba(245,158,11,0.12)",
+                        color: "#D97706",
+                        backgroundColor: "rgba(217,119,6,0.12)",
                         textDecoration: "none",
                       }
                     : {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
-                        borderRadius: 12,
+                        borderRadius: 8,
                         padding: "10px 12px",
                         fontSize: 15,
                         fontWeight: 500,
@@ -210,7 +210,7 @@ function BottomTabBar() {
             href={item.href}
             className={cn(
               "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-              isActive ? "text-[#F59E0B]" : "text-[#78716C]",
+              isActive ? "text-[#D97706]" : "text-[#78716C]",
             )}
           >
             <Icon size={21} strokeWidth={isActive ? 2.2 : 1.8} />

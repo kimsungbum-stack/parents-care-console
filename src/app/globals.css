@@ -59,7 +59,7 @@ a {
 
 .control-input {
   width: 100%;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: 1px solid #E7E0D5;
   background: #FFFFFF;
   padding: 0.72rem 0.9rem;
@@ -86,7 +86,7 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: none;
   background: #D97706;
   padding: 0.72rem 1.25rem;
@@ -94,7 +94,7 @@ a {
   font-weight: 600;
   color: #FFFFFF;
   cursor: pointer;
-  min-height: 40px;
+  min-height: 44px;
   transition:
     transform 180ms ease,
     background-color 180ms ease;
@@ -114,7 +114,7 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: 1px solid #E7E0D5;
   background: #FFFFFF;
   padding: 0.72rem 1.25rem;
@@ -122,7 +122,7 @@ a {
   font-weight: 500;
   color: #292524;
   cursor: pointer;
-  min-height: 40px;
+  min-height: 44px;
   transition:
     background-color 180ms ease,
     border-color 180ms ease;

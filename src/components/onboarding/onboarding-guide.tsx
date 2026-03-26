@@ -134,14 +134,14 @@ export function OnboardingGuide() {
             <div className="mt-4 flex flex-wrap gap-2">
               <Link
                 href={step.href}
-                className="inline-flex items-center gap-1 rounded-xl bg-[#D97706] px-4 py-2 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+                className="inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
               >
                 {step.buttonLabel}
                 <ChevronRight size={16} />
               </Link>
               <button
                 onClick={handleNext}
-                className="inline-flex items-center gap-1 rounded-xl bg-[#F5F0E8] px-4 py-2 text-[14px] font-medium text-[#292524] transition-colors hover:bg-[#E7E0D5]"
+                className="inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#F5F0E8] px-4 py-2.5 text-[14px] font-medium text-[#292524] transition-colors hover:bg-[#E7E0D5]"
               >
                 {currentStep < steps.length - 1 ? "다음 단계" : "완료"}
               </button>

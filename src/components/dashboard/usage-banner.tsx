@@ -58,7 +58,7 @@ export function UsageBanner() {
           </div>
           <Link
             href="/pricing"
-            className="inline-flex items-center justify-center rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
           >
             스탠다드로 올리기
           </Link>

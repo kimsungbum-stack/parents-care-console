@@ -6,6 +6,7 @@ import {
   type NewLeadFormValues,
 } from "@/lib/forms/new-lead";
 import { createLead } from "@/lib/mutations/create-lead";
+import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import { getOrgUsage, incrementLeadCount } from "@/lib/usage";
 
 export async function POST(request: Request) {
@@ -68,4 +69,34 @@ export async function POST(request: Request) {
     },
     { status: 500 },
   );
+}
+
+export async function DELETE() {
+  try {
+    const supabase = createSupabasePlainClient();
+
+    // 관련 데이터 먼저 삭제 (FK 제약 대응)
+    await supabase.from("consultations").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    await supabase.from("notes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    await supabase.from("reports").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+    const { error } = await supabase.from("leads").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+    if (error) {
+      return NextResponse.json(
+        { message: "케이스 삭제 중 문제가 발생했어요." },
+        { status: 500 },
+      );
+    }
+
+    revalidatePath("/");
+    revalidatePath("/leads");
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { message: "케이스 삭제 중 문제가 발생했어요." },
+      { status: 500 },
+    );
+  }
 }

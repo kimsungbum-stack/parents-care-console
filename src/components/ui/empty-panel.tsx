@@ -20,7 +20,7 @@ export function EmptyPanel({ title, description, compact = false, actionLabel, a
       {actionLabel && actionHref && (
         <Link
           href={actionHref}
-          className="mt-4 inline-flex items-center gap-1 rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+          className="mt-4 inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
         >
           {actionLabel}
         </Link>

@@ -197,7 +197,7 @@ export function TeamManagement() {
             <button
               type="submit"
               disabled={inviting || !inviteEmail.trim()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309] disabled:cursor-not-allowed disabled:bg-[#D4C5A9]"
+              className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309] disabled:cursor-not-allowed disabled:bg-[#D4C5A9]"
             >
               {inviting ? (
                 <>

@@ -259,7 +259,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               <div
                 key={col.status}
                 className={`flex w-[212px] flex-shrink-0 flex-col rounded-xl border transition-colors ${
-                  isOver ? "border-[#D97706] bg-[#FEF3C7]/40" : "border-[#E7E0D5] bg-[#F9FAFB]"
+                  isOver ? "border-[#D97706] bg-[#FEF3C7]/40" : "border-[#E7E0D5] bg-[#FEFCF8]"
                 }`}
                 onDragOver={(e) => { e.preventDefault(); setDragOverColumn(col.status); }}
                 onDragLeave={(e) => {
