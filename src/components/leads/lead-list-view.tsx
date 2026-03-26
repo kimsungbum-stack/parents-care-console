@@ -6,8 +6,9 @@ import { LeadEmptyState } from "@/components/leads/lead-empty-state";
 import { LeadFilters } from "@/components/leads/lead-filters";
 import { LeadList } from "@/components/leads/lead-list";
 import { FeedbackNotice } from "@/components/ui/feedback-notice";
-import { leadStatusOptions } from "@/lib/mock-data";
-import type { LeadListItem, LeadStatus } from "@/types/domain";
+import { LEAD_STATUS_ORDER, type LeadListItem, type LeadStatus } from "@/types/domain";
+
+const leadStatusOptions: Array<"전체" | LeadStatus> = ["전체", ...LEAD_STATUS_ORDER];
 
 type LeadListViewProps = {
   leads: LeadListItem[];
