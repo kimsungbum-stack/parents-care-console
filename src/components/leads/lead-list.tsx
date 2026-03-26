@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
-import type { LeadListItem } from "@/lib/mock-data";
+import type { LeadListItem } from "@/types/domain";
 
 function isOverdue(dateStr: string | null) {
   if (!dateStr) return false;
