@@ -11,12 +11,12 @@ function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 const mainNavItems = [
-  { href: "/", label: "대시보드", shortLabel: "홈", icon: LayoutDashboard, showInMobileTab: true, adminOnly: false },
-  { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban, showInMobileTab: true, adminOnly: false },
-  { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users, showInMobileTab: true, adminOnly: false },
-  { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus, showInMobileTab: true, adminOnly: false },
-  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard, showInMobileTab: false, adminOnly: true },
-  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings, showInMobileTab: false, adminOnly: true },
+  { href: "/", label: "대시보드", shortLabel: "홈", icon: LayoutDashboard, showInMobileTab: true },
+  { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban, showInMobileTab: true },
+  { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users, showInMobileTab: true },
+  { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus, showInMobileTab: true },
+  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard, showInMobileTab: false },
+  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings, showInMobileTab: false },
 ] as const;
 
 const mobileTabItems = mainNavItems.filter((item) => item.showInMobileTab);
@@ -64,9 +64,7 @@ function useUserInfo() {
 function SidebarContent() {
   const pathname = usePathname();
   const router = useRouter();
-  const { name, email, role } = useUserInfo();
-  const isAdmin = role === "admin";
-  const filteredNavItems = mainNavItems.filter((item) => !item.adminOnly || isAdmin);
+  const { name, email } = useUserInfo();
 
   async function handleLogout() {
     const supabase = createSupabaseBrowserClient();
@@ -111,7 +109,7 @@ function SidebarContent() {
           메뉴
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {filteredNavItems.map((item) => {
+          {mainNavItems.map((item) => {
             const isActive =
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             const Icon = item.icon;
