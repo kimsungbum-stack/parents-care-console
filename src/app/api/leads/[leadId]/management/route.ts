@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { normalizeLeadManagementPayload } from "@/lib/forms/lead-management";
 import { updateLeadManagement } from "@/lib/mutations/update-lead-management";
+import { createSupabasePlainClient } from "@/lib/supabase/plain";
 
 type RouteContext = {
   params: Promise<{
@@ -67,4 +68,31 @@ export async function PATCH(request: Request, context: RouteContext) {
     },
     { status: 500 },
   );
+}
+
+export async function DELETE(_request: Request, context: RouteContext) {
+  const { leadId } = await context.params;
+
+  if (!leadId) {
+    return NextResponse.json({ message: "케이스 ID가 필요합니다." }, { status: 400 });
+  }
+
+  try {
+    const supabase = createSupabasePlainClient();
+
+    // 관련 데이터 먼저 삭제 (FK 제약 대응)
+    await supabase.from("consultations").delete().eq("lead_id", leadId);
+    await supabase.from("notes").delete().eq("lead_id", leadId);
+    await supabase.from("reports").delete().eq("lead_id", leadId);
+
+    const { error } = await supabase.from("leads").delete().eq("id", leadId);
+
+    if (error) {
+      return NextResponse.json({ message: "케이스 삭제 중 문제가 발생했어요." }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ message: "케이스 삭제 중 문제가 발생했어요." }, { status: 500 });
+  }
 }
