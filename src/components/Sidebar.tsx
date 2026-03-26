@@ -15,8 +15,8 @@ const mainNavItems = [
   { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban, showInMobileTab: true },
   { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users, showInMobileTab: true },
   { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus, showInMobileTab: true },
-  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard, showInMobileTab: false },
-  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings, showInMobileTab: false },
+  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard, showInMobileTab: true },
+  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings, showInMobileTab: true },
 ] as const;
 
 const mobileTabItems = mainNavItems.filter((item) => item.showInMobileTab);
