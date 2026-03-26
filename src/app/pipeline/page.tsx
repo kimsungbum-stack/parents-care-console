@@ -1,4 +1,5 @@
 import { KanbanBoard } from "@/components/pipeline/kanban-board";
+import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { LeadStatus } from "@/types/domain";
 
 export const dynamic = "force-dynamic";
@@ -14,41 +15,27 @@ export type KanbanLead = {
 };
 
 async function fetchPipelineLeads(): Promise<KanbanLead[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return [];
+  try {
+    const supabase = createSupabasePlainClient();
+    const { data, error } = await supabase
+      .from("leads")
+      .select("id,guardian_name,care_recipient_name,care_recipient_age_group,status,next_contact_date,created_at")
+      .order("created_at", { ascending: false });
 
-  const params = new URLSearchParams({
-    select: "id,guardian_name,care_recipient_name,care_recipient_age_group,status,next_contact_date,created_at",
-    order: "created_at.desc",
-  });
+    if (error || !data) return [];
 
-  const res = await fetch(`${url}/rest/v1/leads?${params}`, {
-    headers: { apikey: key, Authorization: `Bearer ${key}` },
-    cache: "no-store",
-  });
-
-  if (!res.ok) return [];
-
-  const rows = (await res.json()) as Array<{
-    id: string;
-    guardian_name: string;
-    care_recipient_name: string | null;
-    care_recipient_age_group: string | null;
-    status: string;
-    next_contact_date: string | null;
-    created_at: string;
-  }>;
-
-  return rows.map((r) => ({
-    id: r.id,
-    guardianName: r.guardian_name,
-    careRecipientName: r.care_recipient_name,
-    careRecipientAgeGroup: r.care_recipient_age_group,
-    status: r.status as LeadStatus,
-    nextContactDate: r.next_contact_date,
-    createdAt: r.created_at,
-  }));
+    return data.map((r) => ({
+      id: r.id,
+      guardianName: r.guardian_name,
+      careRecipientName: r.care_recipient_name,
+      careRecipientAgeGroup: r.care_recipient_age_group,
+      status: r.status as LeadStatus,
+      nextContactDate: r.next_contact_date,
+      createdAt: r.created_at,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function PipelinePage() {

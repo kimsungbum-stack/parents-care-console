@@ -7,6 +7,7 @@ import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
+import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { Database } from "@/types/supabase";
 import { getStatusLabel, type LeadStatus, type UpcomingContactItem } from "@/types/domain";
 
@@ -80,30 +81,23 @@ function getSummaryLine(totalCount: number, urgentCount: number) {
 export const dynamic = "force-dynamic";
 
 async function fetchLeads(): Promise<LeadRow[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return [];
+  try {
+    const supabase = createSupabasePlainClient();
+    const { data, error } = await supabase
+      .from("leads")
+      .select("id,guardian_name,care_recipient_name,care_recipient_age_group,hospital_name,current_situation_summary,status,next_contact_date,created_at")
+      .order("next_contact_date", { ascending: true, nullsFirst: false })
+      .limit(20);
 
-  const params = new URLSearchParams({
-    select: "id,guardian_name,care_recipient_name,care_recipient_age_group,hospital_name,current_situation_summary,status,next_contact_date,created_at",
-    order: "next_contact_date.asc.nullslast",
-    limit: "20",
-  });
-
-  const res = await fetch(`${url}/rest/v1/leads?${params}`, {
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    console.error("Dashboard fetch error:", res.status, await res.text());
+    if (error) {
+      console.error("Dashboard fetch error:", error);
+      return [];
+    }
+    return (data ?? []) as LeadRow[];
+  } catch (err) {
+    console.error("Dashboard exception:", err);
     return [];
   }
-
-  return res.json() as Promise<LeadRow[]>;
 }
 
 export default async function DashboardPage() {
