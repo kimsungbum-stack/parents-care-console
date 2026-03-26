@@ -26,7 +26,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: 미리보기에서 확정 → 케이스 생성 (editedAnalysis가 있으면 사용)
-    const analysis = editedAnalysis ?? await analyzeConsultation(transcript);
+    let analysis;
+    if (editedAnalysis && typeof editedAnalysis === "object") {
+      // 허용된 필드만 추출하여 주입 방지
+      analysis = {
+        guardianName: typeof editedAnalysis.guardianName === "string" ? editedAnalysis.guardianName : null,
+        phone: typeof editedAnalysis.phone === "string" ? editedAnalysis.phone : null,
+        relationship: typeof editedAnalysis.relationship === "string" ? editedAnalysis.relationship : null,
+        careRecipientName: typeof editedAnalysis.careRecipientName === "string" ? editedAnalysis.careRecipientName : null,
+        careRecipientAge: typeof editedAnalysis.careRecipientAge === "string" ? editedAnalysis.careRecipientAge : null,
+        currentSituation: typeof editedAnalysis.currentSituation === "string" ? editedAnalysis.currentSituation : "",
+        urgency: ["높음", "보통", "낮음"].includes(editedAnalysis.urgency) ? editedAnalysis.urgency : "보통",
+        coreNeeds: typeof editedAnalysis.coreNeeds === "string" ? editedAnalysis.coreNeeds : "",
+        recommendedNextContactDate: typeof editedAnalysis.recommendedNextContactDate === "string" ? editedAnalysis.recommendedNextContactDate : null,
+        recommendedAction: typeof editedAnalysis.recommendedAction === "string" ? editedAnalysis.recommendedAction : "",
+        summary: typeof editedAnalysis.summary === "string" ? editedAnalysis.summary : "",
+      };
+    } else {
+      analysis = await analyzeConsultation(transcript);
+    }
 
     const supabase = createSupabasePlainClient();
     const { data, error } = await supabase

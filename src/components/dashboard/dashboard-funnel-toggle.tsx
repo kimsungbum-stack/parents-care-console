@@ -16,6 +16,7 @@ export function DashboardFunnelToggle({ funnelData }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-[#FEFCF8]"
       >
         <div>

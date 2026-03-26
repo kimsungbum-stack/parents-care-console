@@ -113,6 +113,7 @@ function MobileStatusGroup({
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#FEFCF8]"
       >
         <div className="flex items-center gap-2">
