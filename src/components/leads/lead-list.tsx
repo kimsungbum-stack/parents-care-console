@@ -95,7 +95,7 @@ export function LeadList({ leads }: LeadListProps) {
       </div>
 
       {/* Desktop: Table layout */}
-      <section className="hidden overflow-hidden rounded-xl border border-[#E7E0D5] bg-white lg:block">
+      <section className="hidden overflow-x-auto rounded-xl border border-[#E7E0D5] bg-white lg:block">
         <div className="grid grid-cols-[1.1fr_1fr_1.7fr_1fr_1fr_0.95fr_0.95fr] gap-4 border-b border-[#E7E0D5] bg-[#FEFCF8] px-5 py-3">
           {columns.map((column) => (
             <p key={column} className="text-[13px] font-medium text-[#78716C]">
