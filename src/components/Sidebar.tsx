@@ -11,13 +11,15 @@ function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 const mainNavItems = [
-  { href: "/", label: "대시보드", shortLabel: "홈", icon: LayoutDashboard },
-  { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban },
-  { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users },
-  { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus },
-  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard },
-  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings },
+  { href: "/", label: "대시보드", shortLabel: "홈", icon: LayoutDashboard, showInMobileTab: true },
+  { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban, showInMobileTab: true },
+  { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users, showInMobileTab: true },
+  { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus, showInMobileTab: true },
+  { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard, showInMobileTab: false },
+  { href: "/settings", label: "설정", shortLabel: "설정", icon: Settings, showInMobileTab: false },
 ] as const;
+
+const mobileTabItems = mainNavItems.filter((item) => item.showInMobileTab);
 
 const authPaths = ["/login", "/auth/callback", "/onboarding/org-setup"];
 
@@ -179,7 +181,7 @@ function BottomTabBar() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-[#E7E0D5] bg-white lg:hidden">
-      {mainNavItems.map((item) => {
+      {mobileTabItems.map((item) => {
         const isActive =
           item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         const Icon = item.icon;

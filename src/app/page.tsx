@@ -242,59 +242,82 @@ export default async function DashboardPage() {
             </Link>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="border-b border-[#E7E0D5] bg-[#FEFCF8] text-left text-[13px] text-[#78716C]">
-                  <th className="px-5 py-3 font-medium">이름</th>
-                  <th className="px-5 py-3 font-medium">케어 대상</th>
-                  <th className="px-5 py-3 font-medium">경과일</th>
-                  <th className="px-5 py-3 font-medium">다음 연락</th>
-                  <th className="px-5 py-3 font-medium">상태</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allLeads.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-5 py-16 text-center">
-                      <p className="text-[16px] font-semibold text-[#292524]">아직 케이스가 없어요</p>
-                      <p className="mt-1 text-[14px] text-[#78716C]">첫 문의가 들어오면 바로 여기에 등록하면 돼요.</p>
-                    </td>
-                  </tr>
-                ) : (
-                  allLeads.map((lead) => {
-                    const overdue = isOverdue(lead.next_contact_date);
-                    const todayLabel = isToday(lead.next_contact_date);
+          {allLeads.length === 0 ? (
+            <div className="px-5 py-16 text-center">
+              <p className="text-[16px] font-semibold text-[#292524]">아직 케이스가 없어요</p>
+              <p className="mt-1 text-[14px] text-[#78716C]">첫 문의가 들어오면 바로 여기에 등록하면 돼요.</p>
+              <Link href="/leads/new" className="mt-4 inline-flex items-center gap-1 rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]">
+                + 첫 케이스 등록하기
+              </Link>
+            </div>
+          ) : (
+            <>
+              {/* 모바일: 카드형 */}
+              <div className="divide-y divide-[#E7E0D5]/60 lg:hidden">
+                {allLeads.map((lead) => {
+                  const overdue = isOverdue(lead.next_contact_date);
+                  const todayLabel = isToday(lead.next_contact_date);
+                  return (
+                    <Link key={lead.id} href={`/leads/${lead.id}`} className="block px-5 py-4 transition-colors hover:bg-[#FEF3C7]/30">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[15px] font-semibold text-[#292524]">{lead.guardian_name}</p>
+                          <p className="mt-0.5 text-[13px] text-[#78716C]">{buildDiagnosis(lead) || "미입력"}</p>
+                        </div>
+                        <LeadStatusBadge status={lead.status as LeadStatus} />
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-[13px] leading-[1.6] text-[#78716C]">{lead.current_situation_summary}</p>
+                      <div className="mt-2 flex items-center gap-4 text-[13px]">
+                        <span className="font-medium text-[#A8A29E]">D+{daysSince(lead.created_at)}</span>
+                        <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayLabel ? "text-[#D97706]" : "text-[#78716C]"}`}>
+                          {overdue ? "기한 초과" : todayLabel ? "오늘" : formatDate(lead.next_contact_date)}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
 
-                    return (
-                      <tr key={lead.id} className="border-b border-[#E7E0D5]/60 transition-colors hover:bg-[#FEF3C7]/30">
-                        <td className="px-5 py-4 align-top">
-                          <Link href={`/leads/${lead.id}`} className="block">
-                            <p className="text-[15px] font-semibold text-[#292524]">{lead.guardian_name}</p>
-                            <p className="mt-1 line-clamp-2 text-[13px] leading-[1.6] text-[#78716C]">{lead.current_situation_summary}</p>
-                          </Link>
-                        </td>
-                        <td className="px-5 py-4 align-top text-[15px] text-[#292524]">
-                          {buildDiagnosis(lead) || "미입력"}
-                        </td>
-                        <td className="px-5 py-4 align-top text-[15px] font-semibold text-[#292524]">
-                          D+{daysSince(lead.created_at)}
-                        </td>
-                        <td className="px-5 py-4 align-top text-[15px] font-medium">
-                          <span className={overdue ? "text-[#DC2626]" : todayLabel ? "text-[#D97706]" : "text-[#78716C]"}>
-                            {overdue ? "기한 초과" : todayLabel ? "오늘" : formatDate(lead.next_contact_date)}
-                          </span>
-                        </td>
-                        <td className="px-5 py-4 align-top">
-                          <LeadStatusBadge status={lead.status as LeadStatus} />
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+              {/* 데스크탑: 테이블형 */}
+              <div className="hidden overflow-x-auto lg:block">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="border-b border-[#E7E0D5] bg-[#FEFCF8] text-left text-[13px] text-[#78716C]">
+                      <th className="px-5 py-3 font-medium">이름</th>
+                      <th className="px-5 py-3 font-medium">케어 대상</th>
+                      <th className="px-5 py-3 font-medium">경과일</th>
+                      <th className="px-5 py-3 font-medium">다음 연락</th>
+                      <th className="px-5 py-3 font-medium">상태</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allLeads.map((lead) => {
+                      const overdue = isOverdue(lead.next_contact_date);
+                      const todayLabel = isToday(lead.next_contact_date);
+                      return (
+                        <tr key={lead.id} className="border-b border-[#E7E0D5]/60 transition-colors hover:bg-[#FEF3C7]/30">
+                          <td className="px-5 py-4 align-top">
+                            <Link href={`/leads/${lead.id}`} className="block">
+                              <p className="text-[15px] font-semibold text-[#292524]">{lead.guardian_name}</p>
+                              <p className="mt-1 line-clamp-2 text-[13px] leading-[1.6] text-[#78716C]">{lead.current_situation_summary}</p>
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4 align-top text-[15px] text-[#292524]">{buildDiagnosis(lead) || "미입력"}</td>
+                          <td className="px-5 py-4 align-top text-[15px] font-semibold text-[#292524]">D+{daysSince(lead.created_at)}</td>
+                          <td className="px-5 py-4 align-top text-[15px] font-medium">
+                            <span className={overdue ? "text-[#DC2626]" : todayLabel ? "text-[#D97706]" : "text-[#78716C]"}>
+                              {overdue ? "기한 초과" : todayLabel ? "오늘" : formatDate(lead.next_contact_date)}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4 align-top"><LeadStatusBadge status={lead.status as LeadStatus} /></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </section>
 
         <div className="flex flex-col gap-5">
