@@ -7,7 +7,7 @@ import type { Json } from "@/types/supabase";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { transcript, recordingUrl } = body;
+    const { transcript, recordingUrl, mode, editedAnalysis } = body;
 
     if (!transcript || typeof transcript !== "string") {
       return NextResponse.json(
@@ -16,11 +16,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // recordingUrl is optional (text-input flow won't have it)
     const safeRecordingUrl =
       recordingUrl && typeof recordingUrl === "string" ? recordingUrl : null;
 
-    const analysis = await analyzeConsultation(transcript);
+    // Step 1: 분석만 수행 (미리보기 모드)
+    if (mode === "analyze-only") {
+      const analysis = await analyzeConsultation(transcript);
+      return NextResponse.json({ analysis });
+    }
+
+    // Step 2: 미리보기에서 확정 → 케이스 생성 (editedAnalysis가 있으면 사용)
+    const analysis = editedAnalysis ?? await analyzeConsultation(transcript);
 
     const supabase = createSupabasePlainClient();
     const { data, error } = await supabase

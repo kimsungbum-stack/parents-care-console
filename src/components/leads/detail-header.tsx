@@ -39,7 +39,17 @@ export function DetailHeader({ lead, status, nextContactDate }: DetailHeaderProp
         {detailItems.map((item) => (
           <div key={item.label} className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3">
             <p className="text-[13px] font-medium text-[#A8A29E]">{item.label}</p>
-            <p className="mt-1 text-[15px] font-semibold text-[#292524]">{item.value}</p>
+            {item.label === "연락처" && item.value && item.value !== "-" ? (
+              <a
+                href={`tel:${item.value.replace(/[^0-9+]/g, "")}`}
+                className="mt-1 inline-flex items-center gap-1.5 text-[15px] font-semibold text-[#D97706] hover:text-[#B45309]"
+              >
+                {item.value}
+                <span className="text-[12px]">전화걸기</span>
+              </a>
+            ) : (
+              <p className="mt-1 text-[15px] font-semibold text-[#292524]">{item.value}</p>
+            )}
           </div>
         ))}
       </div>

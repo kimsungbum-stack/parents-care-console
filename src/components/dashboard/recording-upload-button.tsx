@@ -2,25 +2,41 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3 } from "lucide-react";
 
 type Tab = "upload" | "text";
-type UploadStage = "idle" | "uploading" | "transcribing" | "analyzing" | "done" | "error";
+type UploadStage = "idle" | "uploading" | "transcribing" | "analyzing" | "preview" | "saving" | "done" | "error";
+
+type AnalysisResult = {
+  guardianName: string | null;
+  phone: string | null;
+  relationship: string | null;
+  careRecipientName: string | null;
+  careRecipientAge: string | null;
+  currentSituation: string;
+  urgency: "높음" | "보통" | "낮음";
+  coreNeeds: string;
+  recommendedNextContactDate: string | null;
+  recommendedAction: string;
+  summary: string;
+};
 
 type UploadResult = {
   leadId: string;
 };
 
-const STAGE_MESSAGES: Record<Exclude<UploadStage, "idle" | "done" | "error">, string> = {
+const STAGE_MESSAGES: Record<"uploading" | "transcribing" | "analyzing" | "saving", string> = {
   uploading: "파일을 올리고 있어요...",
   transcribing: "음성을 텍스트로 변환하고 있어요...",
-  analyzing: "상담 내용을 정리하고 있어요...",
+  analyzing: "AI가 상담 내용을 분석하고 있어요...",
+  saving: "케이스를 등록하고 있어요...",
 };
 
-const STAGE_PROGRESS: Record<Exclude<UploadStage, "idle" | "done" | "error">, number> = {
-  uploading: 25,
-  transcribing: 55,
-  analyzing: 80,
+const STAGE_PROGRESS: Record<"uploading" | "transcribing" | "analyzing" | "saving", number> = {
+  uploading: 20,
+  transcribing: 45,
+  analyzing: 70,
+  saving: 90,
 };
 
 const ACCEPTED_FORMATS = ".mp3,.m4a,.wav,.webm";
@@ -31,6 +47,10 @@ export function RecordingUploadButton() {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [textInput, setTextInput] = useState<string>("");
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [transcript, setTranscript] = useState<string>("");
+  const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -38,6 +58,10 @@ export function RecordingUploadButton() {
     setStage("idle");
     setErrorMessage("");
     setResult(null);
+    setAnalysis(null);
+    setEditingField(null);
+    setTranscript("");
+    setRecordingUrl(null);
   };
 
   const handleTabChange = (tab: Tab) => {
@@ -45,26 +69,63 @@ export function RecordingUploadButton() {
     resetState();
   };
 
-  // --- 분석 요청 (공통) ---
-  const runAnalysis = async (transcript: string, recordingUrl?: string) => {
+  // --- 분석만 수행 (미리보기용) ---
+  const runAnalyzeOnly = async (transcriptText: string, recUrl?: string) => {
     setStage("analyzing");
-    const analyzeRes = await fetch("/api/ai/analyze-and-create", {
+    setTranscript(transcriptText);
+    if (recUrl) setRecordingUrl(recUrl);
+
+    const res = await fetch("/api/ai/analyze-and-create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ transcript, recordingUrl: recordingUrl ?? null }),
+      body: JSON.stringify({
+        transcript: transcriptText,
+        recordingUrl: recUrl ?? null,
+        mode: "analyze-only",
+      }),
     });
 
-    if (!analyzeRes.ok) {
-      const data = await analyzeRes.json();
+    if (!res.ok) {
+      const data = await res.json();
       throw new Error(data.error || "분석에 실패했어요.");
     }
 
-    const { leadId } = await analyzeRes.json();
-    setResult({ leadId });
-    setStage("done");
+    const { analysis: result } = await res.json();
+    setAnalysis(result);
+    setStage("preview");
   };
 
-  // --- 녹음 업로드 탭 ---
+  // --- 미리보기에서 확정 → 케이스 생성 ---
+  const confirmAndCreate = async () => {
+    if (!analysis) return;
+    setStage("saving");
+
+    try {
+      const res = await fetch("/api/ai/analyze-and-create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          transcript,
+          recordingUrl,
+          editedAnalysis: analysis,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "케이스 등록에 실패했어요.");
+      }
+
+      const { leadId } = await res.json();
+      setResult({ leadId });
+      setStage("done");
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "케이스 등록 중 오류가 발생했어요.");
+      setStage("error");
+    }
+  };
+
+  // --- 녹음 업로드 ---
   const handleFileSelect = () => {
     fileInputRef.current?.click();
   };
@@ -75,7 +136,6 @@ export function RecordingUploadButton() {
     e.target.value = "";
 
     try {
-      // Step 1: Upload to Supabase Storage
       setStage("uploading");
       const formData = new FormData();
       formData.append("file", file);
@@ -90,25 +150,22 @@ export function RecordingUploadButton() {
         throw new Error(data.error || "파일 업로드에 실패했어요.");
       }
 
-      const { recordingUrl } = await uploadRes.json();
+      const { recordingUrl: recUrl } = await uploadRes.json();
 
-      // Step 2: Transcribe
       setStage("transcribing");
       const transcribeRes = await fetch("/api/ai/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recordingUrl }),
+        body: JSON.stringify({ recordingUrl: recUrl }),
       });
 
       if (!transcribeRes.ok) {
         const data = await transcribeRes.json();
-        throw new Error(data.error || "음성 변환에 실패했어요.");
+        throw new Error(data.error || "음성 변환에 실패했어요. 직접 입력 탭에서 내용을 붙여넣어 보세요.");
       }
 
-      const { transcript } = await transcribeRes.json();
-
-      // Step 3: Analyze
-      await runAnalysis(transcript, recordingUrl);
+      const { transcript: transcriptText } = await transcribeRes.json();
+      await runAnalyzeOnly(transcriptText, recUrl);
     } catch (err) {
       setErrorMessage(
         err instanceof Error ? err.message : "음성을 잘 못 알아들었어요. 녹음 상태를 확인해주세요"
@@ -117,13 +174,13 @@ export function RecordingUploadButton() {
     }
   };
 
-  // --- 직접 입력 탭 ---
+  // --- 직접 입력 ---
   const handleTextSubmit = async () => {
     const trimmed = textInput.trim();
     if (!trimmed) return;
 
     try {
-      await runAnalysis(trimmed);
+      await runAnalyzeOnly(trimmed);
     } catch (err) {
       setErrorMessage(
         err instanceof Error ? err.message : "상담 내용 분석 중 오류가 발생했어요."
@@ -138,8 +195,13 @@ export function RecordingUploadButton() {
     }
   };
 
-  // --- 진행 중 화면 (두 탭 공통) ---
-  if (stage === "uploading" || stage === "transcribing" || stage === "analyzing") {
+  const updateAnalysisField = (field: keyof AnalysisResult, value: string) => {
+    if (!analysis) return;
+    setAnalysis({ ...analysis, [field]: value || null });
+  };
+
+  // --- 진행 중 화면 ---
+  if (stage === "uploading" || stage === "transcribing" || stage === "analyzing" || stage === "saving") {
     const progress = STAGE_PROGRESS[stage];
     const message = STAGE_MESSAGES[stage];
 
@@ -156,6 +218,95 @@ export function RecordingUploadButton() {
           />
         </div>
         <p className="mt-2 text-[13px] text-[#A8A29E]">잠시만 기다려주세요</p>
+      </div>
+    );
+  }
+
+  // --- 미리보기 화면 ---
+  if (stage === "preview" && analysis) {
+    const fields: { key: keyof AnalysisResult; label: string; editable: boolean }[] = [
+      { key: "guardianName", label: "보호자명", editable: true },
+      { key: "phone", label: "연락처", editable: true },
+      { key: "careRecipientName", label: "케어 대상", editable: true },
+      { key: "careRecipientAge", label: "연령대", editable: true },
+      { key: "summary", label: "상담 요약", editable: true },
+      { key: "urgency", label: "긴급도", editable: false },
+      { key: "recommendedAction", label: "다음 행동", editable: false },
+    ];
+
+    return (
+      <div className="rounded-xl border border-[#D97706]/30 bg-[#FFFBEB] p-4 sm:p-5">
+        <div className="flex items-center gap-2">
+          <Edit3 size={18} className="text-[#D97706]" />
+          <p className="text-[15px] font-bold text-[#292524]">AI 분석 결과를 확인해주세요</p>
+        </div>
+        <p className="mt-1 text-[13px] text-[#78716C]">
+          내용이 맞으면 바로 등록하고, 틀린 부분은 눌러서 수정할 수 있어요.
+        </p>
+
+        <div className="mt-4 space-y-2">
+          {fields.map(({ key, label, editable }) => {
+            const value = analysis[key] ?? "";
+            const isEditing = editingField === key;
+
+            return (
+              <div key={key} className="rounded-lg border border-[#E7E0D5] bg-white px-3.5 py-2.5">
+                <p className="text-[12px] font-medium text-[#A8A29E]">{label}</p>
+                {isEditing && editable ? (
+                  <input
+                    type="text"
+                    defaultValue={String(value)}
+                    autoFocus
+                    onBlur={(e) => {
+                      updateAnalysisField(key, e.target.value);
+                      setEditingField(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        updateAnalysisField(key, e.currentTarget.value);
+                        setEditingField(null);
+                      }
+                    }}
+                    className="mt-0.5 w-full border-b border-[#D97706] bg-transparent text-[14px] font-medium text-[#292524] outline-none"
+                  />
+                ) : (
+                  <p
+                    className={`mt-0.5 text-[14px] font-medium text-[#292524] ${editable ? "cursor-pointer hover:text-[#D97706]" : ""}`}
+                    onClick={() => editable && setEditingField(key)}
+                  >
+                    {String(value) || "-"}
+                    {key === "urgency" && (
+                      <span className={`ml-2 inline-block rounded-full px-2 py-0.5 text-[12px] font-bold ${
+                        value === "높음" ? "bg-[#FEE2E2] text-[#DC2626]"
+                        : value === "보통" ? "bg-[#FEF3C7] text-[#D97706]"
+                        : "bg-[#F5F0E8] text-[#78716C]"
+                      }`}>
+                        {String(value)}
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex gap-2">
+          <button
+            type="button"
+            onClick={confirmAndCreate}
+            className="flex-1 rounded-xl bg-[#D97706] px-4 py-3 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+          >
+            이대로 등록하기
+          </button>
+          <button
+            type="button"
+            onClick={resetState}
+            className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+          >
+            취소
+          </button>
+        </div>
       </div>
     );
   }
@@ -195,17 +346,26 @@ export function RecordingUploadButton() {
         <div className="flex items-center gap-3">
           <AlertCircle size={20} className="text-[#DC2626]" />
           <p className="text-[15px] font-bold text-[#991B1B]">
-            음성을 잘 못 알아들었어요
+            처리 중 문제가 생겼어요
           </p>
         </div>
         <p className="mt-2 text-[13px] text-[#DC2626]">{errorMessage}</p>
-        <button
-          type="button"
-          onClick={resetState}
-          className="mt-3 rounded-xl border border-[#FCA5A5] bg-white px-4 py-3 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
-        >
-          다시 시도
-        </button>
+        <div className="mt-3 flex gap-2">
+          <button
+            type="button"
+            onClick={resetState}
+            className="rounded-xl border border-[#FCA5A5] bg-white px-4 py-3 text-[14px] font-medium text-[#DC2626] transition-colors hover:bg-[#FEF2F2]"
+          >
+            다시 시도
+          </button>
+          <button
+            type="button"
+            onClick={() => { resetState(); setActiveTab("text"); }}
+            className="rounded-xl border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+          >
+            직접 입력으로 전환
+          </button>
+        </div>
       </div>
     );
   }
@@ -271,7 +431,7 @@ export function RecordingUploadButton() {
           <textarea
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
-            placeholder="상담 내용을 여기에 붙여넣으세요.&#10;&#10;예) 보호자: 안녕하세요, 저희 아버지가 요즘 걸음이 너무 불편하셔서..."
+            placeholder={"상담 내용을 여기에 붙여넣으세요.\n\n예) 보호자: 안녕하세요, 저희 아버지가 요즘 걸음이 너무 불편하셔서..."}
             className="w-full resize-none rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] p-3 text-[14px] text-[#292524] placeholder-[#A8A29E] focus:border-[#D97706] focus:outline-none"
             rows={5}
           />

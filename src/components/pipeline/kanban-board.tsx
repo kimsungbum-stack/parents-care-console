@@ -92,57 +92,92 @@ function KanbanCard({
   );
 }
 
-/* --- 모바일 리스트 카드 --- */
-function MobileCard({
-  lead,
+/* --- 모바일 아코디언 그룹 --- */
+function MobileStatusGroup({
+  col,
+  leads,
   onStatusChange,
-  isSaving,
+  savingIds,
+  defaultOpen,
 }: {
-  lead: KanbanLead;
+  col: { status: LeadStatus; label: string; color: string };
+  leads: KanbanLead[];
   onStatusChange: (leadId: string, newStatus: LeadStatus) => void;
-  isSaving: boolean;
+  savingIds: Set<string>;
+  defaultOpen: boolean;
 }) {
-  const overdue = isOverdue(lead.nextContactDate);
-  const todayContact = isToday(lead.nextContactDate);
-  const formattedDate = formatDate(lead.nextContactDate);
-  const color = getColumnColor(lead.status);
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
-      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: color }} />
-      <div className="px-4 py-3 pl-5">
-        <div className="flex items-start justify-between gap-2">
-          <Link href={`/leads/${lead.id}`} className="min-w-0 flex-1">
-            <p className="text-[15px] font-semibold text-[#292524]">{lead.guardianName}</p>
-            {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
-              <p className="mt-0.5 text-[13px] text-[#78716C]">
-                {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
-              </p>
-            )}
-          </Link>
-          <div className="relative flex-shrink-0">
-            <select
-              value={lead.status}
-              onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
-              disabled={isSaving}
-              className="appearance-none rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] py-1.5 pl-3 pr-7 text-[13px] font-medium text-[#292524] focus:border-[#D97706] focus:outline-none disabled:opacity-50"
-            >
-              {COLUMNS.map((col) => (
-                <option key={col.status} value={col.status}>{col.label}</option>
-              ))}
-            </select>
-            <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A8A29E]" />
-          </div>
+    <div className="overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#FEFCF8]"
+      >
+        <div className="flex items-center gap-2">
+          <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
+          <span className="text-[14px] font-bold text-[#292524]">{col.label}</span>
+          <span className="rounded-full border border-[#E7E0D5] bg-[#FEFCF8] px-2 py-0.5 text-[12px] font-bold text-[#78716C]">
+            {leads.length}
+          </span>
         </div>
-        <div className="mt-2 flex items-center gap-4 text-[13px]">
-          <span className="font-medium text-[#A8A29E]">D+{daysSince(lead.createdAt)}</span>
-          {formattedDate && (
-            <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#78716C]"}`}>
-              {overdue ? "기한 초과" : todayContact ? "오늘" : formattedDate}
-            </span>
+        <ChevronDown
+          size={16}
+          className={`text-[#A8A29E] transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="border-t border-[#E7E0D5] divide-y divide-[#E7E0D5]/60">
+          {leads.length === 0 ? (
+            <p className="px-4 py-4 text-center text-[13px] text-[#A8A29E]">이 단계의 케이스가 없어요</p>
+          ) : (
+            leads.map((lead) => {
+              const overdue = isOverdue(lead.nextContactDate);
+              const todayContact = isToday(lead.nextContactDate);
+              const formattedDate = formatDate(lead.nextContactDate);
+
+              return (
+                <div key={lead.id} className="relative px-4 py-3">
+                  <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: col.color }} />
+                  <div className="flex items-start justify-between gap-2 pl-2">
+                    <Link href={`/leads/${lead.id}`} className="min-w-0 flex-1">
+                      <p className="text-[14px] font-semibold text-[#292524]">{lead.guardianName}</p>
+                      {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
+                        <p className="mt-0.5 text-[13px] text-[#78716C]">
+                          {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
+                      <div className="mt-1.5 flex items-center gap-3 text-[12px]">
+                        <span className="font-medium text-[#A8A29E]">D+{daysSince(lead.createdAt)}</span>
+                        {formattedDate && (
+                          <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#78716C]"}`}>
+                            {overdue ? "기한 초과" : todayContact ? "오늘" : formattedDate}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="relative flex-shrink-0">
+                      <select
+                        value={lead.status}
+                        onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
+                        disabled={savingIds.has(lead.id)}
+                        className="appearance-none rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] py-1.5 pl-3 pr-7 text-[12px] font-medium text-[#292524] focus:border-[#D97706] focus:outline-none disabled:opacity-50"
+                      >
+                        {COLUMNS.map((c) => (
+                          <option key={c.status} value={c.status}>{c.label}</option>
+                        ))}
+                      </select>
+                      <ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A8A29E]" />
+                    </div>
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -188,22 +223,27 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
 
   return (
     <>
-      {/* 모바일: 리스트 뷰 */}
-      <div className="space-y-3 lg:hidden">
+      {/* 모바일: 아코디언 뷰 */}
+      <div className="space-y-2 lg:hidden">
         {leads.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[#E7E0D5] bg-white px-5 py-12 text-center">
             <p className="text-[15px] font-medium text-[#292524]">아직 케이스가 없어요</p>
             <p className="mt-1 text-[13px] text-[#78716C]">신규 케이스를 등록하면 여기에 나타나요.</p>
           </div>
         ) : (
-          leads.map((lead) => (
-            <MobileCard
-              key={lead.id}
-              lead={lead}
-              onStatusChange={moveToStatus}
-              isSaving={savingIds.has(lead.id)}
-            />
-          ))
+          COLUMNS.map((col, i) => {
+            const colLeads = leads.filter((l) => l.status === col.status);
+            return (
+              <MobileStatusGroup
+                key={col.status}
+                col={col}
+                leads={colLeads}
+                onStatusChange={moveToStatus}
+                savingIds={savingIds}
+                defaultOpen={i < 3 && colLeads.length > 0}
+              />
+            );
+          })
         )}
       </div>
 
