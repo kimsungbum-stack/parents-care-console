@@ -8,7 +8,7 @@ import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
 import type { Database } from "@/types/supabase";
-import type { LeadStatus, UpcomingContactItem } from "@/types/domain";
+import { getStatusLabel, type LeadStatus, type UpcomingContactItem } from "@/types/domain";
 
 type LeadRow = Pick<
   Database["public"]["Tables"]["leads"]["Row"],
@@ -131,11 +131,11 @@ export default async function DashboardPage() {
   const overdueCount = upcomingContacts.filter((c) => isOverdue(c.scheduledDate)).length;
 
   const funnelStages: { label: string; status: LeadStatus; color: string }[] = [
-    { label: "신규", status: "신규", color: "#3B82F6" },
-    { label: "1차답장", status: "1차답장", color: "#F59E0B" },
-    { label: "인터뷰예정", status: "인터뷰예정", color: "#8B5CF6" },
-    { label: "인터뷰완료", status: "인터뷰완료", color: "#10B981" },
-    { label: "소개대기", status: "소개대기", color: "#6B7280" },
+    { label: getStatusLabel("신규"), status: "신규", color: "#3B82F6" },
+    { label: getStatusLabel("1차답장"), status: "1차답장", color: "#F59E0B" },
+    { label: getStatusLabel("인터뷰예정"), status: "인터뷰예정", color: "#8B5CF6" },
+    { label: getStatusLabel("인터뷰완료"), status: "인터뷰완료", color: "#10B981" },
+    { label: getStatusLabel("소개대기"), status: "소개대기", color: "#6B7280" },
   ];
   const funnelData: FunnelDataItem[] = funnelStages.map((stage, i, arr) => {
     const count = statusCounts[stage.status] ?? 0;

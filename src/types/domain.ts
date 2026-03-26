@@ -45,6 +45,20 @@ export const LEAD_STATUS_ORDER: LeadStatus[] = [
   "보류",
 ];
 
+/** DB 값 → 사용자에게 보여주는 레이블 */
+export const STATUS_DISPLAY_LABELS: Record<LeadStatus, string> = {
+  "신규": "신규",
+  "1차답장": "첫 연락 완료",
+  "인터뷰예정": "인터뷰 예정",
+  "인터뷰완료": "인터뷰 완료",
+  "소개대기": "설명 완료",
+  "보류": "보류",
+};
+
+export function getStatusLabel(status: LeadStatus): string {
+  return STATUS_DISPLAY_LABELS[status] ?? status;
+}
+
 export type NoteType = "운영 메모" | "파트너 메모";
 
 export type LeadRecord = {

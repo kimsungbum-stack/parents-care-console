@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { LeadStatus } from "@/types/domain";
+import { getStatusLabel, type LeadStatus } from "@/types/domain";
 import type { KanbanLead } from "@/app/pipeline/page";
 
 const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
-  { status: "신규", label: "신규", color: "#3B82F6" },
-  { status: "1차답장", label: "1차답장", color: "#F59E0B" },
-  { status: "인터뷰예정", label: "인터뷰예정", color: "#8B5CF6" },
-  { status: "인터뷰완료", label: "인터뷰완료", color: "#10B981" },
-  { status: "소개대기", label: "소개대기", color: "#6B7280" },
+  { status: "신규", label: getStatusLabel("신규"), color: "#3B82F6" },
+  { status: "1차답장", label: getStatusLabel("1차답장"), color: "#F59E0B" },
+  { status: "인터뷰예정", label: getStatusLabel("인터뷰예정"), color: "#8B5CF6" },
+  { status: "인터뷰완료", label: getStatusLabel("인터뷰완료"), color: "#10B981" },
+  { status: "소개대기", label: getStatusLabel("소개대기"), color: "#6B7280" },
+  { status: "보류", label: getStatusLabel("보류"), color: "#A8A29E" },
 ];
 
 function daysSince(dateStr: string) {

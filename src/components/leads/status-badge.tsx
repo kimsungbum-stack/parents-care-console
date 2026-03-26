@@ -1,4 +1,4 @@
-import type { LeadStatus } from "@/types/domain";
+import { getStatusLabel, type LeadStatus } from "@/types/domain";
 
 type LeadStatusBadgeProps = {
   status: LeadStatus;
@@ -19,7 +19,7 @@ export function LeadStatusBadge({ status }: LeadStatusBadgeProps) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[13px] font-medium">
       <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} />
-      <span className={style.text}>{status}</span>
+      <span className={style.text}>{getStatusLabel(status)}</span>
     </span>
   );
 }

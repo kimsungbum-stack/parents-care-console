@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 
-import type { LeadStatus } from "@/lib/mock-data";
+import { getStatusLabel, type LeadStatus } from "@/types/domain";
 
 type LeadFiltersProps = {
   query: string;
@@ -50,7 +50,7 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
                       : "border-[#E7E0D5] bg-white text-[#78716C] hover:bg-[#FEFCF8] hover:text-[#292524]",
                   ].join(" ")}
                 >
-                  {item}
+                  {item === "전체" ? "전체" : getStatusLabel(item)}
                 </button>
               );
             })}

@@ -25,11 +25,11 @@ const steps = [
   },
   {
     step: 3,
-    title: "파이프라인 확인",
-    description: "파이프라인에서 모든 케이스를 한눈에 볼 수 있어요.",
+    title: "진행 현황 확인",
+    description: "진행 현황에서 모든 케이스를 한눈에 볼 수 있어요.",
     href: "/pipeline",
     icon: Kanban,
-    buttonLabel: "파이프라인 보기",
+    buttonLabel: "현황 보기",
   },
 ];
 

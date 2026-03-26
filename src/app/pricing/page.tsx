@@ -11,7 +11,7 @@ const plans = [
     description: "부담 없이 시작하세요. 모든 기능을 무료로 체험할 수 있어요.",
     cta: "지금 바로 시작하기",
     ctaHref: "/leads/new",
-    features: ["월 15건 케이스 등록", "파이프라인 보기", "상담 기록 저장"],
+    features: ["월 15건 케이스 등록", "진행 현황 보기", "상담 기록 저장"],
   },
   {
     name: "스탠다드",
@@ -20,11 +20,11 @@ const plans = [
     badge: "가장 많이 선택",
     highlight: true,
     description: "가장 많은 센터장님이 선택한 요금제. 어르신 1명만 더 모시면 26배 가치.",
-    cta: "가장 많이 선택해요",
-    ctaHref: "#",
+    cta: "스탠다드 시작하기",
+    ctaHref: "https://pf.kakao.com/_xjKxbxj/chat",
     features: [
       "무제한 케이스 등록",
-      "파이프라인 보기",
+      "진행 현황 보기",
       "상담 기록 저장",
       "알림톡 발송",
       "월간 리포트",
@@ -38,11 +38,11 @@ const plans = [
     badge: null,
     highlight: false,
     description: "AI가 상담을 자동으로 정리해드려요. 여러 지점도 한눈에 관리하세요.",
-    cta: "문의하기",
-    ctaHref: "#",
+    cta: "프리미엄 상담받기",
+    ctaHref: "https://pf.kakao.com/_xjKxbxj/chat",
     features: [
       "무제한 케이스 등록",
-      "파이프라인 보기",
+      "진행 현황 보기",
       "상담 기록 저장",
       "알림톡 발송",
       "월간 리포트",
@@ -56,7 +56,7 @@ const plans = [
 
 const comparisonFeatures = [
   { label: "케이스 등록", free: "월 15건", standard: "무제한", premium: "무제한" },
-  { label: "파이프라인", free: true, standard: true, premium: true },
+  { label: "진행 현황", free: true, standard: true, premium: true },
   { label: "상담 기록", free: true, standard: true, premium: true },
   { label: "알림톡", free: false, standard: true, premium: true },
   { label: "리포트", free: false, standard: true, premium: true },

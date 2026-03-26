@@ -12,7 +12,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 const mainNavItems = [
   { href: "/", label: "대시보드", shortLabel: "홈", icon: LayoutDashboard },
-  { href: "/pipeline", label: "파이프라인", shortLabel: "파이프라인", icon: Kanban },
+  { href: "/pipeline", label: "진행 현황", shortLabel: "현황", icon: Kanban },
   { href: "/leads", label: "케이스 목록", shortLabel: "목록", icon: Users },
   { href: "/leads/new", label: "신규 케이스", shortLabel: "신규", icon: UserPlus },
   { href: "/pricing", label: "요금제", shortLabel: "요금제", icon: CreditCard },

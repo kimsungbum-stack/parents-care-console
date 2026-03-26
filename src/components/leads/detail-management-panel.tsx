@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { FeedbackNotice } from "@/components/ui/feedback-notice";
 import { isValidLeadManagementDate } from "@/lib/forms/lead-management";
-import type { LeadStatus } from "@/types/domain";
+import { getStatusLabel, type LeadStatus } from "@/types/domain";
 
 type DetailManagementPanelProps = {
   leadId: string;
@@ -138,7 +138,7 @@ export function DetailManagementPanel({
             className="control-input min-h-[44px]"
           >
             {statusOptions.map((option) => (
-              <option key={option} value={option}>{option}</option>
+              <option key={option} value={option}>{getStatusLabel(option)}</option>
             ))}
           </select>
         </label>

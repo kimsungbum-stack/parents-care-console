@@ -19,6 +19,7 @@ import {
   type NewLeadFormValues,
   validateNewLeadFormValues,
 } from "@/lib/forms/new-lead";
+import { getStatusLabel } from "@/types/domain";
 
 type SubmitState =
   | {
@@ -230,7 +231,7 @@ export function NewLeadForm() {
                       className={getInputClass(false)}
                     >
                       {newLeadStatusOptions.map((option) => (
-                        <option key={option} value={option}>{option}</option>
+                        <option key={option} value={option}>{getStatusLabel(option)}</option>
                       ))}
                     </select>
                   </FormField>
