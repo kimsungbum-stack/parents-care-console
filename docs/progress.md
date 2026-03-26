@@ -94,8 +94,55 @@
 
 ---
 
+---
+
+## 세션 3: 스프린트 3 — 알림 센터, AI 쿼터, 다중 사용자
+
+### 작업 16: 알림 센터 시스템
+- notifications 테이블 생성 (type: contact_due, stale_lead, system)
+- POST /api/notifications/generate — 알림 자동 생성 (하루 최대 5건)
+  - 오늘 연락 예정 케이스 → contact_due 알림
+  - 3일 경과 + 상담 기록 없는 신규 → stale_lead 알림
+  - 중복 방지 (당일 이미 생성된 알림 체크)
+- GET/PATCH /api/notifications — 목록 조회 + 읽음 처리
+- TopHeader에 벨 아이콘 + 빨간 뱃지(미읽음 건수) 추가
+- 알림 클릭 시 해당 케이스 상세로 이동
+- 카카오 알림톡 연동 가능한 구조 (notification type으로 분리)
+
+### 작업 17: 스탠다드 요금제 AI 분석 월 5회 포함
+- PLAN_AI_LIMITS 상수 추가: free(0), standard(5), premium(무제한)
+- organizations 테이블에 ai_analysis_count_this_month 컬럼 추가
+- GET/POST /api/v1/ai-usage — 사용량 조회/증가 API
+- 녹음 업로드 버튼에 사용량 체크 게이트 추가
+- 무료: AI 버튼 클릭 시 "스탠다드부터 사용 가능" + 요금제 링크
+- 스탠다드: 잔여 횟수 표시 + 소진 시 프리미엄 업그레이드 안내
+- 요금제 페이지 비교표 업데이트 (AI 분석: 무료 X / 스탠다드 월 5회 / 프리미엄 무제한)
+- 월간 리셋 시 AI 카운트도 함께 초기화
+
+### 작업 18: 다중 사용자/권한 관리
+- 역할: admin(센터장) / member(코디)
+- invitations 테이블 생성 (이메일 초대 + 상태 관리)
+- users 테이블에 email 컬럼 추가
+- GET/POST/DELETE /api/v1/team — 팀원 목록, 초대, 초대 취소
+- POST /api/auth/accept-invite — 로그인 시 대기 초대 자동 수락
+- 설정 페이지에 팀원 관리 섹션 추가 (TeamManagement 컴포넌트)
+  - 현재 팀원 목록 (역할 표시)
+  - 대기 중 초대 목록 (취소 가능)
+  - 초대 폼 (이메일 + 역할 선택)
+  - 권한 안내 표
+- 사이드바에서 역할 기반 메뉴 필터링 (코디: 요금제/설정 숨김)
+- RLS 정책 추가 (notifications, invitations)
+- Supabase migration SQL 작성
+
+### 작업 19: 최종 점검
+- 빌드 성공 확인
+- 전체 API 라우트 등록 확인
+- 모바일/데스크탑 레이아웃 정상
+
+---
+
 ## 다음 스프린트 로드맵
-- 카카오 알림톡 리마인더 (다음 연락일 알림)
+- 카카오 알림톡 실제 연동 (알림 센터 데이터 활용)
 - 무료 플랜 15건 → 30건 확대 검토
-- 스탠다드 요금제에 AI 분석 월 5회 포함 검토
-- 다중 사용자/권한 관리
+- 코디 권한 세분화 (케이스 삭제 권한 등)
+- 다지점 관리 (프리미엄)

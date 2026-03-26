@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3 } from "lucide-react";
+import Link from "next/link";
+import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3, Lock } from "lucide-react";
 
 type Tab = "upload" | "text";
 type UploadStage = "idle" | "uploading" | "transcribing" | "analyzing" | "preview" | "saving" | "done" | "error";
@@ -23,6 +24,14 @@ type AnalysisResult = {
 
 type UploadResult = {
   leadId: string;
+};
+
+type AiQuota = {
+  plan: string;
+  allowed: boolean;
+  used: number;
+  limit: number | null;
+  remaining: number | null;
 };
 
 const STAGE_MESSAGES: Record<"uploading" | "transcribing" | "analyzing" | "saving", string> = {
@@ -51,8 +60,17 @@ export function RecordingUploadButton() {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string>("");
   const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
+  const [aiQuota, setAiQuota] = useState<AiQuota | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  // AI 사용량 체크
+  useEffect(() => {
+    fetch("/api/v1/ai-usage")
+      .then((r) => r.json())
+      .then(setAiQuota)
+      .catch(() => {});
+  }, []);
 
   const resetState = () => {
     setStage("idle");
@@ -69,8 +87,32 @@ export function RecordingUploadButton() {
     resetState();
   };
 
+  // --- AI 사용량 체크 ---
+  const checkAiQuota = async (): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/v1/ai-usage");
+      const data = await res.json();
+      setAiQuota(data);
+      return data.allowed;
+    } catch {
+      return true; // 오류 시 허용 (관대한 처리)
+    }
+  };
+
   // --- 분석만 수행 (미리보기용) ---
   const runAnalyzeOnly = async (transcriptText: string, recUrl?: string) => {
+    // AI 사용량 체크
+    const allowed = await checkAiQuota();
+    if (!allowed) {
+      setErrorMessage(
+        aiQuota?.plan === "free"
+          ? "AI 분석은 스탠다드 요금제부터 사용할 수 있어요."
+          : "이번 달 AI 분석 횟수를 모두 사용했어요. 프리미엄으로 업그레이드하면 무제한으로 사용할 수 있어요."
+      );
+      setStage("error");
+      return;
+    }
+
     setStage("analyzing");
     setTranscript(transcriptText);
     if (recUrl) setRecordingUrl(recUrl);
@@ -117,6 +159,8 @@ export function RecordingUploadButton() {
       }
 
       const { leadId } = await res.json();
+      // AI 사용량 증가
+      fetch("/api/v1/ai-usage", { method: "POST" }).catch(() => {});
       setResult({ leadId });
       setStage("done");
     } catch (err) {
@@ -370,9 +414,47 @@ export function RecordingUploadButton() {
     );
   }
 
+  // --- 무료 플랜 차단 화면 ---
+  if (aiQuota && aiQuota.plan === "free") {
+    return (
+      <div className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+        <div className="flex items-center gap-2">
+          <Lock size={18} className="text-[#A8A29E]" />
+          <p className="text-[15px] font-bold text-[#292524]">AI 상담 분석</p>
+        </div>
+        <p className="mt-2 text-[14px] leading-[1.6] text-[#78716C]">
+          통화 녹음을 올리면 AI가 자동으로 보호자 정보를 정리해줘요.
+          <br />
+          스탠다드 요금제부터 사용할 수 있어요.
+        </p>
+        <Link
+          href="/pricing"
+          className="mt-3 inline-flex items-center gap-1 rounded-xl bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]"
+        >
+          요금제 보기
+        </Link>
+      </div>
+    );
+  }
+
   // --- 기본 화면 (탭) ---
   return (
     <div className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+      {/* AI 잔여 횟수 표시 */}
+      {aiQuota && aiQuota.limit !== null && (
+        <div className={`mb-3 rounded-lg px-3 py-2 text-[13px] font-medium ${
+          aiQuota.remaining === 0
+            ? "border border-[#FCA5A5] bg-[#FEF2F2] text-[#DC2626]"
+            : (aiQuota.remaining ?? 0) <= 2
+              ? "border border-[#FDE68A] bg-[#FFFBEB] text-[#92400E]"
+              : "border border-[#E7E0D5] bg-[#FEFCF8] text-[#78716C]"
+        }`}>
+          {aiQuota.remaining === 0
+            ? "이번 달 AI 분석을 다 사용했어요. 프리미엄으로 업그레이드하면 무제한!"
+            : `AI 분석 잔여: ${aiQuota.remaining}/${aiQuota.limit}회`}
+        </div>
+      )}
+
       {/* 탭 */}
       <div className="mb-4 flex rounded-lg bg-[#F5F0E8] p-1">
         <button

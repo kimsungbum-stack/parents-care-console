@@ -9,8 +9,15 @@ export type PlanFeature =
 
 export const PLAN_FEATURES: Record<PlanTier, PlanFeature[]> = {
   free: [],
-  standard: ["notifications", "csv_export"],
+  standard: ["ai_analysis", "notifications", "csv_export"],
   premium: ["ai_analysis", "report_generation", "unlimited_leads", "notifications", "csv_export"],
+};
+
+/** AI 분석 월간 제한 (Infinity = 무제한) */
+export const PLAN_AI_LIMITS: Record<PlanTier, number> = {
+  free: 0,
+  standard: 5,
+  premium: Infinity,
 };
 
 export const PLAN_LEAD_LIMITS: Record<PlanTier, number> = {
@@ -221,4 +228,32 @@ export type SummaryReportResult = {
   recommendedActions: string[];
   riskFactors: string[];
   reportMarkdown: string;
+};
+
+// 알림 타입
+export type NotificationItem = {
+  id: string;
+  leadId: string | null;
+  type: "contact_due" | "stale_lead" | "system";
+  title: string;
+  body: string;
+  isRead: boolean;
+  createdAt: string;
+};
+
+// 팀 멤버 타입
+export type TeamMember = {
+  id: string;
+  email: string | null;
+  role: "admin" | "member";
+  name: string | null;
+  createdAt: string;
+};
+
+export type Invitation = {
+  id: string;
+  email: string;
+  role: "admin" | "member";
+  status: "pending" | "accepted" | "expired";
+  createdAt: string;
 };

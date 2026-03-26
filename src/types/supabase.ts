@@ -8,9 +8,96 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+export type NotificationType = "contact_due" | "stale_lead" | "system";
+export type InvitationStatus = "pending" | "accepted" | "expired";
+export type UserRole = "admin" | "member";
+
 export type Database = {
   public: {
     Tables: {
+      notifications: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          lead_id: string | null;
+          type: NotificationType;
+          title: string;
+          body: string;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id?: string | null;
+          lead_id?: string | null;
+          type: NotificationType;
+          title: string;
+          body?: string;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string | null;
+          lead_id?: string | null;
+          type?: NotificationType;
+          title?: string;
+          body?: string;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_lead_id_fkey";
+            columns: ["lead_id"];
+            referencedRelation: "leads";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      invitations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          email: string;
+          role: UserRole;
+          status: InvitationStatus;
+          invited_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          email: string;
+          role?: UserRole;
+          status?: InvitationStatus;
+          invited_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          email?: string;
+          role?: UserRole;
+          status?: InvitationStatus;
+          invited_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invitations_organization_id_fkey";
+            columns: ["organization_id"];
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       consultations: {
         Row: {
           channel: string | null;
@@ -183,6 +270,7 @@ export type Database = {
           plan: PlanTier;
           max_leads: number;
           leads_count_this_month: number;
+          ai_analysis_count_this_month: number;
           usage_reset_at: string;
           created_at: string;
           updated_at: string;
@@ -193,6 +281,7 @@ export type Database = {
           plan?: PlanTier;
           max_leads?: number;
           leads_count_this_month?: number;
+          ai_analysis_count_this_month?: number;
           usage_reset_at?: string;
           created_at?: string;
           updated_at?: string;
@@ -203,6 +292,7 @@ export type Database = {
           plan?: PlanTier;
           max_leads?: number;
           leads_count_this_month?: number;
+          ai_analysis_count_this_month?: number;
           usage_reset_at?: string;
           created_at?: string;
           updated_at?: string;
@@ -213,19 +303,22 @@ export type Database = {
         Row: {
           id: string;
           organization_id: string;
-          role: string;
+          role: UserRole;
+          email: string | null;
           created_at: string;
         };
         Insert: {
           id: string;
           organization_id: string;
-          role?: string;
+          role?: UserRole;
+          email?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           organization_id?: string;
-          role?: string;
+          role?: UserRole;
+          email?: string | null;
           created_at?: string;
         };
         Relationships: [

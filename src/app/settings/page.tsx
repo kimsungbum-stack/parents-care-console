@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CreditCard, Building2, Download, LogOut } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { TeamManagement } from "@/components/settings/team-management";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -125,6 +126,11 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 팀원 관리 */}
+      <div className="mb-5">
+        <TeamManagement />
       </div>
 
       {/* 데이터 내보내기 */}

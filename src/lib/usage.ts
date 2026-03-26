@@ -7,6 +7,7 @@ import { PLAN_LEAD_LIMITS } from "@/types/domain";
 
 export type OrgUsage = {
   plan: PlanTier;
+  orgName: string;
   usedThisMonth: number;
   limit: number | null;
   isAtLimit: boolean;
@@ -23,7 +24,7 @@ async function getUserOrg() {
     if (user) {
       const { data } = await supabase
         .from("organizations")
-        .select("id, plan, leads_count_this_month")
+        .select("id, name, plan, leads_count_this_month")
         .limit(1)
         .single();
 
@@ -37,7 +38,7 @@ async function getUserOrg() {
   const supabase = createSupabasePlainClient();
   const { data, error } = await supabase
     .from("organizations")
-    .select("id, plan, leads_count_this_month")
+    .select("id, name, plan, leads_count_this_month")
     .limit(1)
     .single();
 
@@ -56,6 +57,7 @@ export async function getOrgUsage(): Promise<OrgUsage | null> {
 
   return {
     plan,
+    orgName: org.name,
     usedThisMonth: used,
     limit,
     isAtLimit: limit !== null && used >= limit,
@@ -78,5 +80,9 @@ export async function resetMonthlyCount(): Promise<void> {
   const supabase = createSupabasePlainClient();
   await supabase
     .from("organizations")
-    .update({ leads_count_this_month: 0, usage_reset_at: new Date().toISOString() });
+    .update({
+      leads_count_this_month: 0,
+      ai_analysis_count_this_month: 0,
+      usage_reset_at: new Date().toISOString(),
+    });
 }
