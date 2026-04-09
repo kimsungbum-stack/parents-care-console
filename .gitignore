@@ -18,6 +18,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+devserver.log
+*.log
 
 # vercel
 .vercel
@@ -29,3 +31,9 @@ next-env.d.ts
 # misc
 .DS_Store
 bootstrap-temp/
+_bootstrap/
+
+# local screenshots / scratch
+tmp-*.png
+tmp-*.jpg
+tmp/
