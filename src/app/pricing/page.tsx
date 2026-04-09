@@ -69,7 +69,7 @@ const comparisonFeatures = [
 
 function FeatureCell({ value }: { value: boolean | string }) {
   if (typeof value === "string") {
-    return <span className="text-[14px] font-medium text-[#292524]">{value}</span>;
+    return <span className="text-[14px] font-medium text-[#0A0A0A]">{value}</span>;
   }
   return value ? (
     <Check size={18} className="mx-auto text-[#16A34A]" />
@@ -82,10 +82,10 @@ export default function PricingPage() {
   return (
     <div className="px-5 py-6 lg:px-8 lg:py-8">
       <div className="mb-8 text-center">
-        <h1 className="text-[24px] font-bold tracking-tight text-[#292524]">
+        <h1 className="text-[24px] font-bold tracking-tight text-[#0A0A0A]">
           센터 운영에 딱 맞는 요금제
         </h1>
-        <p className="mt-2 text-[15px] text-[#78716C]">
+        <p className="mt-2 text-[15px] text-[#737373]">
           처음엔 무료로 시작하고, 센터가 커지면 함께 늘려가세요
         </p>
       </div>
@@ -97,7 +97,7 @@ export default function PricingPage() {
             key={plan.name}
             className="relative flex flex-col rounded-xl border bg-white p-6"
             style={{
-              borderColor: plan.highlight ? "#D97706" : "#E7E0D5",
+              borderColor: plan.highlight ? "#D97706" : "#E5E5E5",
               borderWidth: plan.highlight ? 2 : 1,
             }}
           >
@@ -106,15 +106,15 @@ export default function PricingPage() {
                 {plan.badge}
               </span>
             )}
-            <h2 className="text-[18px] font-bold text-[#292524]">{plan.name}</h2>
-            <p className="mt-1 text-[13px] leading-[1.5] text-[#78716C]">{plan.description}</p>
-            <p className="mt-3 text-[28px] font-bold text-[#292524]">{plan.price}</p>
+            <h2 className="text-[18px] font-bold text-[#0A0A0A]">{plan.name}</h2>
+            <p className="mt-1 text-[13px] leading-[1.5] text-[#737373]">{plan.description}</p>
+            <p className="mt-3 text-[28px] font-bold text-[#0A0A0A]">{plan.price}</p>
             {plan.period && (
-              <p className="text-[13px] text-[#78716C]">{plan.period}</p>
+              <p className="text-[13px] text-[#737373]">{plan.period}</p>
             )}
             <ul className="mt-5 flex-1 space-y-2.5">
               {plan.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-[14px] text-[#292524]">
+                <li key={f} className="flex items-start gap-2 text-[14px] text-[#0A0A0A]">
                   <Check size={16} className="mt-0.5 flex-shrink-0 text-[#16A34A]" />
                   {f}
                 </li>
@@ -126,7 +126,7 @@ export default function PricingPage() {
               style={
                 plan.highlight
                   ? { backgroundColor: "#D97706", color: "#FFFFFF" }
-                  : { backgroundColor: "#F5F0E8", color: "#292524" }
+                  : { backgroundColor: "#EEEEEE", color: "#0A0A0A" }
               }
             >
               {plan.cta}
@@ -147,14 +147,14 @@ export default function PricingPage() {
       </div>
 
       {/* Comparison Table */}
-      <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
-        <div className="border-b border-[#E7E0D5] px-5 py-4">
-          <h2 className="text-[16px] font-bold text-[#292524]">기능 비교표</h2>
+      <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-[#E5E5E5] bg-white">
+        <div className="border-b border-[#E5E5E5] px-5 py-4">
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">기능 비교표</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-center">
             <thead>
-              <tr className="border-b border-[#E7E0D5] bg-[#FEFCF8] text-[13px] text-[#78716C]">
+              <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[13px] text-[#737373]">
                 <th className="px-5 py-3 text-left font-medium">기능</th>
                 <th className="px-4 py-3 font-medium">무료</th>
                 <th className="px-4 py-3 font-medium">스탠다드</th>
@@ -163,8 +163,8 @@ export default function PricingPage() {
             </thead>
             <tbody>
               {comparisonFeatures.map((row) => (
-                <tr key={row.label} className="border-b border-[#E7E0D5]/60">
-                  <td className="px-5 py-3 text-left text-[14px] font-medium text-[#292524]">
+                <tr key={row.label} className="border-b border-[#E5E5E5]/60">
+                  <td className="px-5 py-3 text-left text-[14px] font-medium text-[#0A0A0A]">
                     {row.label}
                   </td>
                   <td className="px-4 py-3">

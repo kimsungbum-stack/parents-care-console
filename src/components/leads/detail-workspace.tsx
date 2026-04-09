@@ -77,8 +77,8 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
       <DetailTabs lead={lead} />
 
       {/* 케이스 삭제 */}
-      <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-        <p className="text-[14px] font-medium text-[#78716C]">이 케이스가 더 이상 필요 없다면 삭제할 수 있어요.</p>
+      <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+        <p className="text-[14px] font-medium text-[#737373]">이 케이스가 더 이상 필요 없다면 삭제할 수 있어요.</p>
         {!showDeleteConfirm ? (
           <button
             type="button"
@@ -107,7 +107,7 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={isDeleting}
-                className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+                className="min-h-[44px] rounded-lg border border-[#E5E5E5] bg-white px-4 py-2.5 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#FAFAFA]"
               >
                 취소
               </button>

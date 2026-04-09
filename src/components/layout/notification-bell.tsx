@@ -23,7 +23,7 @@ function NotificationIcon({ type }: { type: NotificationItem["type"] }) {
   if (type === "stale_lead") {
     return <div className="h-2 w-2 rounded-full bg-[#DC2626]" />;
   }
-  return <div className="h-2 w-2 rounded-full bg-[#78716C]" />;
+  return <div className="h-2 w-2 rounded-full bg-[#737373]" />;
 }
 
 export function NotificationBell() {
@@ -91,7 +91,7 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="relative rounded-lg p-2 text-[#78716C] transition-colors hover:bg-[#F5F0E8] hover:text-[#292524]"
+        className="relative rounded-lg p-2 text-[#737373] transition-colors hover:bg-[#EEEEEE] hover:text-[#0A0A0A]"
         aria-label="알림"
       >
         <Bell size={20} />
@@ -103,9 +103,9 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-[340px] overflow-hidden rounded-xl border border-[#E7E0D5] bg-white shadow-lg sm:w-[380px]">
-          <div className="flex items-center justify-between border-b border-[#E7E0D5] px-4 py-3">
-            <h3 className="text-[15px] font-bold text-[#292524]">알림</h3>
+        <div className="absolute right-0 top-full z-50 mt-2 w-[340px] overflow-hidden rounded-xl border border-[#E5E5E5] bg-white shadow-lg sm:w-[380px]">
+          <div className="flex items-center justify-between border-b border-[#E5E5E5] px-4 py-3">
+            <h3 className="text-[15px] font-bold text-[#0A0A0A]">알림</h3>
             {unreadCount > 0 && (
               <button
                 type="button"
@@ -120,8 +120,8 @@ export function NotificationBell() {
           <div className="max-h-[360px] overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-[14px] text-[#78716C]">새로운 알림이 없어요</p>
-                <p className="mt-1 text-[13px] text-[#A8A29E]">
+                <p className="text-[14px] text-[#737373]">새로운 알림이 없어요</p>
+                <p className="mt-1 text-[13px] text-[#A3A3A3]">
                   연락 예정일이 되면 여기에 알려드릴게요
                 </p>
               </div>
@@ -132,7 +132,7 @@ export function NotificationBell() {
                     key={notification.id}
                     href={`/leads/${notification.leadId}`}
                     onClick={() => handleClickNotification(notification)}
-                    className={`flex gap-3 border-b border-[#E7E0D5]/60 px-4 py-3 transition-colors hover:bg-[#FEF3C7]/30 ${
+                    className={`flex gap-3 border-b border-[#E5E5E5]/60 px-4 py-3 transition-colors hover:bg-[#FFEDD5]/30 ${
                       !notification.isRead ? "bg-[#FFFBEB]" : ""
                     }`}
                   >
@@ -140,19 +140,19 @@ export function NotificationBell() {
                       <NotificationIcon type={notification.type} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className={`text-[14px] leading-snug ${!notification.isRead ? "font-semibold text-[#292524]" : "text-[#44403C]"}`}>
+                      <p className={`text-[14px] leading-snug ${!notification.isRead ? "font-semibold text-[#0A0A0A]" : "text-[#262626]"}`}>
                         {notification.title}
                       </p>
                       {notification.body && (
-                        <p className="mt-0.5 text-[13px] text-[#78716C]">{notification.body}</p>
+                        <p className="mt-0.5 text-[13px] text-[#737373]">{notification.body}</p>
                       )}
-                      <p className="mt-1 text-[12px] text-[#A8A29E]">{timeAgo(notification.createdAt)}</p>
+                      <p className="mt-1 text-[12px] text-[#A3A3A3]">{timeAgo(notification.createdAt)}</p>
                     </div>
                   </Link>
                 ) : (
                   <div
                     key={notification.id}
-                    className={`flex gap-3 border-b border-[#E7E0D5]/60 px-4 py-3 ${
+                    className={`flex gap-3 border-b border-[#E5E5E5]/60 px-4 py-3 ${
                       !notification.isRead ? "bg-[#FFFBEB]" : ""
                     }`}
                   >
@@ -160,8 +160,8 @@ export function NotificationBell() {
                       <NotificationIcon type={notification.type} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[14px] leading-snug text-[#44403C]">{notification.title}</p>
-                      <p className="mt-1 text-[12px] text-[#A8A29E]">{timeAgo(notification.createdAt)}</p>
+                      <p className="text-[14px] leading-snug text-[#262626]">{notification.title}</p>
+                      <p className="mt-1 text-[12px] text-[#A3A3A3]">{timeAgo(notification.createdAt)}</p>
                     </div>
                   </div>
                 )

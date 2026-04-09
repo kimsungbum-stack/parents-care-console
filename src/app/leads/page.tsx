@@ -9,7 +9,6 @@ export default async function LeadsPage() {
 
   return (
     <AppShell
-      currentPath="/leads"
       title="케이스 목록"
       description="보호자 케이스를 검색하고 상태별로 빠르게 살펴볼 수 있어요."
     >

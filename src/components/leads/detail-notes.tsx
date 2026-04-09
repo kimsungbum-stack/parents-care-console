@@ -57,17 +57,17 @@ export function DetailNotes({ notes, onCreateNote }: DetailNotesProps) {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-        <div className="border-b border-[#E7E0D5] pb-4">
-          <p className="text-[16px] font-bold text-[#292524]">새 메모 추가</p>
-          <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">운영자가 기억해야 할 내용만 간단히 남기면 돼요. 파트너와 공유할 내용도 여기서 바로 분리해요.</p>
+      <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+        <div className="border-b border-[#E5E5E5] pb-4">
+          <p className="text-[16px] font-bold text-[#0A0A0A]">새 메모 추가</p>
+          <p className="mt-1 text-[13px] leading-[1.6] text-[#737373]">운영자가 기억해야 할 내용만 간단히 남기면 돼요. 파트너와 공유할 내용도 여기서 바로 분리해요.</p>
         </div>
 
         {feedback ? <div className="mt-4"><FeedbackNotice tone={feedback.tone} message={feedback.message} /></div> : null}
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <label className="block">
-            <span className="mb-2 block text-[13px] font-medium text-[#292524]">메모 유형</span>
+            <span className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">메모 유형</span>
             <select value={draft.noteType} onChange={(event) => {
               setDraft((current) => ({ ...current, noteType: event.target.value as LeadNoteInputValue["noteType"] }));
               setFeedback(null);
@@ -79,7 +79,7 @@ export function DetailNotes({ notes, onCreateNote }: DetailNotesProps) {
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-[13px] font-medium text-[#292524]">메모 내용</span>
+            <span className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">메모 내용</span>
             <textarea value={draft.content} onChange={(event) => {
               setDraft((current) => ({ ...current, content: event.target.value }));
               setFeedback(null);
@@ -95,12 +95,12 @@ export function DetailNotes({ notes, onCreateNote }: DetailNotesProps) {
       </section>
 
       {notes.length > 0 ? notes.map((note) => (
-        <article key={note.id} className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-          <div className="flex items-center justify-between gap-4 border-b border-[#E7E0D5] pb-3">
-            <p className="text-[15px] font-semibold text-[#292524]">{note.type}</p>
-            <p className="text-[13px] text-[#A8A29E]">{note.createdAt}</p>
+        <article key={note.id} className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+          <div className="flex items-center justify-between gap-4 border-b border-[#E5E5E5] pb-3">
+            <p className="text-[15px] font-semibold text-[#0A0A0A]">{note.type}</p>
+            <p className="text-[13px] text-[#A3A3A3]">{note.createdAt}</p>
           </div>
-          <p className="mt-3 text-[15px] leading-[1.6] text-[#78716C]">{note.content}</p>
+          <p className="mt-3 text-[15px] leading-[1.6] text-[#737373]">{note.content}</p>
         </article>
       )) : (
         <EmptyPanel title="아직 저장된 메모가 없어요." description="첫 운영 메모 또는 파트너 메모를 추가하면 이 영역에 바로 표시돼요." compact />

@@ -16,10 +16,10 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
   };
 
   return (
-    <section className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+    <section className="rounded-xl border border-[#E5E5E5] bg-white p-4 sm:p-5">
       <div className="flex flex-col gap-4 sm:gap-5">
         <div>
-          <label htmlFor="lead-search" className="mb-2 block text-[13px] font-medium text-[#292524]">
+          <label htmlFor="lead-search" className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">
             검색
           </label>
           <input
@@ -33,7 +33,7 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
         </div>
 
         <div>
-          <p className="mb-3 text-[13px] font-medium text-[#292524]">상태 필터</p>
+          <p className="mb-3 text-[13px] font-medium text-[#0A0A0A]">상태 필터</p>
           <div className="flex flex-wrap gap-2">
             {statuses.map((item) => {
               const isActive = item === status;
@@ -46,8 +46,8 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
                   className={[
                     "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-[#D97706] bg-[#FEF3C7] text-[#D97706]"
-                      : "border-[#E7E0D5] bg-white text-[#78716C] hover:bg-[#FEFCF8] hover:text-[#292524]",
+                      ? "border-[#D97706] bg-[#FFEDD5] text-[#D97706]"
+                      : "border-[#E5E5E5] bg-white text-[#737373] hover:bg-[#FAFAFA] hover:text-[#0A0A0A]",
                   ].join(" ")}
                 >
                   {item === "전체" ? "전체" : getStatusLabel(item)}

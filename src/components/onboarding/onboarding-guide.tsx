@@ -90,19 +90,19 @@ export function OnboardingGuide() {
   const Icon = step.icon;
 
   return (
-    <div className="mb-6 overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
-      <div className="flex items-center justify-between border-b border-[#E7E0D5] px-5 py-3">
+    <div className="mb-6 overflow-hidden rounded-xl border border-[#E5E5E5] bg-white">
+      <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-3">
         <div>
-          <p className="text-[14px] font-bold text-[#292524]">
+          <p className="text-[14px] font-bold text-[#0A0A0A]">
             부모안심90에 오신 걸 환영해요!
           </p>
-          <p className="text-[12px] text-[#78716C]">
+          <p className="text-[12px] text-[#737373]">
             센터 운영이 훨씬 편해질 거예요. ({currentStep + 1}/{steps.length}단계)
           </p>
         </div>
         <button
           onClick={dismiss}
-          className="text-[13px] font-medium text-[#78716C] transition-colors hover:text-[#292524]"
+          className="text-[13px] font-medium text-[#737373] transition-colors hover:text-[#0A0A0A]"
         >
           나중에 할게요
         </button>
@@ -116,19 +116,19 @@ export function OnboardingGuide() {
               key={i}
               className="h-1 flex-1 rounded-full transition-colors"
               style={{
-                backgroundColor: i <= currentStep ? "#D97706" : "#E7E0D5",
+                backgroundColor: i <= currentStep ? "#D97706" : "#E5E5E5",
               }}
             />
           ))}
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#FEF3C7] text-[#D97706]">
+          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#FFEDD5] text-[#D97706]">
             <Icon size={22} />
           </div>
           <div className="flex-1">
-            <p className="text-[16px] font-bold text-[#292524]">{step.title}</p>
-            <p className="mt-1 text-[14px] leading-[1.6] text-[#78716C]">
+            <p className="text-[16px] font-bold text-[#0A0A0A]">{step.title}</p>
+            <p className="mt-1 text-[14px] leading-[1.6] text-[#737373]">
               {step.description}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -141,7 +141,7 @@ export function OnboardingGuide() {
               </Link>
               <button
                 onClick={handleNext}
-                className="inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#F5F0E8] px-4 py-2.5 text-[14px] font-medium text-[#292524] transition-colors hover:bg-[#E7E0D5]"
+                className="inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#EEEEEE] px-4 py-2.5 text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#E5E5E5]"
               >
                 {currentStep < steps.length - 1 ? "다음 단계" : "완료"}
               </button>

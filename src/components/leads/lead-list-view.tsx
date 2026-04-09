@@ -39,7 +39,7 @@ export function LeadListView({ leads, notice }: LeadListViewProps) {
       {notice ? <FeedbackNotice tone={notice.tone} message={notice.message} /> : null}
 
       <div className="flex items-center justify-end">
-        <p className="text-[14px] text-[#78716C]">
+        <p className="text-[14px] text-[#737373]">
           <span className="font-bold text-[#D97706]">{filteredLeads.length}</span>건
         </p>
       </div>

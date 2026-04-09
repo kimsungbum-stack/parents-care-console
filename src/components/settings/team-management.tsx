@@ -93,42 +93,42 @@ export function TeamManagement() {
   }
 
   return (
-    <div className="rounded-xl border border-[#E7E0D5] bg-white">
-      <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
-        <Users size={18} className="text-[#78716C]" />
-        <h2 className="text-[16px] font-bold text-[#292524]">팀원 관리</h2>
+    <div className="rounded-xl border border-[#E5E5E5] bg-white">
+      <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
+        <Users size={18} className="text-[#737373]" />
+        <h2 className="text-[16px] font-bold text-[#0A0A0A]">팀원 관리</h2>
       </div>
 
       <div className="px-5 py-5">
         {/* 현재 팀원 */}
         <div className="mb-5">
-          <p className="mb-2 text-[13px] font-medium text-[#A8A29E]">팀원</p>
+          <p className="mb-2 text-[13px] font-medium text-[#A3A3A3]">팀원</p>
           <div className="space-y-2">
             {members.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center justify-between rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3"
+                className="flex items-center justify-between rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5F0E8] text-[13px] font-bold text-[#78716C]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EEEEEE] text-[13px] font-bold text-[#737373]">
                     {(m.email ?? "?")[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-[14px] font-medium text-[#292524]">
+                    <p className="text-[14px] font-medium text-[#0A0A0A]">
                       {m.email || "이메일 미등록"}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Shield size={14} className={m.role === "admin" ? "text-[#D97706]" : "text-[#A8A29E]"} />
-                  <span className="text-[13px] font-medium text-[#78716C]">
+                  <Shield size={14} className={m.role === "admin" ? "text-[#D97706]" : "text-[#A3A3A3]"} />
+                  <span className="text-[13px] font-medium text-[#737373]">
                     {ROLE_LABELS[m.role] || m.role}
                   </span>
                 </div>
               </div>
             ))}
             {members.length === 0 && (
-              <p className="text-[14px] text-[#78716C]">아직 등록된 팀원이 없어요.</p>
+              <p className="text-[14px] text-[#737373]">아직 등록된 팀원이 없어요.</p>
             )}
           </div>
         </div>
@@ -136,18 +136,18 @@ export function TeamManagement() {
         {/* 대기 중 초대 */}
         {invitations.length > 0 && (
           <div className="mb-5">
-            <p className="mb-2 text-[13px] font-medium text-[#A8A29E]">초대 대기 중</p>
+            <p className="mb-2 text-[13px] font-medium text-[#A3A3A3]">초대 대기 중</p>
             <div className="space-y-2">
               {invitations.map((inv) => (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between rounded-lg border border-dashed border-[#E7E0D5] px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border border-dashed border-[#E5E5E5] px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
-                    <Mail size={16} className="text-[#A8A29E]" />
+                    <Mail size={16} className="text-[#A3A3A3]" />
                     <div>
-                      <p className="text-[14px] text-[#78716C]">{inv.email}</p>
-                      <p className="text-[12px] text-[#A8A29E]">
+                      <p className="text-[14px] text-[#737373]">{inv.email}</p>
+                      <p className="text-[12px] text-[#A3A3A3]">
                         {ROLE_LABELS[inv.role]} · 대기 중
                       </p>
                     </div>
@@ -155,7 +155,7 @@ export function TeamManagement() {
                   <button
                     type="button"
                     onClick={() => handleCancelInvite(inv.id)}
-                    className="rounded-lg p-1 text-[#A8A29E] transition-colors hover:bg-[#FEF2F2] hover:text-[#DC2626]"
+                    className="rounded-lg p-1 text-[#A3A3A3] transition-colors hover:bg-[#FEF2F2] hover:text-[#DC2626]"
                     aria-label="초대 취소"
                   >
                     <X size={16} />
@@ -167,12 +167,12 @@ export function TeamManagement() {
         )}
 
         {/* 초대 폼 */}
-        <div className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] p-4">
+        <div className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-4">
           <div className="flex items-center gap-2 mb-3">
             <UserPlus size={16} className="text-[#D97706]" />
-            <p className="text-[14px] font-bold text-[#292524]">팀원 초대</p>
+            <p className="text-[14px] font-bold text-[#0A0A0A]">팀원 초대</p>
           </div>
-          <p className="mb-3 text-[13px] text-[#78716C]">
+          <p className="mb-3 text-[13px] text-[#737373]">
             이메일을 입력하면 초대가 발송돼요. 초대받은 분이 로그인하면 자동으로 팀에 합류해요.
           </p>
 
@@ -183,12 +183,12 @@ export function TeamManagement() {
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 placeholder="이메일 주소"
-                className="min-w-0 flex-1 rounded-lg border border-[#E7E0D5] bg-white px-3 py-2.5 text-[14px] text-[#292524] placeholder-[#A8A29E] focus:border-[#D97706] focus:outline-none"
+                className="min-w-0 flex-1 rounded-lg border border-[#E5E5E5] bg-white px-3 py-2.5 text-[14px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#D97706] focus:outline-none"
               />
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value as "admin" | "member")}
-                className="rounded-lg border border-[#E7E0D5] bg-white px-3 py-2.5 text-[13px] text-[#292524] focus:border-[#D97706] focus:outline-none"
+                className="rounded-lg border border-[#E5E5E5] bg-white px-3 py-2.5 text-[13px] text-[#0A0A0A] focus:border-[#D97706] focus:outline-none"
               >
                 <option value="member">코디</option>
                 <option value="admin">센터장</option>
@@ -223,11 +223,11 @@ export function TeamManagement() {
         </div>
 
         {/* 권한 설명 */}
-        <div className="mt-4 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3">
-          <p className="text-[13px] font-medium text-[#78716C]">권한 안내</p>
-          <ul className="mt-1.5 space-y-1 text-[13px] text-[#A8A29E]">
-            <li><span className="font-medium text-[#78716C]">센터장</span> — 모든 기능 + 설정 변경 + 팀원 관리</li>
-            <li><span className="font-medium text-[#78716C]">코디</span> — 케이스 등록, 상담 기록만 가능. 요금제/설정 변경 불가.</li>
+        <div className="mt-4 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+          <p className="text-[13px] font-medium text-[#737373]">권한 안내</p>
+          <ul className="mt-1.5 space-y-1 text-[13px] text-[#A3A3A3]">
+            <li><span className="font-medium text-[#737373]">센터장</span> — 모든 기능 + 설정 변경 + 팀원 관리</li>
+            <li><span className="font-medium text-[#737373]">코디</span> — 케이스 등록, 상담 기록만 가능. 요금제/설정 변경 불가.</li>
           </ul>
         </div>
       </div>

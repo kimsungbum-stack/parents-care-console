@@ -2,7 +2,24 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3 } from "lucide-react";
+import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3, Sparkles } from "lucide-react";
+
+// 데모 모드 샘플 데이터 — API 키 없이도 UI 체험 가능
+const DEMO_ANALYSIS = {
+  guardianName: "김영희",
+  phone: "010-1234-5678",
+  relationship: "딸",
+  careRecipientName: "김철수",
+  careRecipientAge: "80대",
+  currentSituation: "거동이 불편하시고 최근 낙상 경험. 주간에 돌봐드릴 분이 필요한 상황.",
+  urgency: "보통" as const,
+  coreNeeds: "주간보호센터 연계, 낙상 예방 관리",
+  recommendedNextContactDate: null,
+  recommendedAction: "이번 주 내 인터뷰 일정 잡기",
+  summary: "80대 아버지 거동 불편 및 낙상 이력으로 주간 돌봄 서비스 문의. 딸분이 직장 다니셔서 평일 돌봄이 어려운 상황. 인터뷰 후 센터 연계 검토 필요.",
+};
+
+const DEMO_TRANSCRIPT = "안녕하세요, 저희 아버지가 요즘 걸음이 너무 불편하셔서 혼자 계시기 불안해요. 얼마 전에도 한 번 넘어지셨거든요. 제가 회사를 다니고 있어서 평일에는 봐드리기가 어려워서 주간에 돌봐드릴 수 있는 곳을 찾고 있어요...";
 
 type Tab = "upload" | "text";
 type UploadStage = "idle" | "uploading" | "transcribing" | "analyzing" | "preview" | "saving" | "done" | "error";
@@ -195,6 +212,13 @@ export function RecordingUploadButton() {
     }
   };
 
+  // --- 데모 체험: API 호출 없이 샘플 분석 결과 표시 ---
+  const handleTryDemo = () => {
+    setTranscript(DEMO_TRANSCRIPT);
+    setAnalysis({ ...DEMO_ANALYSIS });
+    setStage("preview");
+  };
+
   const updateAnalysisField = (field: keyof AnalysisResult, value: string) => {
     if (!analysis) return;
     setAnalysis({ ...analysis, [field]: value || null });
@@ -206,18 +230,18 @@ export function RecordingUploadButton() {
     const message = STAGE_MESSAGES[stage];
 
     return (
-      <div className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+      <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 sm:p-5">
         <div className="flex items-center gap-3">
           <Loader2 size={20} className="animate-spin text-[#D97706]" />
-          <p className="text-[15px] font-semibold text-[#292524]">{message}</p>
+          <p className="text-[15px] font-semibold text-[#0A0A0A]">{message}</p>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#F5F0E8]">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#EEEEEE]">
           <div
             className="h-full rounded-full bg-[#D97706] transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="mt-2 text-[13px] text-[#A8A29E]">잠시만 기다려주세요</p>
+        <p className="mt-2 text-[13px] text-[#A3A3A3]">잠시만 기다려주세요</p>
       </div>
     );
   }
@@ -238,9 +262,9 @@ export function RecordingUploadButton() {
       <div className="rounded-xl border border-[#D97706]/30 bg-[#FFFBEB] p-4 sm:p-5">
         <div className="flex items-center gap-2">
           <Edit3 size={18} className="text-[#D97706]" />
-          <p className="text-[15px] font-bold text-[#292524]">AI 분석 결과를 확인해주세요</p>
+          <p className="text-[15px] font-bold text-[#0A0A0A]">AI 분석 결과를 확인해주세요</p>
         </div>
-        <p className="mt-1 text-[13px] text-[#78716C]">
+        <p className="mt-1 text-[13px] text-[#737373]">
           내용이 맞으면 바로 등록하고, 틀린 부분은 눌러서 수정할 수 있어요.
         </p>
 
@@ -250,8 +274,8 @@ export function RecordingUploadButton() {
             const isEditing = editingField === key;
 
             return (
-              <div key={key} className="rounded-lg border border-[#E7E0D5] bg-white px-3.5 py-2.5">
-                <p className="text-[12px] font-medium text-[#A8A29E]">{label}</p>
+              <div key={key} className="rounded-lg border border-[#E5E5E5] bg-white px-3.5 py-2.5">
+                <p className="text-[12px] font-medium text-[#A3A3A3]">{label}</p>
                 {isEditing && editable ? (
                   <input
                     type="text"
@@ -267,19 +291,19 @@ export function RecordingUploadButton() {
                         setEditingField(null);
                       }
                     }}
-                    className="mt-0.5 w-full border-b border-[#D97706] bg-transparent text-[14px] font-medium text-[#292524] outline-none"
+                    className="mt-0.5 w-full border-b border-[#D97706] bg-transparent text-[14px] font-medium text-[#0A0A0A] outline-none"
                   />
                 ) : (
                   <p
-                    className={`mt-0.5 text-[14px] font-medium text-[#292524] ${editable ? "cursor-pointer hover:text-[#D97706]" : ""}`}
+                    className={`mt-0.5 text-[14px] font-medium text-[#0A0A0A] ${editable ? "cursor-pointer hover:text-[#D97706]" : ""}`}
                     onClick={() => editable && setEditingField(key)}
                   >
                     {String(value) || "-"}
                     {key === "urgency" && (
                       <span className={`ml-2 inline-block rounded-full px-2 py-0.5 text-[12px] font-bold ${
                         value === "높음" ? "bg-[#FEE2E2] text-[#DC2626]"
-                        : value === "보통" ? "bg-[#FEF3C7] text-[#D97706]"
-                        : "bg-[#F5F0E8] text-[#78716C]"
+                        : value === "보통" ? "bg-[#FFEDD5] text-[#D97706]"
+                        : "bg-[#EEEEEE] text-[#737373]"
                       }`}>
                         {String(value)}
                       </span>
@@ -302,7 +326,7 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={resetState}
-            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E5E5E5] bg-white px-4 py-3 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#FAFAFA]"
           >
             취소
           </button>
@@ -330,7 +354,7 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={resetState}
-            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E5E5E5] bg-white px-4 py-3 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#FAFAFA]"
           >
             하나 더 올리기
           </button>
@@ -361,7 +385,7 @@ export function RecordingUploadButton() {
           <button
             type="button"
             onClick={() => { resetState(); setActiveTab("text"); }}
-            className="min-h-[44px] rounded-lg border border-[#E7E0D5] bg-white px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+            className="min-h-[44px] rounded-lg border border-[#E5E5E5] bg-white px-4 py-3 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#FAFAFA]"
           >
             직접 입력으로 전환
           </button>
@@ -372,16 +396,16 @@ export function RecordingUploadButton() {
 
   // --- 기본 화면 (탭) ---
   return (
-    <div className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+    <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 sm:p-5">
       {/* 탭 */}
-      <div className="mb-4 flex rounded-lg bg-[#F5F0E8] p-1">
+      <div className="mb-4 flex rounded-lg bg-[#EEEEEE] p-1">
         <button
           type="button"
           onClick={() => handleTabChange("upload")}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-[13px] font-semibold transition-colors ${
             activeTab === "upload"
               ? "bg-white text-[#D97706] shadow-sm"
-              : "text-[#78716C] hover:text-[#292524]"
+              : "text-[#737373] hover:text-[#0A0A0A]"
           }`}
         >
           <Mic size={15} />
@@ -393,7 +417,7 @@ export function RecordingUploadButton() {
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-[13px] font-semibold transition-colors ${
             activeTab === "text"
               ? "bg-white text-[#D97706] shadow-sm"
-              : "text-[#78716C] hover:text-[#292524]"
+              : "text-[#737373] hover:text-[#0A0A0A]"
           }`}
         >
           <FileText size={15} />
@@ -419,7 +443,7 @@ export function RecordingUploadButton() {
             <Mic size={20} />
             통화 녹음 올리기
           </button>
-          <p className="mt-2 text-center text-[13px] text-[#A8A29E]">
+          <p className="mt-2 text-center text-[13px] text-[#A3A3A3]">
             MP3, M4A, WAV, WebM 파일을 올릴 수 있어요
           </p>
         </>
@@ -432,7 +456,7 @@ export function RecordingUploadButton() {
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
             placeholder={"상담 내용을 여기에 붙여넣으세요.\n\n예) 보호자: 안녕하세요, 저희 아버지가 요즘 걸음이 너무 불편하셔서..."}
-            className="w-full resize-none rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] p-3 text-[14px] text-[#292524] placeholder-[#A8A29E] focus:border-[#D97706] focus:outline-none"
+            className="w-full resize-none rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] p-3 text-[14px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#D97706] focus:outline-none"
             rows={5}
           />
           <button
@@ -443,11 +467,26 @@ export function RecordingUploadButton() {
           >
             AI로 상담 분석하기
           </button>
-          <p className="mt-2 text-center text-[13px] text-[#A8A29E]">
+          <p className="mt-2 text-center text-[13px] text-[#A3A3A3]">
             전화 끝나고 메모한 내용이나 통화 녹음 텍스트를 붙여넣으세요
           </p>
         </>
       )}
+
+      {/* 데모 체험 — API 키 없어도 UI 미리보기 가능 */}
+      <div className="mt-4 border-t border-dashed border-[#E5E5E5] pt-4">
+        <button
+          type="button"
+          onClick={handleTryDemo}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#D97706]/30 bg-[#FFFBEB] px-4 py-2.5 text-[13px] font-semibold text-[#D97706] transition-colors hover:bg-[#FFEDD5]"
+        >
+          <Sparkles size={14} />
+          데모 체험하기 — 샘플 데이터로 바로 보기
+        </button>
+        <p className="mt-1.5 text-center text-[12px] text-[#A3A3A3]">
+          API 연동 없이 AI 분석 결과 화면을 체험해볼 수 있어요
+        </p>
+      </div>
     </div>
   );
 }

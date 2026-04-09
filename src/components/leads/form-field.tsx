@@ -11,7 +11,7 @@ export function FormField({ label, required = false, error, children }: FormFiel
   return (
     <label className="block">
       <div className="mb-2 flex items-center gap-1.5">
-        <span className="text-[13px] font-medium text-[#292524]">{label}</span>
+        <span className="text-[13px] font-medium text-[#0A0A0A]">{label}</span>
         {required ? (
           <span className="text-[13px] font-bold text-[#D97706]">*</span>
         ) : null}

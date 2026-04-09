@@ -59,16 +59,16 @@ export default function OrgSetupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FEFCF8] px-4">
-      <div className="w-full max-w-[440px] rounded-xl border border-[#E7E0D5] bg-white p-8">
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4">
+      <div className="w-full max-w-[440px] rounded-xl border border-[#E5E5E5] bg-white p-8">
         <div className="mb-8 flex flex-col items-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#D97706] text-white">
             <Heart size={24} />
           </div>
-          <h1 className="mt-4 text-[22px] font-bold text-[#292524]">
+          <h1 className="mt-4 text-[22px] font-bold text-[#0A0A0A]">
             센터 이름을 알려주세요
           </h1>
-          <p className="mt-2 text-center text-[15px] leading-[1.6] text-[#78716C]">
+          <p className="mt-2 text-center text-[15px] leading-[1.6] text-[#737373]">
             운영하시는 주간보호센터 이름을 입력하면 바로 시작할 수 있어요.
           </p>
         </div>
@@ -77,14 +77,14 @@ export default function OrgSetupPage() {
           <div>
             <label
               htmlFor="orgName"
-              className="mb-1.5 block text-[14px] font-medium text-[#292524]"
+              className="mb-1.5 block text-[14px] font-medium text-[#0A0A0A]"
             >
               센터 이름
             </label>
             <div className="relative">
               <Building2
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A8A29E]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A3A3A3]"
               />
               <input
                 id="orgName"
@@ -93,7 +93,7 @@ export default function OrgSetupPage() {
                 onChange={(e) => setOrgName(e.target.value)}
                 required
                 placeholder="예: 행복주간보호센터"
-                className="w-full rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] py-3 pl-11 pr-4 text-[15px] text-[#292524] outline-none transition-colors focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
+                className="w-full rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] py-3 pl-11 pr-4 text-[15px] text-[#0A0A0A] outline-none transition-colors focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
               />
             </div>
           </div>

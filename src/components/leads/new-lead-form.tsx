@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 
 import { FormField } from "@/components/leads/form-field";
 import { FormSection } from "@/components/leads/form-section";
@@ -30,15 +30,15 @@ type SubmitState =
 
 function getInputClass(hasError: boolean) {
   return [
-    "w-full rounded-lg border bg-white px-4 py-3 text-[15px] text-[#292524] outline-none transition-colors placeholder:text-[#A8A29E] min-h-[44px]",
+    "w-full rounded-lg border bg-white px-4 py-3 text-[15px] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#A3A3A3] min-h-[44px]",
     hasError
       ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-1 focus:ring-[#DC2626]/20"
-      : "border-[#E7E0D5] focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]/20",
+      : "border-[#E5E5E5] focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]/20",
   ].join(" ");
 }
 
 function getCheckboxClass() {
-  return "mt-1 h-4 w-4 rounded border-[#E7E0D5] bg-white text-[#D97706] focus:ring-[#D97706]/20";
+  return "mt-1 h-4 w-4 rounded border-[#E5E5E5] bg-white text-[#D97706] focus:ring-[#D97706]/20";
 }
 
 export function NewLeadForm() {
@@ -117,9 +117,9 @@ export function NewLeadForm() {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-4">
           {/* 필수 3개 필드 — 항상 노출 */}
-          <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-            <h2 className="text-[18px] font-bold text-[#292524]">신규 케이스 등록</h2>
-            <p className="mb-5 mt-1 text-[14px] text-[#78716C]">
+          <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+            <h2 className="text-[18px] font-bold text-[#0A0A0A]">신규 케이스 등록</h2>
+            <p className="mb-5 mt-1 text-[14px] text-[#737373]">
               3가지만 입력하면 30초 안에 등록 완료예요.
             </p>
 
@@ -158,7 +158,7 @@ export function NewLeadForm() {
             <button
               type="button"
               onClick={() => setShowMore(!showMore)}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#F5EFE6] hover:text-[#292524]"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#F5F5F5] hover:text-[#0A0A0A]"
             >
               {showMore ? (
                 <><ChevronUp size={16} /> 접기</>
@@ -326,7 +326,7 @@ export function NewLeadForm() {
                     className={`${getInputClass(false)} min-h-[112px] resize-y leading-[1.6]`}
                   />
                 </FormField>
-                <label className="flex items-start gap-3 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-4">
+                <label className="flex items-start gap-3 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-4">
                   <input
                     type="checkbox"
                     checked={values.isHighRisk}
@@ -334,8 +334,8 @@ export function NewLeadForm() {
                     className={getCheckboxClass()}
                   />
                   <div>
-                    <p className="text-[15px] font-medium text-[#292524]">고위험 여부</p>
-                    <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">
+                    <p className="text-[15px] font-medium text-[#0A0A0A]">고위험 여부</p>
+                    <p className="mt-1 text-[13px] leading-[1.6] text-[#737373]">
                       낙상 위험, 복잡한 이동 동선, 높은 보호자 부담으로 우선 관리가 필요한 경우 체크해요.
                     </p>
                   </div>
@@ -358,17 +358,17 @@ export function NewLeadForm() {
         </div>
 
         <aside className="space-y-5 xl:sticky xl:top-24 xl:self-start">
-          <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-            <h3 className="text-[16px] font-bold text-[#292524]">이 화면은 이렇게 쓰면 돼요</h3>
-            <div className="mt-3 space-y-2 text-[14px] leading-[1.6] text-[#78716C]">
+          <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+            <h3 className="text-[16px] font-bold text-[#0A0A0A]">이 화면은 이렇게 쓰면 돼요</h3>
+            <div className="mt-3 space-y-2 text-[14px] leading-[1.6] text-[#737373]">
               <p>1. 보호자명, 연락처, 현재 상황만 먼저 적어요.</p>
               <p>2. 저장 후 상세 화면에서 상태와 다음 연락일을 정리해요.</p>
               <p>3. 후속 통화가 끝날 때마다 상담 기록과 메모를 추가해요.</p>
             </div>
           </section>
 
-          <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-            <h3 className="text-[16px] font-bold text-[#292524]">현재 입력 요약</h3>
+          <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+            <h3 className="text-[16px] font-bold text-[#0A0A0A]">현재 입력 요약</h3>
             <div className="mt-3 grid gap-3">
               {[
                 { label: "보호자명", value: values.guardianName || "-" },
@@ -376,9 +376,9 @@ export function NewLeadForm() {
                 { label: "현재 상태", value: values.status },
                 { label: "다음 연락일", value: values.nextContactDate || "-" },
               ].map((item) => (
-                <div key={item.label} className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3">
-                  <p className="text-[13px] font-medium text-[#A8A29E]">{item.label}</p>
-                  <p className="mt-1 text-[15px] font-semibold text-[#292524]">{item.value}</p>
+                <div key={item.label} className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+                  <p className="text-[13px] font-medium text-[#A3A3A3]">{item.label}</p>
+                  <p className="mt-1 text-[15px] font-semibold text-[#0A0A0A]">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -386,8 +386,8 @@ export function NewLeadForm() {
         </aside>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#E7E0D5] bg-white px-5 py-5">
-        <p className="text-[14px] text-[#78716C]">저장하면 바로 상세 화면으로 이동해요.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#E5E5E5] bg-white px-5 py-5">
+        <p className="text-[14px] text-[#737373]">저장하면 바로 상세 화면으로 이동해요.</p>
         <div className="flex flex-wrap items-center gap-3">
           <Link href="/leads" className="control-button-secondary inline-flex min-h-[44px] items-center">
             목록으로 돌아가기
@@ -395,8 +395,9 @@ export function NewLeadForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="control-button-primary inline-flex min-h-[44px] items-center"
+            className="control-button-primary inline-flex min-h-[44px] items-center gap-2"
           >
+            {isSubmitting && <Loader2 size={16} className="animate-spin" />}
             {isSubmitting ? "저장 중..." : "케이스 저장하기"}
           </button>
         </div>

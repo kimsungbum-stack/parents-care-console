@@ -12,7 +12,7 @@ const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
   { status: "인터뷰예정", label: getStatusLabel("인터뷰예정"), color: "#8B5CF6" },
   { status: "인터뷰완료", label: getStatusLabel("인터뷰완료"), color: "#10B981" },
   { status: "소개대기", label: getStatusLabel("소개대기"), color: "#6B7280" },
-  { status: "보류", label: getStatusLabel("보류"), color: "#A8A29E" },
+  { status: "보류", label: getStatusLabel("보류"), color: "#A3A3A3" },
 ];
 
 function daysSince(dateStr: string) {
@@ -37,7 +37,7 @@ function isToday(dateStr: string | null) {
 }
 
 function getColumnColor(status: LeadStatus) {
-  return COLUMNS.find((c) => c.status === status)?.color ?? "#A8A29E";
+  return COLUMNS.find((c) => c.status === status)?.color ?? "#A3A3A3";
 }
 
 /* --- 데스크탑 칸반 카드 --- */
@@ -63,7 +63,7 @@ function KanbanCard({
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      className={`relative overflow-hidden rounded-lg border border-[#E7E0D5] bg-white shadow-sm cursor-grab active:cursor-grabbing select-none transition-opacity ${
+      className={`relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm cursor-grab active:cursor-grabbing select-none transition-opacity ${
         isDragging ? "opacity-40" : "opacity-100 hover:shadow-md"
       }`}
     >
@@ -73,16 +73,16 @@ function KanbanCard({
         className="block px-3 py-3 pl-4"
         onClick={(e) => { if (isDragging) e.preventDefault(); }}
       >
-        <p className="text-[14px] font-semibold text-[#292524] leading-snug">{lead.guardianName}</p>
+        <p className="text-[14px] font-semibold text-[#0A0A0A] leading-snug">{lead.guardianName}</p>
         {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
-          <p className="mt-0.5 text-[12px] text-[#78716C]">
+          <p className="mt-0.5 text-[12px] text-[#737373]">
             {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
           </p>
         )}
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-[12px] font-medium text-[#A8A29E]">D+{daysSince(lead.createdAt)}</span>
+          <span className="text-[12px] font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
           {formattedDate && (
-            <span className={`text-[12px] font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#78716C]"}`}>
+            <span className={`text-[12px] font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#737373]"}`}>
               {overdue ? "초과" : todayContact ? "오늘" : formattedDate}
             </span>
           )}
@@ -109,30 +109,30 @@ function MobileStatusGroup({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[#E7E0D5] bg-white">
+    <div className="overflow-hidden rounded-xl border border-[#E5E5E5] bg-white">
       <button
         type="button"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#FEFCF8]"
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#FAFAFA]"
       >
         <div className="flex items-center gap-2">
           <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
-          <span className="text-[14px] font-bold text-[#292524]">{col.label}</span>
-          <span className="rounded-full border border-[#E7E0D5] bg-[#FEFCF8] px-2 py-0.5 text-[12px] font-bold text-[#78716C]">
+          <span className="text-[14px] font-bold text-[#0A0A0A]">{col.label}</span>
+          <span className="rounded-full border border-[#E5E5E5] bg-[#FAFAFA] px-2 py-0.5 text-[12px] font-bold text-[#737373]">
             {leads.length}
           </span>
         </div>
         <ChevronDown
           size={16}
-          className={`text-[#A8A29E] transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-[#A3A3A3] transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
-        <div className="border-t border-[#E7E0D5] divide-y divide-[#E7E0D5]/60">
+        <div className="border-t border-[#E5E5E5] divide-y divide-[#E5E5E5]/60">
           {leads.length === 0 ? (
-            <p className="px-4 py-4 text-center text-[13px] text-[#A8A29E]">이 단계의 케이스가 없어요</p>
+            <p className="px-4 py-4 text-center text-[13px] text-[#A3A3A3]">이 단계의 케이스가 없어요</p>
           ) : (
             leads.map((lead) => {
               const overdue = isOverdue(lead.nextContactDate);
@@ -144,16 +144,16 @@ function MobileStatusGroup({
                   <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: col.color }} />
                   <div className="flex items-start justify-between gap-2 pl-2">
                     <Link href={`/leads/${lead.id}`} className="min-w-0 flex-1">
-                      <p className="text-[14px] font-semibold text-[#292524]">{lead.guardianName}</p>
+                      <p className="text-[14px] font-semibold text-[#0A0A0A]">{lead.guardianName}</p>
                       {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
-                        <p className="mt-0.5 text-[13px] text-[#78716C]">
+                        <p className="mt-0.5 text-[13px] text-[#737373]">
                           {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
                         </p>
                       )}
                       <div className="mt-1.5 flex items-center gap-3 text-[12px]">
-                        <span className="font-medium text-[#A8A29E]">D+{daysSince(lead.createdAt)}</span>
+                        <span className="font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
                         {formattedDate && (
-                          <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#78716C]"}`}>
+                          <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#737373]"}`}>
                             {overdue ? "기한 초과" : todayContact ? "오늘" : formattedDate}
                           </span>
                         )}
@@ -164,13 +164,13 @@ function MobileStatusGroup({
                         value={lead.status}
                         onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
                         disabled={savingIds.has(lead.id)}
-                        className="appearance-none rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] py-1.5 pl-3 pr-7 text-[12px] font-medium text-[#292524] focus:border-[#D97706] focus:outline-none disabled:opacity-50"
+                        className="appearance-none rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] py-1.5 pl-3 pr-7 text-[12px] font-medium text-[#0A0A0A] focus:border-[#D97706] focus:outline-none disabled:opacity-50"
                       >
                         {COLUMNS.map((c) => (
                           <option key={c.status} value={c.status}>{c.label}</option>
                         ))}
                       </select>
-                      <ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A8A29E]" />
+                      <ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A3A3A3]" />
                     </div>
                   </div>
                 </div>
@@ -227,9 +227,9 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
       {/* 모바일: 아코디언 뷰 */}
       <div className="space-y-2 lg:hidden">
         {leads.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[#E7E0D5] bg-white px-5 py-12 text-center">
-            <p className="text-[15px] font-medium text-[#292524]">아직 케이스가 없어요</p>
-            <p className="mt-1 text-[13px] text-[#78716C]">신규 케이스를 등록하면 여기에 나타나요.</p>
+          <div className="rounded-xl border border-dashed border-[#E5E5E5] bg-white px-5 py-12 text-center">
+            <p className="text-[15px] font-medium text-[#0A0A0A]">아직 케이스가 없어요</p>
+            <p className="mt-1 text-[13px] text-[#737373]">신규 케이스를 등록하면 여기에 나타나요.</p>
           </div>
         ) : (
           COLUMNS.map((col, i) => {
@@ -259,7 +259,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               <div
                 key={col.status}
                 className={`flex w-[212px] flex-shrink-0 flex-col rounded-xl border transition-colors ${
-                  isOver ? "border-[#D97706] bg-[#FEF3C7]/40" : "border-[#E7E0D5] bg-[#FEFCF8]"
+                  isOver ? "border-[#D97706] bg-[#FFEDD5]/40" : "border-[#E5E5E5] bg-[#FAFAFA]"
                 }`}
                 onDragOver={(e) => { e.preventDefault(); setDragOverColumn(col.status); }}
                 onDragLeave={(e) => {
@@ -267,12 +267,12 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                 }}
                 onDrop={(e) => handleDrop(e, col.status)}
               >
-                <div className="flex items-center justify-between border-b border-[#E7E0D5] px-3 py-3">
+                <div className="flex items-center justify-between border-b border-[#E5E5E5] px-3 py-3">
                   <div className="flex items-center gap-2">
                     <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
-                    <span className="text-[13px] font-semibold text-[#292524]">{col.label}</span>
+                    <span className="text-[13px] font-semibold text-[#0A0A0A]">{col.label}</span>
                   </div>
-                  <span className="rounded-full border border-[#E7E0D5] bg-white px-2 py-0.5 text-[12px] font-bold text-[#78716C]">
+                  <span className="rounded-full border border-[#E5E5E5] bg-white px-2 py-0.5 text-[12px] font-bold text-[#737373]">
                     {colLeads.length}
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
                     />
                   ))}
                   {colLeads.length === 0 && (
-                    <div className="flex h-14 items-center justify-center rounded-lg border border-dashed border-[#E7E0D5] text-[13px] text-[#A8A29E]">
+                    <div className="flex h-14 items-center justify-center rounded-lg border border-dashed border-[#E5E5E5] text-[13px] text-[#A3A3A3]">
                       이 단계의 케이스가 없어요
                     </div>
                   )}

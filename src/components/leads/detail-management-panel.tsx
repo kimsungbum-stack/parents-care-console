@@ -112,9 +112,9 @@ export function DetailManagementPanel({
   };
 
   return (
-    <section className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-      <div className="flex items-center justify-between gap-4 border-b border-[#E7E0D5] pb-4">
-        <p className="text-[16px] font-bold text-[#292524]">운영 상태 관리</p>
+    <section className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+      <div className="flex items-center justify-between gap-4 border-b border-[#E5E5E5] pb-4">
+        <p className="text-[16px] font-bold text-[#0A0A0A]">운영 상태 관리</p>
         <button
           type="button"
           onClick={handleSave}
@@ -122,7 +122,7 @@ export function DetailManagementPanel({
           className={
             hasChanges && !isSaving
               ? "control-button-primary inline-flex min-h-[44px] items-center text-[14px]"
-              : "inline-flex min-h-[44px] cursor-not-allowed items-center rounded-xl border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-2 text-[14px] font-medium text-[#A8A29E]"
+              : "inline-flex min-h-[44px] cursor-not-allowed items-center rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-2 text-[14px] font-medium text-[#A3A3A3]"
           }
         >
           {isSaving ? "저장 중..." : hasChanges ? "변경 저장" : "저장됨"}
@@ -131,7 +131,7 @@ export function DetailManagementPanel({
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-[14px] font-medium text-[#292524]">상태</span>
+          <span className="mb-2 block text-[14px] font-medium text-[#0A0A0A]">상태</span>
           <select
             value={draftStatus}
             onChange={(e) => setDraftStatus(e.target.value as LeadStatus)}
@@ -144,7 +144,7 @@ export function DetailManagementPanel({
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-[14px] font-medium text-[#292524]">다음 연락일</span>
+          <span className="mb-2 block text-[14px] font-medium text-[#0A0A0A]">다음 연락일</span>
           <input
             type="date"
             value={draftNextContactDate}
@@ -159,7 +159,7 @@ export function DetailManagementPanel({
                 type="button"
                 onClick={() => handleQuickDate(days)}
                 disabled={isSaving}
-                className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-3 py-1.5 text-[13px] font-medium text-[#78716C] transition-colors hover:border-[#D97706] hover:bg-[#FEF3C7] hover:text-[#D97706] disabled:opacity-50"
+                className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-3 py-1.5 text-[13px] font-medium text-[#737373] transition-colors hover:border-[#D97706] hover:bg-[#FFEDD5] hover:text-[#D97706] disabled:opacity-50"
               >
                 {label}
               </button>

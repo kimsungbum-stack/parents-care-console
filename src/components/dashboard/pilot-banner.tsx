@@ -23,7 +23,7 @@ export function PilotBanner() {
   if (!visible) return null;
 
   return (
-    <div className="mb-5 flex items-center justify-between gap-3 rounded-xl bg-[#FEF3C7] px-5 py-3.5 border border-[#D97706]/20">
+    <div className="mb-5 flex items-center justify-between gap-3 rounded-xl bg-[#FFEDD5] px-5 py-3.5 border border-[#D97706]/20">
       <p className="text-[14px] font-medium text-[#92400E]">
         현재 파일럿 운영 중이에요. 불편한 점은 언제든 말씀해주세요 💬
       </p>

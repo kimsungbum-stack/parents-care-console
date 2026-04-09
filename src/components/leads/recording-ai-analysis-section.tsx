@@ -40,14 +40,14 @@ export function RecordingAiAnalysisSection({ analysis, analyzedAt }: RecordingAi
   const urgency = urgencyConfig[analysis.urgency];
 
   return (
-    <div className="rounded-xl border border-[#E7E0D5] bg-white p-4 sm:p-5">
+    <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 sm:p-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#FEF3C7] text-[#D97706]">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#FFEDD5] text-[#D97706]">
             <Sparkles size={14} />
           </div>
-          <p className="text-[14px] font-bold text-[#292524]">AI 분석 결과</p>
+          <p className="text-[14px] font-bold text-[#0A0A0A]">AI 분석 결과</p>
         </div>
         <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[13px] font-semibold ${urgency.badge}`}>
           <span className={`inline-block h-2 w-2 rounded-full ${urgency.dot}`} />
@@ -56,7 +56,7 @@ export function RecordingAiAnalysisSection({ analysis, analyzedAt }: RecordingAi
       </div>
 
       {analyzedAt && (
-        <p className="mt-1 text-[13px] text-[#A8A29E]">
+        <p className="mt-1 text-[13px] text-[#A3A3A3]">
           {formatAnalyzedDate(analyzedAt)} AI 자동 분석
         </p>
       )}
@@ -64,53 +64,53 @@ export function RecordingAiAnalysisSection({ analysis, analyzedAt }: RecordingAi
       {/* Info Grid */}
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {/* Guardian Info */}
-        <div className="flex items-start gap-2 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] p-3">
-          <User size={16} className="mt-0.5 shrink-0 text-[#A8A29E]" />
+        <div className="flex items-start gap-2 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3">
+          <User size={16} className="mt-0.5 shrink-0 text-[#A3A3A3]" />
           <div className="min-w-0">
-            <p className="text-[13px] font-medium text-[#A8A29E]">보호자 정보</p>
-            <p className="mt-0.5 text-[15px] font-semibold text-[#292524]">
+            <p className="text-[13px] font-medium text-[#A3A3A3]">보호자 정보</p>
+            <p className="mt-0.5 text-[15px] font-semibold text-[#0A0A0A]">
               {analysis.guardianName || "미확인"}
             </p>
             {analysis.relationship && (
-              <p className="text-[13px] text-[#78716C]">관계: {analysis.relationship}</p>
+              <p className="text-[13px] text-[#737373]">관계: {analysis.relationship}</p>
             )}
             {analysis.phone && (
-              <p className="text-[13px] text-[#78716C]">{analysis.phone}</p>
+              <p className="text-[13px] text-[#737373]">{analysis.phone}</p>
             )}
           </div>
         </div>
 
         {/* Care Recipient */}
-        <div className="flex items-start gap-2 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] p-3">
-          <Phone size={16} className="mt-0.5 shrink-0 text-[#A8A29E]" />
+        <div className="flex items-start gap-2 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3">
+          <Phone size={16} className="mt-0.5 shrink-0 text-[#A3A3A3]" />
           <div className="min-w-0">
-            <p className="text-[13px] font-medium text-[#A8A29E]">케어 대상</p>
-            <p className="mt-0.5 text-[15px] font-semibold text-[#292524]">
+            <p className="text-[13px] font-medium text-[#A3A3A3]">케어 대상</p>
+            <p className="mt-0.5 text-[15px] font-semibold text-[#0A0A0A]">
               {analysis.careRecipientName || "미확인"}
             </p>
             {analysis.careRecipientAge && (
-              <p className="text-[13px] text-[#78716C]">{analysis.careRecipientAge}</p>
+              <p className="text-[13px] text-[#737373]">{analysis.careRecipientAge}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Situation Summary */}
-      <div className="mt-3 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] p-3 sm:p-4">
+      <div className="mt-3 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3 sm:p-4">
         <div className="flex items-start gap-2">
-          <FileText size={16} className="mt-0.5 shrink-0 text-[#A8A29E]" />
+          <FileText size={16} className="mt-0.5 shrink-0 text-[#A3A3A3]" />
           <div className="min-w-0">
-            <p className="text-[13px] font-medium text-[#A8A29E]">상황 요약</p>
-            <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">{analysis.currentSituation}</p>
+            <p className="text-[13px] font-medium text-[#A3A3A3]">상황 요약</p>
+            <p className="mt-1 text-[13px] leading-[1.6] text-[#737373]">{analysis.currentSituation}</p>
           </div>
         </div>
       </div>
 
       {/* Core Needs */}
       {analysis.coreNeeds && (
-        <div className="mt-3 rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] p-3 sm:p-4">
-          <p className="text-[13px] font-medium text-[#A8A29E]">핵심 니즈</p>
-          <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">{analysis.coreNeeds}</p>
+        <div className="mt-3 rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3 sm:p-4">
+          <p className="text-[13px] font-medium text-[#A3A3A3]">핵심 니즈</p>
+          <p className="mt-1 text-[13px] leading-[1.6] text-[#737373]">{analysis.coreNeeds}</p>
         </div>
       )}
 

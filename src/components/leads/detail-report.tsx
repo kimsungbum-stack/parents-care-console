@@ -146,11 +146,11 @@ export function DetailReport({ value, lead, onSave }: DetailReportProps) {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-xl border border-[#E7E0D5] bg-white p-5">
-        <div className="flex flex-col gap-3 border-b border-[#E7E0D5] pb-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="rounded-xl border border-[#E5E5E5] bg-white p-5">
+        <div className="flex flex-col gap-3 border-b border-[#E5E5E5] pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[16px] font-bold text-[#292524]">보호자 요약 리포트</p>
-            <p className="mt-1 text-[13px] leading-[1.6] text-[#78716C]">보호자에게 전달할 내용을 읽기 쉬운 문단 구조로 정리하는 영역이에요. 다음 연락 전에 보는 정리본이라고 생각하면 돼요.</p>
+            <p className="text-[16px] font-bold text-[#0A0A0A]">보호자 요약 리포트</p>
+            <p className="mt-1 text-[13px] leading-[1.6] text-[#737373]">보호자에게 전달할 내용을 읽기 쉬운 문단 구조로 정리하는 영역이에요. 다음 연락 전에 보는 정리본이라고 생각하면 돼요.</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -160,7 +160,7 @@ export function DetailReport({ value, lead, onSave }: DetailReportProps) {
                   type="button"
                   onClick={handleGenerateAiDraft}
                   disabled={isGenerating || lead.consultations.length === 0}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#D97706]/30 bg-[#FFFBEB] px-4 py-2.5 text-[14px] font-medium text-[#D97706] transition-colors hover:bg-[#FEF3C7] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#D97706]/30 bg-[#FFFBEB] px-4 py-2.5 text-[14px] font-medium text-[#D97706] transition-colors hover:bg-[#FFEDD5] disabled:opacity-50"
                 >
                   <Sparkles size={16} />
                   {isGenerating ? "생성 중..." : "AI로 초안 생성"}
@@ -181,9 +181,9 @@ export function DetailReport({ value, lead, onSave }: DetailReportProps) {
         {!isEditing ? (
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             {sections.map((section) => value[section.key] ? (
-              <article key={section.key} className="rounded-lg border border-[#E7E0D5] bg-[#FEFCF8] px-5 py-4">
-                <p className="text-[13px] font-medium text-[#A8A29E]">{section.label}</p>
-                <p className="mt-2 whitespace-pre-line text-[15px] leading-[1.6] text-[#292524]">{value[section.key]}</p>
+              <article key={section.key} className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] px-5 py-4">
+                <p className="text-[13px] font-medium text-[#A3A3A3]">{section.label}</p>
+                <p className="mt-2 whitespace-pre-line text-[15px] leading-[1.6] text-[#0A0A0A]">{value[section.key]}</p>
               </article>
             ) : (
               <EmptyPanel key={section.key} title={`${section.label} 내용이 아직 없어요.`} description="편집 모드에서 내용을 입력하면 이 영역에 바로 반영돼요." compact />
@@ -193,7 +193,7 @@ export function DetailReport({ value, lead, onSave }: DetailReportProps) {
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             {sections.map((section) => (
               <label key={section.key} className="block">
-                <span className="mb-2 block text-[13px] font-medium text-[#292524]">{section.label}</span>
+                <span className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">{section.label}</span>
                 <textarea value={draft[section.key]} onChange={(event) => handleChange(section.key, event.target.value)} placeholder={section.placeholder} rows={section.rows} className={reportFieldClass()} />
               </label>
             ))}
@@ -205,14 +205,14 @@ export function DetailReport({ value, lead, onSave }: DetailReportProps) {
         <div className="rounded-xl border border-[#D97706]/20 bg-[#FFFBEB] p-5">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-[#D97706]" />
-            <p className="text-[14px] font-bold text-[#292524]">AI 생성 리포트 (보호자 공유용)</p>
+            <p className="text-[14px] font-bold text-[#0A0A0A]">AI 생성 리포트 (보호자 공유용)</p>
           </div>
-          <div className="mt-3 rounded-lg border border-[#E7E0D5] bg-white p-4">
-            <div className="prose-warm whitespace-pre-line text-[15px] leading-[1.8] text-[#292524]">
+          <div className="mt-3 rounded-lg border border-[#E5E5E5] bg-white p-4">
+            <div className="prose-warm whitespace-pre-line text-[15px] leading-[1.8] text-[#0A0A0A]">
               {aiMarkdown}
             </div>
           </div>
-          <p className="mt-2 text-[13px] text-[#78716C]">위 내용을 복사하여 보호자에게 전달할 수 있어요.</p>
+          <p className="mt-2 text-[13px] text-[#737373]">위 내용을 복사하여 보호자에게 전달할 수 있어요.</p>
         </div>
       )}
     </section>

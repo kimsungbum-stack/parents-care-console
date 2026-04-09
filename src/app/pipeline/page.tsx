@@ -49,8 +49,8 @@ export default async function PipelinePage() {
   return (
     <div className="px-5 py-6 lg:px-8 lg:py-8">
       <div className="mb-6">
-        <h1 className="text-[24px] font-bold text-[#292524]">진행 현황</h1>
-        <p className="mt-1 text-[15px] text-[#78716C]">
+        <h1 className="text-[24px] font-bold text-[#0A0A0A]">진행 현황</h1>
+        <p className="mt-1 text-[15px] text-[#737373]">
           카드를 드래그해서 다른 단계로 이동하면 상태가 자동 저장돼요.
         </p>
       </div>

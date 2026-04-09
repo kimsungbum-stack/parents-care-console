@@ -19,16 +19,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FEFCF8] px-4">
-      <div className="w-full max-w-[400px] rounded-xl border border-[#E7E0D5] bg-white p-8">
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4">
+      <div className="w-full max-w-[400px] rounded-xl border border-[#E5E5E5] bg-white p-8">
         <div className="mb-8 flex flex-col items-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#D97706] text-white">
             <Heart size={24} />
           </div>
-          <h1 className="mt-4 text-[22px] font-bold text-[#292524]">
+          <h1 className="mt-4 text-[22px] font-bold text-[#0A0A0A]">
             부모안심90에 오신 걸 환영해요
           </h1>
-          <p className="mt-2 text-[15px] text-[#78716C]">
+          <p className="mt-2 text-[15px] text-[#737373]">
             구글 계정으로 3초 만에 시작하세요
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function LoginPage() {
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#E7E0D5] bg-white px-4 py-3.5 text-[15px] font-bold text-[#292524] transition-colors hover:bg-[#FEFCF8] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#E5E5E5] bg-white px-4 py-3.5 text-[15px] font-bold text-[#0A0A0A] transition-colors hover:bg-[#FAFAFA] disabled:opacity-50"
         >
           <svg width="20" height="20" viewBox="0 0 24 24">
             <path
@@ -59,7 +59,7 @@ export default function LoginPage() {
           {loading ? "연결 중..." : "구글로 시작하기"}
         </button>
 
-        <p className="mt-4 text-center text-[13px] text-[#A8A29E]">
+        <p className="mt-4 text-center text-[13px] text-[#A3A3A3]">
           별도 회원가입 없이 바로 시작할 수 있어요
         </p>
       </div>

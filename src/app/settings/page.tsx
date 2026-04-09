@@ -178,23 +178,23 @@ export default function SettingsPage() {
   const profileChanged = userNameDraft.trim() !== userName || userPhoneDraft.trim() !== userPhone;
 
   return (
-    <div className="px-5 py-6 lg:px-8 lg:py-8" style={{ backgroundColor: "#FEFCF8" }}>
+    <div className="px-5 py-6 lg:px-8 lg:py-8" style={{ backgroundColor: "#FAFAFA" }}>
       <div className="mb-6">
-        <h1 className="text-[24px] font-bold tracking-tight text-[#292524]">설정</h1>
-        <p className="mt-1 text-[15px] text-[#78716C]">센터 운영 설정을 관리하세요.</p>
+        <h1 className="text-[24px] font-bold tracking-tight text-[#0A0A0A]">설정</h1>
+        <p className="mt-1 text-[15px] text-[#737373]">센터 운영 설정을 관리하세요.</p>
       </div>
 
       {/* 현재 요금제 */}
-      <div className="mb-5 rounded-[8px] border border-[#E7E0D5] bg-white">
-        <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
-          <CreditCard size={18} className="text-[#78716C]" />
-          <h2 className="text-[16px] font-bold text-[#292524]">현재 요금제</h2>
+      <div className="mb-5 rounded-[8px] border border-[#E5E5E5] bg-white">
+        <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
+          <CreditCard size={18} className="text-[#737373]" />
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">현재 요금제</h2>
         </div>
         <div className="px-5 py-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[13px] text-[#78716C]">현재 요금제</p>
-              <p className="mt-1 text-[18px] font-bold text-[#292524]">{plan}</p>
+              <p className="text-[13px] text-[#737373]">현재 요금제</p>
+              <p className="mt-1 text-[18px] font-bold text-[#0A0A0A]">{plan}</p>
             </div>
             <Link
               href="/pricing"
@@ -208,13 +208,13 @@ export default function SettingsPage() {
       </div>
 
       {/* 기관명 변경 */}
-      <div className="mb-5 rounded-[8px] border border-[#E7E0D5] bg-white">
-        <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
-          <Building2 size={18} className="text-[#78716C]" />
-          <h2 className="text-[16px] font-bold text-[#292524]">기관명</h2>
+      <div className="mb-5 rounded-[8px] border border-[#E5E5E5] bg-white">
+        <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
+          <Building2 size={18} className="text-[#737373]" />
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">기관명</h2>
         </div>
         <div className="px-5 py-5">
-          <label className="block text-[13px] font-medium text-[#78716C]" htmlFor="org-name">
+          <label className="block text-[13px] font-medium text-[#737373]" htmlFor="org-name">
             센터명
           </label>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -224,7 +224,7 @@ export default function SettingsPage() {
               value={orgNameDraft}
               onChange={(e) => setOrgNameDraft(e.target.value)}
               placeholder="센터명을 입력하세요"
-              className="flex-1 rounded-[8px] border border-[#E7E0D5] bg-[#FEFCF8] px-4 text-[15px] text-[#292524] placeholder-[#A8A29E] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
+              className="flex-1 rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] px-4 text-[15px] text-[#0A0A0A] placeholder-[#A3A3A3] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
               style={{ minHeight: 44 }}
             />
             <button
@@ -251,21 +251,21 @@ export default function SettingsPage() {
       </div>
 
       {/* 내 프로필 */}
-      <div className="mb-5 rounded-[8px] border border-[#E7E0D5] bg-white">
-        <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
-          <User size={18} className="text-[#78716C]" />
-          <h2 className="text-[16px] font-bold text-[#292524]">내 프로필</h2>
+      <div className="mb-5 rounded-[8px] border border-[#E5E5E5] bg-white">
+        <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
+          <User size={18} className="text-[#737373]" />
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">내 프로필</h2>
         </div>
         <div className="px-5 py-5">
           {userEmail && (
-            <div className="mb-4 rounded-[8px] border border-[#E7E0D5] bg-[#FEFCF8] px-4 py-3">
-              <p className="text-[13px] font-medium text-[#A8A29E]">이메일</p>
-              <p className="mt-1 text-[15px] text-[#292524]">{userEmail}</p>
+            <div className="mb-4 rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+              <p className="text-[13px] font-medium text-[#A3A3A3]">이메일</p>
+              <p className="mt-1 text-[15px] text-[#0A0A0A]">{userEmail}</p>
             </div>
           )}
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-[13px] font-medium text-[#78716C]" htmlFor="user-name">
+              <label className="block text-[13px] font-medium text-[#737373]" htmlFor="user-name">
                 이름
               </label>
               <input
@@ -274,12 +274,12 @@ export default function SettingsPage() {
                 value={userNameDraft}
                 onChange={(e) => setUserNameDraft(e.target.value)}
                 placeholder="이름을 입력하세요"
-                className="mt-2 w-full rounded-[8px] border border-[#E7E0D5] bg-[#FEFCF8] px-4 text-[15px] text-[#292524] placeholder-[#A8A29E] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
+                className="mt-2 w-full rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] px-4 text-[15px] text-[#0A0A0A] placeholder-[#A3A3A3] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
                 style={{ minHeight: 44 }}
               />
             </div>
             <div>
-              <label className="block text-[13px] font-medium text-[#78716C]" htmlFor="user-phone">
+              <label className="block text-[13px] font-medium text-[#737373]" htmlFor="user-phone">
                 전화번호
               </label>
               <input
@@ -288,7 +288,7 @@ export default function SettingsPage() {
                 value={userPhoneDraft}
                 onChange={(e) => setUserPhoneDraft(e.target.value)}
                 placeholder="010-0000-0000"
-                className="mt-2 w-full rounded-[8px] border border-[#E7E0D5] bg-[#FEFCF8] px-4 text-[15px] text-[#292524] placeholder-[#A8A29E] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
+                className="mt-2 w-full rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] px-4 text-[15px] text-[#0A0A0A] placeholder-[#A3A3A3] outline-none focus:border-[#D97706] focus:ring-1 focus:ring-[#D97706]"
                 style={{ minHeight: 44 }}
               />
             </div>
@@ -323,13 +323,13 @@ export default function SettingsPage() {
       </div>
 
       {/* 데이터 내보내기 */}
-      <div className="mb-5 rounded-[8px] border border-[#E7E0D5] bg-white">
-        <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
-          <Download size={18} className="text-[#78716C]" />
-          <h2 className="text-[16px] font-bold text-[#292524]">데이터 내보내기</h2>
+      <div className="mb-5 rounded-[8px] border border-[#E5E5E5] bg-white">
+        <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
+          <Download size={18} className="text-[#737373]" />
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">데이터 내보내기</h2>
         </div>
         <div className="px-5 py-5">
-          <p className="text-[14px] text-[#78716C]">
+          <p className="text-[14px] text-[#737373]">
             케이스 데이터를 CSV 파일로 내려받을 수 있어요. 스탠다드 이상 요금제에서 이용 가능해요.
           </p>
           {exportStatus === "error" && (
@@ -341,7 +341,7 @@ export default function SettingsPage() {
             type="button"
             onClick={handleExport}
             disabled={exportStatus === "loading"}
-            className="mt-3 inline-flex items-center gap-2 rounded-[8px] border border-[#E7E0D5] bg-[#FEFCF8] px-4 text-[14px] font-medium text-[#292524] transition-colors hover:bg-[#F5EFE6] disabled:opacity-50"
+            className="mt-3 inline-flex items-center gap-2 rounded-[8px] border border-[#E5E5E5] bg-[#FAFAFA] px-4 text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#F5F5F5] disabled:opacity-50"
             style={{ minHeight: 44 }}
           >
             <Download size={16} />
@@ -351,13 +351,13 @@ export default function SettingsPage() {
       </div>
 
       {/* 데이터 관리 */}
-      <div className="mb-5 rounded-[8px] border border-[#E7E0D5] bg-white">
-        <div className="flex items-center gap-3 border-b border-[#E7E0D5] px-5 py-4">
+      <div className="mb-5 rounded-[8px] border border-[#E5E5E5] bg-white">
+        <div className="flex items-center gap-3 border-b border-[#E5E5E5] px-5 py-4">
           <Trash2 size={18} className="text-[#DC2626]" />
-          <h2 className="text-[16px] font-bold text-[#292524]">데이터 관리</h2>
+          <h2 className="text-[16px] font-bold text-[#0A0A0A]">데이터 관리</h2>
         </div>
         <div className="px-5 py-5">
-          <p className="text-[14px] text-[#78716C]">
+          <p className="text-[14px] text-[#737373]">
             등록된 모든 케이스를 삭제할 수 있어요. 삭제된 데이터는 복구할 수 없습니다.
           </p>
           {deleteAllStatus === "error" && (
@@ -388,7 +388,7 @@ export default function SettingsPage() {
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder="삭제"
-                className="mt-2 w-full rounded-[8px] border border-[#FCA5A5] bg-white px-3 py-2 text-[14px] text-[#292524] placeholder:text-[#A8A29E] focus:outline-none focus:ring-2 focus:ring-[#DC2626]/30 sm:w-48"
+                className="mt-2 w-full rounded-[8px] border border-[#FCA5A5] bg-white px-3 py-2 text-[14px] text-[#0A0A0A] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-[#DC2626]/30 sm:w-48"
               />
               <div className="mt-3 flex gap-2">
                 <button
@@ -409,7 +409,7 @@ export default function SettingsPage() {
                     setDeleteAllStatus("idle");
                   }}
                   disabled={deleteAllStatus === "loading"}
-                  className="rounded-[8px] border border-[#E7E0D5] bg-white px-4 text-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#FEFCF8]"
+                  className="rounded-[8px] border border-[#E5E5E5] bg-white px-4 text-[14px] font-medium text-[#737373] transition-colors hover:bg-[#FAFAFA]"
                   style={{ minHeight: 44 }}
                 >
                   취소
@@ -421,7 +421,7 @@ export default function SettingsPage() {
       </div>
 
       {/* 로그아웃 */}
-      <div className="rounded-[8px] border border-[#E7E0D5] bg-white">
+      <div className="rounded-[8px] border border-[#E5E5E5] bg-white">
         <div className="px-5 py-5">
           <button
             type="button"

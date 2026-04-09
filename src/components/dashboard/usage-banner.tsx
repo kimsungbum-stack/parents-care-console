@@ -82,7 +82,7 @@ export function UsageBanner() {
         <p className="mt-1 text-[13px] text-[#B45309]">
           스탠다드로 업그레이드하면 걱정 없어요.
         </p>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#FEF3C7]">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#FFEDD5]">
           <div
             className="h-full rounded-full bg-[#D97706] transition-all"
             style={{ width: `${percent}%` }}
@@ -96,13 +96,13 @@ export function UsageBanner() {
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-[#E7E0D5] bg-white px-5 py-4">
-      <p className="text-[15px] font-medium text-[#292524]">
+    <div className="mb-6 rounded-xl border border-[#E5E5E5] bg-white px-5 py-4">
+      <p className="text-[15px] font-medium text-[#0A0A0A]">
         이번 달 {usage.used}/{usage.limit}건 사용했어요
       </p>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#F5F0E8]">
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#EEEEEE]">
         <div
-          className="h-full rounded-full bg-[#A8A29E] transition-all"
+          className="h-full rounded-full bg-[#A3A3A3] transition-all"
           style={{ width: `${percent}%` }}
         />
       </div>

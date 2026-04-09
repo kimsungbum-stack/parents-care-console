@@ -110,7 +110,7 @@ export function DetailTabs({ lead }: DetailTabsProps) {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap gap-2 rounded-xl border border-[#E7E0D5] bg-white p-2">
+      <div className="flex flex-wrap gap-2 rounded-xl border border-[#E5E5E5] bg-white p-2">
         {tabs.map((tab) => {
           const isActive = tab.key === activeTab;
 
@@ -120,12 +120,15 @@ export function DetailTabs({ lead }: DetailTabsProps) {
               type="button"
               onClick={() => setActiveTab(tab.key)}
               className={[
-                "rounded-lg px-4 py-2.5 text-left transition-colors",
-                isActive ? "bg-[#FEF3C7] text-[#D97706]" : "text-[#78716C] hover:bg-[#FEFCF8] hover:text-[#292524]",
+                "relative rounded-lg px-4 py-2.5 text-left transition-all duration-150",
+                isActive
+                  ? "bg-[#FFEDD5] text-[#D97706] shadow-[inset_0_0_0_1px_#FCD34D]"
+                  : "text-[#737373] hover:bg-[#FAFAFA] hover:text-[#0A0A0A]",
               ].join(" ")}
+              aria-pressed={isActive}
             >
-              <p className="text-[14px] font-semibold">{tab.label}</p>
-              <p className="mt-0.5 text-[13px] opacity-70">{tab.hint}</p>
+              <p className="text-[14px] font-bold">{tab.label}</p>
+              <p className={`mt-0.5 text-[13px] ${isActive ? "text-[#D97706]/70" : "opacity-70"}`}>{tab.hint}</p>
             </button>
           );
         })}
