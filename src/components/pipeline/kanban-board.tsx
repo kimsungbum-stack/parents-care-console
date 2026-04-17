@@ -19,25 +19,19 @@ function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function formatDate(dateStr: string | null) {
+function getDDayLabel(dateStr: string | null): { text: string; color: string } | null {
   if (!dateStr) return null;
-  return new Date(dateStr).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" });
-}
-
-function isOverdue(dateStr: string | null) {
-  if (!dateStr) return false;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return new Date(dateStr) < today;
-}
+  const target = new Date(dateStr);
+  target.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-function isToday(dateStr: string | null) {
-  if (!dateStr) return false;
-  return new Date(dateStr).toDateString() === new Date().toDateString();
-}
-
-function getColumnColor(status: LeadStatus) {
-  return COLUMNS.find((c) => c.status === status)?.color ?? "#A3A3A3";
+  if (diffDays < 0) return { text: `D+${Math.abs(diffDays)}`, color: "#DC2626" };
+  if (diffDays === 0) return { text: "D-Day", color: "#DC2626" };
+  if (diffDays <= 3) return { text: `D-${diffDays}`, color: "#DC2626" };
+  if (diffDays <= 7) return { text: `D-${diffDays}`, color: "#CA8A04" };
+  return { text: `D-${diffDays}`, color: "#16A34A" };
 }
 
 /* --- 데스크탑 칸반 카드 --- */
@@ -54,9 +48,7 @@ function KanbanCard({
   onDragStart: (e: React.DragEvent) => void;
   onDragEnd: () => void;
 }) {
-  const overdue = isOverdue(lead.nextContactDate);
-  const todayContact = isToday(lead.nextContactDate);
-  const formattedDate = formatDate(lead.nextContactDate);
+  const dday = getDDayLabel(lead.nextContactDate);
 
   return (
     <div
@@ -81,9 +73,12 @@ function KanbanCard({
         )}
         <div className="mt-2 flex items-center justify-between">
           <span className="text-[12px] font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
-          {formattedDate && (
-            <span className={`text-[12px] font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#737373]"}`}>
-              {overdue ? "초과" : todayContact ? "오늘" : formattedDate}
+          {dday && (
+            <span
+              className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
+              style={{ backgroundColor: dday.color }}
+            >
+              {dday.text}
             </span>
           )}
         </div>
@@ -135,9 +130,7 @@ function MobileStatusGroup({
             <p className="px-4 py-4 text-center text-[13px] text-[#A3A3A3]">이 단계의 케이스가 없어요</p>
           ) : (
             leads.map((lead) => {
-              const overdue = isOverdue(lead.nextContactDate);
-              const todayContact = isToday(lead.nextContactDate);
-              const formattedDate = formatDate(lead.nextContactDate);
+              const dday = getDDayLabel(lead.nextContactDate);
 
               return (
                 <div key={lead.id} className="relative px-4 py-3">
@@ -152,9 +145,12 @@ function MobileStatusGroup({
                       )}
                       <div className="mt-1.5 flex items-center gap-3 text-[12px]">
                         <span className="font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
-                        {formattedDate && (
-                          <span className={`font-semibold ${overdue ? "text-[#DC2626]" : todayContact ? "text-[#D97706]" : "text-[#737373]"}`}>
-                            {overdue ? "기한 초과" : todayContact ? "오늘" : formattedDate}
+                        {dday && (
+                          <span
+                            className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
+                            style={{ backgroundColor: dday.color }}
+                          >
+                            {dday.text}
                           </span>
                         )}
                       </div>

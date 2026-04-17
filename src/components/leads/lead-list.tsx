@@ -3,23 +3,36 @@ import Link from "next/link";
 import { LeadStatusBadge } from "@/components/leads/status-badge";
 import type { LeadListItem } from "@/types/domain";
 
-function isOverdue(dateStr: string | null) {
-  if (!dateStr) return false;
+function getDDayInfo(dateStr: string | null): { label: string; color: string; isUrgent: boolean } | null {
+  if (!dateStr) return null;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return new Date(dateStr) < today;
-}
+  const target = new Date(dateStr);
+  target.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-function isToday(dateStr: string | null) {
-  if (!dateStr) return false;
-  return new Date(dateStr).toDateString() === new Date().toDateString();
+  if (diffDays < 0) return { label: `D+${Math.abs(diffDays)}`, color: "#DC2626", isUrgent: true };
+  if (diffDays === 0) return { label: "D-Day", color: "#DC2626", isUrgent: true };
+  if (diffDays <= 3) return { label: `D-${diffDays}`, color: "#DC2626", isUrgent: true };
+  if (diffDays <= 7) return { label: `D-${diffDays}`, color: "#CA8A04", isUrgent: false };
+  return { label: `D-${diffDays}`, color: "#16A34A", isUrgent: false };
 }
 
 function NextContactLabel({ date }: { date: string | null }) {
-  if (!date) return <p className="text-[13px] text-[#A3A3A3]">미정</p>;
-  if (isOverdue(date)) return <p className="text-[13px] font-semibold text-[#DC2626]">기한 초과</p>;
-  if (isToday(date)) return <p className="text-[13px] font-semibold text-[#D97706]">오늘</p>;
-  return <p className="text-[13px] font-medium text-[#0A0A0A]">{date}</p>;
+  const info = getDDayInfo(date);
+  if (!info) return <p className="text-[13px] text-[#A3A3A3]">미정</p>;
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white`}
+        style={{ backgroundColor: info.color }}
+      >
+        {info.label}
+      </span>
+      <span className="text-[12px] text-[#A3A3A3]">{date}</span>
+    </div>
+  );
 }
 
 type LeadListProps = {
@@ -29,13 +42,8 @@ type LeadListProps = {
 const columns = ["보호자", "연락처", "케어 대상", "유입경로", "상태", "다음 연락", "최근 상담"];
 
 function LeadCard({ lead }: { lead: LeadListItem }) {
-  const overdue = isOverdue(lead.nextContactDate);
-  const todayContact = isToday(lead.nextContactDate);
-  const barColor = overdue
-    ? "#DC2626"
-    : todayContact
-      ? "#F59E0B"
-      : "#E5E5E5";
+  const info = getDDayInfo(lead.nextContactDate);
+  const barColor = info?.isUrgent ? info.color : "#E5E5E5";
 
   return (
     <Link href={`/leads/${lead.id}`} className="card-hover group relative block overflow-hidden rounded-xl border border-[#E5E5E5] bg-white p-4 hover:bg-[#FFEDD5]/30 sm:p-5">
