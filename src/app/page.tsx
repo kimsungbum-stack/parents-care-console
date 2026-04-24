@@ -5,8 +5,13 @@ import { PilotBanner } from "@/components/dashboard/pilot-banner";
 import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 import { DashboardFunnelToggle } from "@/components/dashboard/dashboard-funnel-toggle";
 import { RecordingUploadButton } from "@/components/dashboard/recording-upload-button";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { NumberTicker } from "@/components/ui/number-ticker";
+import { AnimatedList } from "@/components/ui/animated-list";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
+import { getCurrentUser } from "@/lib/auth";
 import { getUpcomingContacts } from "@/lib/queries/get-upcoming-contacts";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { Database } from "@/types/supabase";
@@ -26,11 +31,6 @@ type LeadRow = Pick<
 >;
 
 const statusKeys: LeadStatus[] = ["신규", "1차답장", "인터뷰예정", "인터뷰완료", "소개대기", "보류"];
-
-function daysSince(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
 
 function formatDate(dateStr: string | null) {
   if (!dateStr) return "미정";
@@ -92,10 +92,14 @@ export const dynamic = "force-dynamic";
 
 async function fetchLeads(): Promise<LeadRow[]> {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) return [];
+
     const supabase = createSupabasePlainClient();
     const { data, error } = await supabase
       .from("leads")
       .select("id,guardian_name,care_recipient_name,care_recipient_age_group,hospital_name,current_situation_summary,status,next_contact_date,created_at")
+      .eq("organization_id", currentUser.organizationId)
       .order("next_contact_date", { ascending: true, nullsFirst: false })
       .limit(500);
 
@@ -128,7 +132,6 @@ export default async function DashboardPage() {
   const introductionWaitingCount = statusCounts["소개대기"] ?? 0;
   const recentLeads = [...allLeads].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at)).slice(0, 3);
 
-  // 주간 신규 등록 비교 (이번주 vs 지난주)
   const now = new Date();
   const weekAgo = new Date(now);
   weekAgo.setDate(weekAgo.getDate() - 7);
@@ -144,7 +147,6 @@ export default async function DashboardPage() {
   }).length;
   const weekTrend = newThisWeek - newLastWeek;
 
-  // 최근 7일 일별 신규 등록 (스파크라인용)
   const last7Days: Array<{ label: string; count: number; isToday: boolean }> = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now);
@@ -213,10 +215,9 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* 2. AI 자동화 섹션 — 메인 hero */}
+      {/* 2. AI 자동화 섹션 — hero (검정 유지, 액센트는 따뜻한 노랑 유지) */}
       <section className="mb-6 overflow-hidden rounded-2xl border border-[#0A0A0A] bg-[#0A0A0A] text-white">
         <div className="grid gap-0 lg:grid-cols-[1.1fr_1fr]">
-          {/* 왼쪽: 설명 + 기능 카드 */}
           <div className="p-6 lg:p-8">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] font-semibold text-white/80">
               <Sparkles size={12} className="text-[#FCD34D]" />
@@ -230,7 +231,6 @@ export default async function DashboardPage() {
               수기 입력은 이제 그만. 통화 녹음이나 메모를 붙여넣으면 보호자 정보, 상황 요약, 다음 행동까지 자동 정리돼요.
             </p>
 
-            {/* 기능 리스트 */}
             <div className="mt-6 space-y-3">
               <div className="flex items-start gap-3">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10">
@@ -262,64 +262,67 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* 오른쪽: 실제 업로드 위젯 */}
           <div className="border-t border-white/10 bg-[#FAFAFA] p-5 text-[#0A0A0A] lg:border-l lg:border-t-0 lg:p-6">
             <RecordingUploadButton />
           </div>
         </div>
       </section>
 
-      {/* 3. 오늘 연락 필요 — 바로 아래 */}
+      {/* 3. 오늘 연락 필요 — AnimatedList로 순차 등장 */}
       {upcomingContacts.length > 0 && (
         <section className="mb-5 overflow-hidden rounded-xl border border-[#E5E5E5] bg-white">
           <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-3">
             <div className="flex items-center gap-2">
-              <Phone size={16} className={overdueCount > 0 ? "text-[#DC2626]" : "text-[#D97706]"} />
+              <Phone size={16} className={overdueCount > 0 ? "text-[#DC2626]" : "text-[#2563EB]"} />
               <h2 className="text-[15px] font-bold text-[#0A0A0A]">오늘 연락 필요</h2>
             </div>
-            <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-bold ${overdueCount > 0 ? "bg-[#FEE2E2] text-[#DC2626]" : "bg-[#FFEDD5] text-[#D97706]"}`}>
+            <span className={`rounded-full px-2.5 py-0.5 text-[13px] font-bold ${overdueCount > 0 ? "bg-[#FEE2E2] text-[#DC2626]" : "bg-[#DBEAFE] text-[#2563EB]"}`}>
               {upcomingContacts.length}건
             </span>
           </div>
-          <div className="divide-y divide-[#E5E5E5]/60">
+          <AnimatedList delay={200} className="!gap-0 !items-stretch divide-y divide-[#E5E5E5]/60">
             {upcomingContacts.slice(0, 5).map((contact) => {
               const contactOverdue = isOverdue(contact.scheduledDate);
               return (
-                <Link href={`/leads/${contact.id}`} key={contact.id} className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-[#FFEDD5]/30">
-                  <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[14px] font-bold ${contactOverdue ? "bg-[#FEE2E2] text-[#DC2626]" : "bg-[#FFEDD5] text-[#D97706]"}`}>
+                <Link href={`/leads/${contact.id}`} key={contact.id} className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-[#EFF6FF]">
+                  <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[14px] font-bold ${contactOverdue ? "bg-[#FEE2E2] text-[#DC2626]" : "bg-[#DBEAFE] text-[#2563EB]"}`}>
                     {contact.guardianName.slice(0, 1)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[14px] font-semibold text-[#0A0A0A]">{contact.guardianName} 보호자</p>
                     <p className="mt-0.5 truncate text-[13px] text-[#737373]">{contact.note || "메모 없음"}</p>
                   </div>
-                  <span className={`text-[13px] font-bold ${contactOverdue ? "text-[#DC2626]" : "text-[#D97706]"}`}>
+                  <span className={`text-[13px] font-bold ${contactOverdue ? "text-[#DC2626]" : "text-[#2563EB]"}`}>
                     {contactOverdue ? "기한 초과" : "오늘"}
                   </span>
                 </Link>
               );
             })}
-          </div>
+          </AnimatedList>
         </section>
       )}
 
-      {/* 4. 4개 핵심 지표 — 전체 / 이번주 신규 / 인터뷰 예정 / 소개 대기 */}
+      {/* 4. 4개 핵심 지표 — NumberTicker 카운트업 */}
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Link href="/leads" className="card-hover group rounded-xl border border-[#E5E5E5] bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-[#737373]">전체 케이스</span>
-            <Users size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#D97706]" />
+            <Users size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#2563EB]" />
           </div>
-          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">{totalCount}</p>
+          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">
+            <NumberTicker value={totalCount} className="text-[40px] font-bold tracking-tight text-[#0A0A0A]" />
+          </p>
           <p className="mt-2 text-[12px] text-[#A3A3A3]">등록된 케이스 수</p>
         </Link>
 
         <Link href="/leads" className="card-hover group rounded-xl border border-[#E5E5E5] bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-[#737373]">이번 주 신규</span>
-            <UserPlus size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#D97706]" />
+            <UserPlus size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#2563EB]" />
           </div>
-          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">{newThisWeek}</p>
+          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">
+            <NumberTicker value={newThisWeek} className="text-[40px] font-bold tracking-tight text-[#0A0A0A]" />
+          </p>
           <div className="mt-2 flex items-center gap-1 text-[12px]">
             {weekTrend > 0 ? (
               <>
@@ -344,10 +347,13 @@ export default async function DashboardPage() {
         <Link href="/pipeline" className="card-hover group rounded-xl border border-[#E5E5E5] bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-[#737373]">인터뷰 예정</span>
-            <Calendar size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#D97706]" />
+            <Calendar size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#2563EB]" />
           </div>
-          <p className={`mt-4 text-[40px] font-bold leading-none tracking-tight ${interviewScheduledCount > 0 ? "text-[#D97706]" : "text-[#0A0A0A]"}`}>
-            {interviewScheduledCount}
+          <p className={`mt-4 text-[40px] font-bold leading-none tracking-tight ${interviewScheduledCount > 0 ? "text-[#2563EB]" : "text-[#0A0A0A]"}`}>
+            <NumberTicker
+              value={interviewScheduledCount}
+              className={`text-[40px] font-bold tracking-tight ${interviewScheduledCount > 0 ? "text-[#2563EB]" : "text-[#0A0A0A]"}`}
+            />
           </p>
           <p className="mt-2 text-[12px] text-[#A3A3A3]">진행 대기 중</p>
         </Link>
@@ -355,9 +361,11 @@ export default async function DashboardPage() {
         <Link href="/pipeline" className="card-hover group rounded-xl border border-[#E5E5E5] bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-medium text-[#737373]">소개 대기</span>
-            <CheckCircle2 size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#D97706]" />
+            <CheckCircle2 size={18} className="text-[#A3A3A3] transition-colors group-hover:text-[#2563EB]" />
           </div>
-          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">{introductionWaitingCount}</p>
+          <p className="mt-4 text-[40px] font-bold leading-none tracking-tight text-[#0A0A0A]">
+            <NumberTicker value={introductionWaitingCount} className="text-[40px] font-bold tracking-tight text-[#0A0A0A]" />
+          </p>
           <p className="mt-2 text-[12px] text-[#A3A3A3]">센터 연계 대기</p>
         </Link>
       </div>
@@ -370,7 +378,9 @@ export default async function DashboardPage() {
             <p className="mt-0.5 text-[13px] text-[#737373]">최근 7일 동안 등록된 케이스</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[22px] font-bold tracking-tight text-[#0A0A0A]">{newThisWeek}</span>
+            <span className="text-[22px] font-bold tracking-tight text-[#0A0A0A]">
+              <NumberTicker value={newThisWeek} className="text-[22px] font-bold tracking-tight text-[#0A0A0A]" />
+            </span>
             <span className="text-[13px] text-[#737373]">건</span>
           </div>
         </div>
@@ -381,11 +391,11 @@ export default async function DashboardPage() {
               <div key={i} className="flex flex-1 flex-col items-center gap-2">
                 <div className="relative flex h-20 w-full items-end justify-center">
                   <div
-                    className={`w-full rounded-t-md transition-all ${day.isToday ? "bg-[#D97706]" : "bg-[#D97706]/25"}`}
+                    className={`w-full rounded-t-md transition-all ${day.isToday ? "bg-[#2563EB]" : "bg-[#2563EB]/25"}`}
                     style={{ height: `${Math.max(heightPct, day.count > 0 ? 8 : 2)}%`, minHeight: "2px" }}
                   />
                   {day.count > 0 && (
-                    <span className={`absolute -top-5 text-[11px] font-bold ${day.isToday ? "text-[#D97706]" : "text-[#737373]"}`}>
+                    <span className={`absolute -top-5 text-[11px] font-bold ${day.isToday ? "text-[#2563EB]" : "text-[#737373]"}`}>
                       {day.count}
                     </span>
                   )}
@@ -406,18 +416,18 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* 6. 케이스 현황 + 최근 등록 — 그리드 */}
+      {/* 6. 케이스 현황 + 최근 등록 */}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
         <section className="overflow-hidden rounded-xl border border-[#E5E5E5] bg-white">
           <div className="flex items-center justify-between border-b border-[#E5E5E5] px-5 py-4">
             <h2 className="text-[16px] font-bold text-[#0A0A0A]">케이스 현황</h2>
             <div className="flex items-center gap-2">
-              <Link href="/leads/new" className="rounded-lg bg-[#D97706] px-3 py-1.5 text-[13px] font-bold text-white transition-colors hover:bg-[#B45309]">
-                + 신규
-              </Link>
-              <Link href="/leads" className="text-[13px] font-medium text-[#D97706] hover:text-[#B45309]">
-                전체 보기 →
-              </Link>
+              <Button asChild size="sm">
+                <Link href="/leads/new">+ 신규</Link>
+              </Button>
+              <Button asChild variant="link" size="sm" className="text-[#2563EB] hover:text-[#1D4ED8]">
+                <Link href="/leads">전체 보기 →</Link>
+              </Button>
             </div>
           </div>
 
@@ -425,9 +435,9 @@ export default async function DashboardPage() {
             <div className="px-5 py-14 text-center">
               <p className="text-[16px] font-semibold text-[#0A0A0A]">아직 케이스가 없어요</p>
               <p className="mt-1 text-[14px] text-[#737373]">전화 끝나고 녹음을 올리거나, 직접 등록하면 돼요.</p>
-              <Link href="/leads/new" className="mt-4 inline-flex min-h-[44px] items-center gap-1 rounded-lg bg-[#D97706] px-4 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-[#B45309]">
-                + 첫 케이스 등록하기
-              </Link>
+              <Button asChild size="lg" className="mt-4">
+                <Link href="/leads/new">+ 첫 케이스 등록하기</Link>
+              </Button>
             </div>
           ) : (
             <>
@@ -437,13 +447,13 @@ export default async function DashboardPage() {
                   const overdue = isOverdue(lead.next_contact_date);
                   const todayLabel = isToday(lead.next_contact_date);
                   return (
-                    <Link key={lead.id} href={`/leads/${lead.id}`} className="block px-5 py-3.5 transition-colors hover:bg-[#FFEDD5]/30">
+                    <Link key={lead.id} href={`/leads/${lead.id}`} className="block px-5 py-3.5 transition-colors hover:bg-[#EFF6FF]">
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
                             <p className="text-[15px] font-semibold text-[#0A0A0A]">{lead.guardian_name}</p>
                             {(overdue || todayLabel) && (
-                              <span className={`text-[12px] font-bold ${overdue ? "text-[#DC2626]" : "text-[#D97706]"}`}>
+                              <span className={`text-[12px] font-bold ${overdue ? "text-[#DC2626]" : "text-[#2563EB]"}`}>
                                 {overdue ? "기한 초과" : "오늘"}
                               </span>
                             )}
@@ -457,41 +467,41 @@ export default async function DashboardPage() {
                 })}
               </div>
 
-              {/* 데스크탑: 테이블형 */}
+              {/* 데스크탑: shadcn Table */}
               <div className="hidden overflow-x-auto lg:block">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-left text-[13px] text-[#737373]">
-                      <th className="px-5 py-3 font-medium">이름</th>
-                      <th className="px-5 py-3 font-medium">케어 대상</th>
-                      <th className="px-5 py-3 font-medium">다음 연락</th>
-                      <th className="px-5 py-3 font-medium">상태</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-[#FAFAFA]">
+                      <TableHead className="px-5 text-[13px] font-medium text-[#737373]">이름</TableHead>
+                      <TableHead className="px-5 text-[13px] font-medium text-[#737373]">케어 대상</TableHead>
+                      <TableHead className="px-5 text-[13px] font-medium text-[#737373]">다음 연락</TableHead>
+                      <TableHead className="px-5 text-[13px] font-medium text-[#737373]">상태</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {allLeads.map((lead) => {
                       const overdue = isOverdue(lead.next_contact_date);
                       const todayLabel = isToday(lead.next_contact_date);
                       return (
-                        <tr key={lead.id} className="border-b border-[#E5E5E5]/60 transition-colors hover:bg-[#FFEDD5]/30">
-                          <td className="px-5 py-3.5 align-top">
+                        <TableRow key={lead.id} className="hover:bg-[#EFF6FF]">
+                          <TableCell className="px-5 py-3.5 align-top">
                             <Link href={`/leads/${lead.id}`} className="block">
                               <p className="text-[15px] font-semibold text-[#0A0A0A]">{lead.guardian_name}</p>
                               <p className="mt-0.5 line-clamp-1 text-[13px] text-[#737373]">{lead.current_situation_summary}</p>
                             </Link>
-                          </td>
-                          <td className="px-5 py-3.5 align-top text-[14px] text-[#0A0A0A]">{buildDiagnosis(lead) || "미입력"}</td>
-                          <td className="px-5 py-3.5 align-top text-[14px] font-medium">
-                            <span className={overdue ? "text-[#DC2626]" : todayLabel ? "text-[#D97706]" : "text-[#737373]"}>
+                          </TableCell>
+                          <TableCell className="px-5 py-3.5 align-top text-[14px] text-[#0A0A0A]">{buildDiagnosis(lead) || "미입력"}</TableCell>
+                          <TableCell className="px-5 py-3.5 align-top text-[14px] font-medium">
+                            <span className={overdue ? "text-[#DC2626]" : todayLabel ? "text-[#2563EB]" : "text-[#737373]"}>
                               {overdue ? "기한 초과" : todayLabel ? "오늘" : formatDate(lead.next_contact_date)}
                             </span>
-                          </td>
-                          <td className="px-5 py-3.5 align-top"><LeadStatusBadge status={lead.status as LeadStatus} /></td>
-                        </tr>
+                          </TableCell>
+                          <TableCell className="px-5 py-3.5 align-top"><LeadStatusBadge status={lead.status as LeadStatus} /></TableCell>
+                        </TableRow>
                       );
                     })}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </>
           )}
@@ -505,7 +515,7 @@ export default async function DashboardPage() {
             ) : (
               <div className="mt-2 divide-y divide-[#EEEEEE]">
                 {recentLeads.map((lead) => (
-                  <Link key={lead.id} href={`/leads/${lead.id}`} className="flex items-center justify-between py-2.5 transition-colors hover:text-[#D97706]">
+                  <Link key={lead.id} href={`/leads/${lead.id}`} className="flex items-center justify-between py-2.5 transition-colors hover:text-[#2563EB]">
                     <div className="min-w-0 pr-3">
                       <p className="text-[14px] font-semibold text-[#0A0A0A]">{lead.guardian_name}</p>
                       <p className="mt-0.5 line-clamp-1 text-[13px] text-[#737373]">{lead.current_situation_summary}</p>
@@ -519,10 +529,10 @@ export default async function DashboardPage() {
 
           {/* 빠른 링크 */}
           <div className="grid grid-cols-2 gap-2">
-            <Link href="/leads/new" className="rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-center text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#FFEDD5]/30">
+            <Link href="/leads/new" className="rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-center text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#EFF6FF]">
               + 신규 등록
             </Link>
-            <Link href="/pipeline" className="rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-center text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#FFEDD5]/30">
+            <Link href="/pipeline" className="rounded-xl border border-[#E5E5E5] bg-white px-4 py-3 text-center text-[14px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#EFF6FF]">
               진행 현황
             </Link>
           </div>

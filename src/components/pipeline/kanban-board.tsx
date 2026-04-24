@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { getStatusLabel, type LeadStatus } from "@/types/domain";
 import type { KanbanLead } from "@/app/pipeline/page";
 
@@ -14,6 +15,9 @@ const COLUMNS: { status: LeadStatus; label: string; color: string }[] = [
   { status: "소개대기", label: getStatusLabel("소개대기"), color: "#6B7280" },
   { status: "보류", label: getStatusLabel("보류"), color: "#A3A3A3" },
 ];
+
+const SPRING = { type: "spring" as const, stiffness: 350, damping: 30 };
+const HOVER_SPRING = { type: "spring" as const, stiffness: 400, damping: 25 };
 
 function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
@@ -34,7 +38,7 @@ function getDDayLabel(dateStr: string | null): { text: string; color: string } |
   return { text: `D-${diffDays}`, color: "#16A34A" };
 }
 
-/* --- 데스크탑 칸반 카드 --- */
+/* --- 데스크탑 칸반 카드 (motion + spring) --- */
 function KanbanCard({
   lead,
   color,
@@ -55,34 +59,43 @@ function KanbanCard({
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      className={`relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm cursor-grab active:cursor-grabbing select-none transition-opacity ${
-        isDragging ? "opacity-40" : "opacity-100 hover:shadow-md"
-      }`}
+      className="cursor-grab active:cursor-grabbing"
     >
-      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: color }} />
-      <Link
-        href={`/leads/${lead.id}`}
-        className="block px-3 py-3 pl-4"
-        onClick={(e) => { if (isDragging) e.preventDefault(); }}
+      <motion.div
+        layout
+        layoutId={`card-${lead.id}`}
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: isDragging ? 0.4 : 1, scale: isDragging ? 0.96 : 1, y: 0 }}
+        whileHover={isDragging ? undefined : { y: -3, boxShadow: "0 8px 20px -8px rgba(37, 99, 235, 0.25)", transition: HOVER_SPRING }}
+        whileTap={{ scale: 0.97 }}
+        transition={SPRING}
+        className="relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm select-none"
       >
-        <p className="text-[14px] font-semibold text-[#0A0A0A] leading-snug">{lead.guardianName}</p>
-        {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
-          <p className="mt-0.5 text-[12px] text-[#737373]">
-            {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
-          </p>
-        )}
-        <div className="mt-2 flex items-center justify-between">
-          <span className="text-[12px] font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
-          {dday && (
-            <span
-              className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
-              style={{ backgroundColor: dday.color }}
-            >
-              {dday.text}
-            </span>
+        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: color }} />
+        <Link
+          href={`/leads/${lead.id}`}
+          className="block px-3 py-3 pl-4"
+          onClick={(e) => { if (isDragging) e.preventDefault(); }}
+        >
+          <p className="text-[14px] font-semibold text-[#0A0A0A] leading-snug">{lead.guardianName}</p>
+          {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
+            <p className="mt-0.5 text-[12px] text-[#737373]">
+              {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
+            </p>
           )}
-        </div>
-      </Link>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-[12px] font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
+            {dday && (
+              <span
+                className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
+                style={{ backgroundColor: dday.color }}
+              >
+                {dday.text}
+              </span>
+            )}
+          </div>
+        </Link>
+      </motion.div>
     </div>
   );
 }
@@ -124,57 +137,77 @@ function MobileStatusGroup({
         />
       </button>
 
-      {open && (
-        <div className="border-t border-[#E5E5E5] divide-y divide-[#E5E5E5]/60">
-          {leads.length === 0 ? (
-            <p className="px-4 py-4 text-center text-[13px] text-[#A3A3A3]">이 단계의 케이스가 없어요</p>
-          ) : (
-            leads.map((lead) => {
-              const dday = getDDayLabel(lead.nextContactDate);
-
-              return (
-                <div key={lead.id} className="relative px-4 py-3">
-                  <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: col.color }} />
-                  <div className="flex items-start justify-between gap-2 pl-2">
-                    <Link href={`/leads/${lead.id}`} className="min-w-0 flex-1">
-                      <p className="text-[14px] font-semibold text-[#0A0A0A]">{lead.guardianName}</p>
-                      {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
-                        <p className="mt-0.5 text-[13px] text-[#737373]">
-                          {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
-                        </p>
-                      )}
-                      <div className="mt-1.5 flex items-center gap-3 text-[12px]">
-                        <span className="font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
-                        {dday && (
-                          <span
-                            className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
-                            style={{ backgroundColor: dday.color }}
-                          >
-                            {dday.text}
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                    <div className="relative flex-shrink-0">
-                      <select
-                        value={lead.status}
-                        onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
-                        disabled={savingIds.has(lead.id)}
-                        className="appearance-none rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] py-1.5 pl-3 pr-7 text-[12px] font-medium text-[#0A0A0A] focus:border-[#D97706] focus:outline-none disabled:opacity-50"
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="overflow-hidden border-t border-[#E5E5E5]"
+          >
+            <div className="divide-y divide-[#E5E5E5]/60">
+              {leads.length === 0 ? (
+                <p className="px-4 py-4 text-center text-[13px] text-[#A3A3A3]">이 단계의 케이스가 없어요</p>
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {leads.map((lead) => {
+                    const dday = getDDayLabel(lead.nextContactDate);
+                    return (
+                      <motion.div
+                        key={lead.id}
+                        layout
+                        layoutId={`mcard-${lead.id}`}
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={SPRING}
+                        className="relative px-4 py-3"
                       >
-                        {COLUMNS.map((c) => (
-                          <option key={c.status} value={c.status}>{c.label}</option>
-                        ))}
-                      </select>
-                      <ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A3A3A3]" />
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-      )}
+                        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: col.color }} />
+                        <div className="flex items-start justify-between gap-2 pl-2">
+                          <Link href={`/leads/${lead.id}`} className="min-w-0 flex-1">
+                            <p className="text-[14px] font-semibold text-[#0A0A0A]">{lead.guardianName}</p>
+                            {(lead.careRecipientName || lead.careRecipientAgeGroup) && (
+                              <p className="mt-0.5 text-[13px] text-[#737373]">
+                                {[lead.careRecipientName, lead.careRecipientAgeGroup].filter(Boolean).join(" · ")}
+                              </p>
+                            )}
+                            <div className="mt-1.5 flex items-center gap-3 text-[12px]">
+                              <span className="font-medium text-[#A3A3A3]">D+{daysSince(lead.createdAt)}</span>
+                              {dday && (
+                                <span
+                                  className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
+                                  style={{ backgroundColor: dday.color }}
+                                >
+                                  {dday.text}
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                          <div className="relative flex-shrink-0">
+                            <select
+                              value={lead.status}
+                              onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
+                              disabled={savingIds.has(lead.id)}
+                              className="appearance-none rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] py-1.5 pl-3 pr-7 text-[12px] font-medium text-[#0A0A0A] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/15 disabled:opacity-50"
+                            >
+                              {COLUMNS.map((c) => (
+                                <option key={c.status} value={c.status}>{c.label}</option>
+                              ))}
+                            </select>
+                            <ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#A3A3A3]" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -245,58 +278,65 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
       </div>
 
       {/* 데스크탑: 칸반 보드 */}
-      <div className="hidden overflow-x-auto pb-4 lg:block">
-        <div className="flex gap-3" style={{ minWidth: `${COLUMNS.length * 220}px` }}>
-          {COLUMNS.map((col) => {
-            const colLeads = leads.filter((l) => l.status === col.status);
-            const isOver = dragOverColumn === col.status;
+      <LayoutGroup>
+        <div className="hidden overflow-x-auto pb-4 lg:block">
+          <div className="flex gap-3" style={{ minWidth: `${COLUMNS.length * 220}px` }}>
+            {COLUMNS.map((col) => {
+              const colLeads = leads.filter((l) => l.status === col.status);
+              const isOver = dragOverColumn === col.status;
 
-            return (
-              <div
-                key={col.status}
-                className={`flex w-[212px] flex-shrink-0 flex-col rounded-xl border transition-colors ${
-                  isOver ? "border-[#D97706] bg-[#FFEDD5]/40" : "border-[#E5E5E5] bg-[#FAFAFA]"
-                }`}
-                onDragOver={(e) => { e.preventDefault(); setDragOverColumn(col.status); }}
-                onDragLeave={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverColumn(null);
-                }}
-                onDrop={(e) => handleDrop(e, col.status)}
-              >
-                <div className="flex items-center justify-between border-b border-[#E5E5E5] px-3 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
-                    <span className="text-[13px] font-semibold text-[#0A0A0A]">{col.label}</span>
-                  </div>
-                  <span className="rounded-full border border-[#E5E5E5] bg-white px-2 py-0.5 text-[12px] font-bold text-[#737373]">
-                    {colLeads.length}
-                  </span>
-                </div>
-                <div className="flex-1 space-y-2 p-2 min-h-[80px]">
-                  {colLeads.map((lead) => (
-                    <KanbanCard
-                      key={lead.id}
-                      lead={lead}
-                      color={col.color}
-                      isDragging={draggingId === lead.id}
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData("leadId", lead.id);
-                        setDraggingId(lead.id);
-                      }}
-                      onDragEnd={() => { setDraggingId(null); setDragOverColumn(null); }}
-                    />
-                  ))}
-                  {colLeads.length === 0 && (
-                    <div className="flex h-14 items-center justify-center rounded-lg border border-dashed border-[#E5E5E5] text-[13px] text-[#A3A3A3]">
-                      이 단계의 케이스가 없어요
+              return (
+                <motion.div
+                  key={col.status}
+                  animate={{
+                    borderColor: isOver ? "#2563EB" : "#E5E5E5",
+                    backgroundColor: isOver ? "rgba(219, 234, 254, 0.5)" : "#FAFAFA",
+                  }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="flex w-[212px] flex-shrink-0 flex-col rounded-xl border"
+                  onDragOver={(e) => { e.preventDefault(); setDragOverColumn(col.status); }}
+                  onDragLeave={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverColumn(null);
+                  }}
+                  onDrop={(e) => handleDrop(e, col.status)}
+                >
+                  <div className="flex items-center justify-between border-b border-[#E5E5E5] px-3 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: col.color }} />
+                      <span className="text-[13px] font-semibold text-[#0A0A0A]">{col.label}</span>
                     </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                    <span className="rounded-full border border-[#E5E5E5] bg-white px-2 py-0.5 text-[12px] font-bold text-[#737373]">
+                      {colLeads.length}
+                    </span>
+                  </div>
+                  <div className="flex-1 space-y-2 p-2 min-h-[80px]">
+                    <AnimatePresence mode="popLayout">
+                      {colLeads.map((lead) => (
+                        <KanbanCard
+                          key={lead.id}
+                          lead={lead}
+                          color={col.color}
+                          isDragging={draggingId === lead.id}
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData("leadId", lead.id);
+                            setDraggingId(lead.id);
+                          }}
+                          onDragEnd={() => { setDraggingId(null); setDragOverColumn(null); }}
+                        />
+                      ))}
+                    </AnimatePresence>
+                    {colLeads.length === 0 && (
+                      <div className="flex h-14 items-center justify-center rounded-lg border border-dashed border-[#E5E5E5] text-[13px] text-[#A3A3A3]">
+                        이 단계의 케이스가 없어요
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </LayoutGroup>
     </>
   );
 }

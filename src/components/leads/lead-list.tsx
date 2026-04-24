@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { LeadStatusBadge } from "@/components/leads/status-badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { LeadListItem } from "@/types/domain";
 
 function getDDayInfo(dateStr: string | null): { label: string; color: string; isUrgent: boolean } | null {
@@ -25,7 +29,7 @@ function NextContactLabel({ date }: { date: string | null }) {
   return (
     <div className="flex items-center gap-1.5">
       <span
-        className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white`}
+        className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[12px] font-bold text-white"
         style={{ backgroundColor: info.color }}
       >
         {info.label}
@@ -39,14 +43,12 @@ type LeadListProps = {
   leads: LeadListItem[];
 };
 
-const columns = ["보호자", "연락처", "케어 대상", "유입경로", "상태", "다음 연락", "최근 상담"];
-
 function LeadCard({ lead }: { lead: LeadListItem }) {
   const info = getDDayInfo(lead.nextContactDate);
   const barColor = info?.isUrgent ? info.color : "#E5E5E5";
 
   return (
-    <Link href={`/leads/${lead.id}`} className="card-hover group relative block overflow-hidden rounded-xl border border-[#E5E5E5] bg-white p-4 hover:bg-[#FFEDD5]/30 sm:p-5">
+    <Link href={`/leads/${lead.id}`} className="card-hover group relative block overflow-hidden rounded-xl border border-[#E5E5E5] bg-white p-4 hover:bg-[#EFF6FF] sm:p-5">
       <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" style={{ backgroundColor: barColor }} />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -76,23 +78,9 @@ function LeadCard({ lead }: { lead: LeadListItem }) {
   );
 }
 
-function LeadTableRow({ lead }: { lead: LeadListItem }) {
-  return (
-    <Link href={`/leads/${lead.id}`} className="group block transition-colors hover:bg-[#FFEDD5]/30">
-      <div className="grid grid-cols-[1.1fr_1fr_1.7fr_1fr_1fr_0.95fr_0.95fr] items-center gap-4 px-5 py-4">
-        <p className="text-[15px] font-semibold text-[#0A0A0A]">{lead.guardianName}</p>
-        <p className="text-[15px] text-[#0A0A0A]">{lead.phone}</p>
-        <p className="text-[15px] leading-[1.6] text-[#737373]">{lead.careSummary}</p>
-        <p className="text-[15px] text-[#737373]">{lead.source}</p>
-        <div><LeadStatusBadge status={lead.status} /></div>
-        <div>{lead.nextContactDate ? <NextContactLabel date={lead.nextContactDate} /> : <p className="text-[15px] text-[#A3A3A3]">미정</p>}</div>
-        <p className="text-[15px] font-medium text-[#0A0A0A]">{lead.latestConsultationDate || "-"}</p>
-      </div>
-    </Link>
-  );
-}
-
 export function LeadList({ leads }: LeadListProps) {
+  const router = useRouter();
+
   return (
     <>
       {/* Mobile/Tablet: Card layout */}
@@ -102,21 +90,48 @@ export function LeadList({ leads }: LeadListProps) {
         ))}
       </div>
 
-      {/* Desktop: Table layout */}
-      <section className="hidden overflow-x-auto rounded-xl border border-[#E5E5E5] bg-white lg:block">
-        <div className="grid grid-cols-[1.1fr_1fr_1.7fr_1fr_1fr_0.95fr_0.95fr] gap-4 border-b border-[#E5E5E5] bg-[#FAFAFA] px-5 py-3">
-          {columns.map((column) => (
-            <p key={column} className="text-[13px] font-medium text-[#737373]">
-              {column}
-            </p>
-          ))}
-        </div>
-
-        <div className="divide-y divide-[#E5E5E5]/60">
-          {leads.map((lead) => (
-            <LeadTableRow key={lead.id} lead={lead} />
-          ))}
-        </div>
+      {/* Desktop: shadcn Table */}
+      <section className="hidden overflow-hidden rounded-xl border border-[#E5E5E5] bg-white lg:block">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-[#FAFAFA] hover:bg-[#FAFAFA]">
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">보호자</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">연락처</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">케어 대상</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">유입경로</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">상태</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">다음 연락</TableHead>
+              <TableHead className="px-5 text-[13px] font-medium text-[#737373]">최근 상담</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {leads.map((lead) => (
+              <TableRow
+                key={lead.id}
+                onClick={() => router.push(`/leads/${lead.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push(`/leads/${lead.id}`);
+                  }
+                }}
+                tabIndex={0}
+                role="link"
+                className="cursor-pointer hover:bg-[#EFF6FF] focus-visible:bg-[#EFF6FF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#2563EB]/40"
+              >
+                <TableCell className="px-5 py-4 text-[15px] font-semibold text-[#0A0A0A]">{lead.guardianName}</TableCell>
+                <TableCell className="px-5 py-4 text-[15px] text-[#0A0A0A]">{lead.phone}</TableCell>
+                <TableCell className="px-5 py-4 text-[15px] leading-[1.6] text-[#737373]">{lead.careSummary}</TableCell>
+                <TableCell className="px-5 py-4 text-[15px] text-[#737373]">{lead.source}</TableCell>
+                <TableCell className="px-5 py-4"><LeadStatusBadge status={lead.status} /></TableCell>
+                <TableCell className="px-5 py-4">
+                  {lead.nextContactDate ? <NextContactLabel date={lead.nextContactDate} /> : <p className="text-[15px] text-[#A3A3A3]">미정</p>}
+                </TableCell>
+                <TableCell className="px-5 py-4 text-[15px] font-medium text-[#0A0A0A]">{lead.latestConsultationDate || "-"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </section>
     </>
   );

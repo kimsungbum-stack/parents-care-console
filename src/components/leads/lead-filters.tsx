@@ -1,5 +1,7 @@
 import type { ChangeEvent } from "react";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { getStatusLabel, type LeadStatus } from "@/types/domain";
 
 type LeadFiltersProps = {
@@ -19,16 +21,16 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
     <section className="rounded-xl border border-[#E5E5E5] bg-white p-4 sm:p-5">
       <div className="flex flex-col gap-4 sm:gap-5">
         <div>
-          <label htmlFor="lead-search" className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">
+          <Label htmlFor="lead-search" className="mb-2 block text-[13px] font-medium text-[#0A0A0A]">
             검색
-          </label>
-          <input
+          </Label>
+          <Input
             id="lead-search"
             type="search"
             value={query}
             onChange={handleChange}
             placeholder="보호자명, 연락처, 유입경로로 검색"
-            className="control-input"
+            className="h-11 text-[15px]"
           />
         </div>
 
@@ -46,7 +48,7 @@ export function LeadFilters({ query, status, statuses, onQueryChange, onStatusCh
                   className={[
                     "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors",
                     isActive
-                      ? "border-[#D97706] bg-[#FFEDD5] text-[#D97706]"
+                      ? "border-[#2563EB] bg-[#DBEAFE] text-[#1D4ED8]"
                       : "border-[#E5E5E5] bg-white text-[#737373] hover:bg-[#FAFAFA] hover:text-[#0A0A0A]",
                   ].join(" ")}
                 >
