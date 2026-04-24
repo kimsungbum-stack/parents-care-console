@@ -1,9 +1,9 @@
 ﻿import "server-only";
 
-import { getCurrentUser } from "@/lib/auth";
 import type { NewLeadFormErrors, NewLeadFormValues } from "@/lib/forms/new-lead";
 import { validateNewLeadFormValues } from "@/lib/forms/new-lead";
 import { mapNewLeadFormValuesToLeadInsert } from "@/lib/mappers/new-lead-mappers";
+import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type CreateLeadResult =
@@ -48,19 +48,51 @@ export async function createLead(
     };
   }
 
-  const currentUser = await getCurrentUser();
-  if (!currentUser) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
     return {
       status: "error",
-      message: "로그인 정보를 확인할 수 없어요. 다시 로그인해 주세요.",
+      message: `[AUTH-1] 인증 세션 없음: ${authError?.message ?? "user is null"}. 다시 로그인해 주세요.`,
+    };
+  }
+
+  const plain = createSupabasePlainClient();
+  const { data: userRow, error: userQueryError } = await plain
+    .from("users")
+    .select("organization_id, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (userQueryError) {
+    return {
+      status: "error",
+      message: `[AUTH-2] users 조회 실패: [${userQueryError.code ?? "?"}] ${userQueryError.message} (uid=${user.id.slice(0, 8)})`,
+    };
+  }
+
+  if (!userRow) {
+    return {
+      status: "error",
+      message: `[AUTH-3] public.users에 매핑 없음. uid=${user.id.slice(0, 8)} → SQL로 매핑 추가 필요`,
+    };
+  }
+
+  if (!userRow.organization_id) {
+    return {
+      status: "error",
+      message: `[AUTH-4] users.organization_id가 비어있음. uid=${user.id.slice(0, 8)}`,
     };
   }
 
   try {
-    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("leads")
-      .insert(mapNewLeadFormValuesToLeadInsert(values, currentUser.organizationId))
+      .insert(mapNewLeadFormValuesToLeadInsert(values, userRow.organization_id))
       .select("id")
       .single();
 
