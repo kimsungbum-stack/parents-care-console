@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { UpcomingContactItem } from "@/types/domain";
 
@@ -18,6 +19,11 @@ export async function getUpcomingContacts(): Promise<UpcomingContactsResult> {
     return { contacts: [], error: "데이터 연결이 설정되지 않았어요." };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return { contacts: [] };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
     const today = new Date().toISOString().slice(0, 10);
@@ -27,6 +33,7 @@ export async function getUpcomingContacts(): Promise<UpcomingContactsResult> {
       .select(
         "id, guardian_name, next_contact_date, consultation_memo, current_situation_summary",
       )
+      .eq("organization_id", currentUser.organizationId)
       .not("next_contact_date", "is", null)
       .lte("next_contact_date", today)
       .order("next_contact_date", { ascending: true });

@@ -1,11 +1,17 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeConsultation } from "@/lib/ai/prompts/consultation-analysis";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { Json } from "@/types/supabase";
 
 export async function POST(request: NextRequest) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+
     const body = await request.json();
     const { transcript, recordingUrl, mode, editedAnalysis } = body;
 
@@ -50,6 +56,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from("leads")
       .insert({
+        organization_id: currentUser.organizationId,
         guardian_name: analysis.guardianName || "미확인 보호자",
         phone: analysis.phone || "",
         status: "신규" as const,

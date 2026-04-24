@@ -2,6 +2,8 @@
 import { DetailNotFound } from "@/components/leads/detail-not-found";
 import { DetailWorkspace } from "@/components/leads/detail-workspace";
 import { AppShell } from "@/components/layout/app-shell";
+import { getCurrentUser } from "@/lib/auth";
+import { getOrganizationPlan } from "@/lib/plans/check-plan";
 import { getLeadDetailPageData } from "@/lib/queries/get-lead-detail";
 
 export const dynamic = "force-dynamic";
@@ -40,12 +42,17 @@ export default async function LeadDetailPage({
     );
   }
 
+  const currentUser = await getCurrentUser();
+  const planTier = currentUser
+    ? await getOrganizationPlan(currentUser.organizationId)
+    : undefined;
+
   return (
     <AppShell
       title={`케이스 상세: ${result.lead.guardianName}`}
       description="상담 기록, 요약 리포트, 메모를 한 화면에서 관리할 수 있어요."
     >
-      <DetailWorkspace lead={result.lead} />
+      <DetailWorkspace lead={result.lead} planTier={planTier} />
     </AppShell>
   );
 }

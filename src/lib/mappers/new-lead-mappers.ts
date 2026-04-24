@@ -20,8 +20,10 @@ function mapTernaryFieldToBoolean(value: TernaryFieldValue) {
 
 export function mapNewLeadFormValuesToLeadInsert(
   values: NewLeadFormValues,
+  organizationId: string,
 ): Database["public"]["Tables"]["leads"]["Insert"] {
   return {
+    organization_id: organizationId,
     guardian_name: values.guardianName.trim(),
     phone: values.phone.trim(),
     guardian_relationship: trimOrNull(values.guardianRelationship),

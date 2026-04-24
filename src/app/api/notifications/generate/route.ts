@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 
 /**
@@ -9,22 +10,15 @@ import { createSupabasePlainClient } from "@/lib/supabase/plain";
  */
 export async function POST() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+
+    const orgId = currentUser.organizationId;
     const supabase = createSupabasePlainClient();
     const today = new Date().toISOString().slice(0, 10);
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-
-    // 조직 ID 가져오기
-    const { data: org } = await supabase
-      .from("organizations")
-      .select("id")
-      .limit(1)
-      .single();
-
-    if (!org) {
-      return NextResponse.json({ generated: 0 });
-    }
-
-    const orgId = org.id;
 
     // 오늘 이미 생성된 알림 확인 (중복 방지)
     const todayStart = new Date();
@@ -51,6 +45,7 @@ export async function POST() {
     const { data: dueLeads } = await supabase
       .from("leads")
       .select("id, guardian_name, next_contact_date")
+      .eq("organization_id", orgId)
       .lte("next_contact_date", today)
       .not("status", "eq", "보류");
 
@@ -74,6 +69,7 @@ export async function POST() {
     const { data: staleLeads } = await supabase
       .from("leads")
       .select("id, guardian_name, created_at")
+      .eq("organization_id", orgId)
       .eq("status", "신규")
       .lte("created_at", `${threeDaysAgo}T23:59:59`);
 

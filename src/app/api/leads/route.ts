@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import {
   normalizeNewLeadFormValues,
   type NewLeadFormValues,
@@ -73,14 +74,45 @@ export async function POST(request: Request) {
 
 export async function DELETE() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ message: "로그인이 필요해요." }, { status: 401 });
+    }
+    if (currentUser.role !== "admin") {
+      return NextResponse.json(
+        { message: "관리자만 전체 케이스를 삭제할 수 있어요." },
+        { status: 403 },
+      );
+    }
+
+    const orgId = currentUser.organizationId;
     const supabase = createSupabasePlainClient();
 
-    // 관련 데이터 먼저 삭제 (FK 제약 대응)
-    await supabase.from("consultations").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-    await supabase.from("notes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-    await supabase.from("reports").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    // 우리 조직 리드 ID만 추출 → 관련 테이블도 그 범위로만 삭제
+    const { data: leadRows, error: leadsError } = await supabase
+      .from("leads")
+      .select("id")
+      .eq("organization_id", orgId);
 
-    const { error } = await supabase.from("leads").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    if (leadsError) {
+      return NextResponse.json(
+        { message: "케이스 목록을 불러오지 못했어요." },
+        { status: 500 },
+      );
+    }
+
+    const leadIds = (leadRows ?? []).map((l) => l.id);
+
+    if (leadIds.length > 0) {
+      await supabase.from("consultations").delete().in("lead_id", leadIds);
+      await supabase.from("notes").delete().in("lead_id", leadIds);
+      await supabase.from("reports").delete().in("lead_id", leadIds);
+    }
+
+    const { error } = await supabase
+      .from("leads")
+      .delete()
+      .eq("organization_id", orgId);
 
     if (error) {
       return NextResponse.json(

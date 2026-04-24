@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import { PLAN_AI_LIMITS, type PlanTier } from "@/types/domain";
 
@@ -8,12 +9,17 @@ import { PLAN_AI_LIMITS, type PlanTier } from "@/types/domain";
  */
 export async function GET() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ allowed: false, reason: "not_authenticated" }, { status: 401 });
+    }
+
     const supabase = createSupabasePlainClient();
     const { data: org } = await supabase
       .from("organizations")
       .select("plan, ai_analysis_count_this_month")
-      .limit(1)
-      .single();
+      .eq("id", currentUser.organizationId)
+      .maybeSingle();
 
     if (!org) {
       return NextResponse.json({ allowed: false, reason: "no_org" });
@@ -38,12 +44,17 @@ export async function GET() {
 
 export async function POST() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+
     const supabase = createSupabasePlainClient();
     const { data: org } = await supabase
       .from("organizations")
       .select("id, plan, ai_analysis_count_this_month")
-      .limit(1)
-      .single();
+      .eq("id", currentUser.organizationId)
+      .maybeSingle();
 
     if (!org) {
       return NextResponse.json({ error: "조직 정보 없음" }, { status: 404 });

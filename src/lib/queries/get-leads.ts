@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import { mapLeadRowToLeadListItem } from "@/lib/mappers/lead-mappers";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { LeadListItem } from "@/types/domain";
@@ -29,11 +30,23 @@ export async function getLeadsPageData(): Promise<LeadsPageResult> {
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      leads: [],
+      notice: {
+        tone: "info",
+        message: "로그인하면 케이스 목록이 보여요.",
+      },
+    };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
     const { data: leadRows, error: leadsError } = await supabase
       .from("leads")
       .select("*")
+      .eq("organization_id", currentUser.organizationId)
       .order("updated_at", { ascending: false });
 
     if (leadsError) {

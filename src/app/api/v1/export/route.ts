@@ -1,10 +1,24 @@
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import { getOrgUsage } from "@/lib/usage";
 
+function csvEscape(value: string | null | undefined): string {
+  const s = value ?? "";
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
 export async function GET() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json(
+        { message: "로그인이 필요해요." },
+        { status: 401 },
+      );
+    }
+
     const usage = await getOrgUsage();
 
     if (!usage) {
@@ -30,6 +44,7 @@ export async function GET() {
       .select(
         "guardian_name, phone, status, source, next_contact_date, current_situation_summary, created_at",
       )
+      .eq("organization_id", currentUser.organizationId)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -44,18 +59,17 @@ export async function GET() {
     const header =
       "보호자명,전화번호,상태,유입경로,다음연락일,현재상황요약,등록일";
 
-    const csvRows = rows.map((row) => {
-      const fields = [
-        row.guardian_name,
-        row.phone,
-        row.status,
-        row.source,
-        row.next_contact_date ?? "",
-        `"${(row.current_situation_summary ?? "").replace(/"/g, '""')}"`,
-        row.created_at,
-      ];
-      return fields.join(",");
-    });
+    const csvRows = rows.map((row) =>
+      [
+        csvEscape(row.guardian_name),
+        csvEscape(row.phone),
+        csvEscape(row.status),
+        csvEscape(row.source),
+        csvEscape(row.next_contact_date),
+        csvEscape(row.current_situation_summary),
+        csvEscape(row.created_at),
+      ].join(","),
+    );
 
     const csv = [header, ...csvRows].join("\n");
     const bom = "\uFEFF";

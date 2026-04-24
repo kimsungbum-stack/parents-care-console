@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Sparkles, Lock } from "lucide-react";
 
-import type { ConsultationAnalysis, PlanTier, PLAN_FEATURES } from "@/types/domain";
+import type { ConsultationAnalysis, PlanTier } from "@/types/domain";
+import { PLAN_FEATURES } from "@/types/domain";
 
 type AiAnalysisCardProps = {
   leadId: string;
@@ -18,8 +19,8 @@ const urgencyStyles: Record<ConsultationAnalysis["urgencyLevel"], string> = {
 };
 
 function hasAiAccess(planTier?: PlanTier): boolean {
-  if (!planTier) return true;
-  return planTier === "premium";
+  if (!planTier) return false;
+  return PLAN_FEATURES[planTier].includes("ai_analysis");
 }
 
 export function AiAnalysisCard({ leadId, latestConsultationDetails, planTier }: AiAnalysisCardProps) {

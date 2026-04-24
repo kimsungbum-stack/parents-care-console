@@ -8,7 +8,7 @@ const plans = [
     period: "",
     badge: null,
     highlight: false,
-    description: "부담 없이 시작하세요. 모든 기능을 무료로 체험할 수 있어요.",
+    description: "부담 없이 시작하세요. 기본 기능을 무료로 써볼 수 있어요.",
     cta: "지금 바로 시작하기",
     ctaHref: "/leads/new",
     features: ["월 15건 케이스 등록", "진행 현황 보기", "상담 기록 저장"],

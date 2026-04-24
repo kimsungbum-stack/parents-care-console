@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import {
   createEmptyDashboardStatusSummary,
   mapConsultationRowToRecentConsultationItem,
@@ -45,6 +46,15 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      statusSummary: createEmptyDashboardStatusSummary(),
+      upcomingContacts: [],
+      recentConsultations: [],
+    };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
 
@@ -53,6 +63,7 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
       .select(
         "id, guardian_name, status, next_contact_date, current_situation_summary, consultation_memo",
       )
+      .eq("organization_id", currentUser.organizationId)
       .order("updated_at", { ascending: false });
 
     if (leadsError) {
@@ -86,11 +97,16 @@ export async function getDashboardPageData(): Promise<DashboardPageResult> {
       .slice(0, UPCOMING_CONTACT_LIMIT)
       .map(mapLeadRowToUpcomingContactItem);
 
-    const { data: consultationRows, error: consultationsError } = await supabase
-      .from("consultations")
-      .select("id, lead_id, channel, consulted_at, summary")
-      .order("consulted_at", { ascending: false })
-      .limit(RECENT_CONSULTATION_LIMIT);
+    const orgLeadIds = (leadRows ?? []).map((row) => row.id);
+    const { data: consultationRows, error: consultationsError } =
+      orgLeadIds.length === 0
+        ? { data: [], error: null }
+        : await supabase
+            .from("consultations")
+            .select("id, lead_id, channel, consulted_at, summary")
+            .in("lead_id", orgLeadIds)
+            .order("consulted_at", { ascending: false })
+            .limit(RECENT_CONSULTATION_LIMIT);
 
     if (consultationsError) {
       return {

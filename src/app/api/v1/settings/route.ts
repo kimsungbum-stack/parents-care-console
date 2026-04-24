@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 
@@ -7,11 +8,23 @@ import { createSupabasePlainClient } from "@/lib/supabase/plain";
  */
 export async function PATCH(request: NextRequest) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+
     const body = await request.json();
     const { orgName, userName, userPhone } = body;
 
     // 기관명 변경
     if (typeof orgName === "string") {
+      if (currentUser.role !== "admin") {
+        return NextResponse.json(
+          { error: "관리자만 기관명을 변경할 수 있어요." },
+          { status: 403 }
+        );
+      }
+
       const trimmed = orgName.trim();
       if (!trimmed) {
         return NextResponse.json(
@@ -21,23 +34,10 @@ export async function PATCH(request: NextRequest) {
       }
 
       const supabase = createSupabasePlainClient();
-      const { data: org } = await supabase
-        .from("organizations")
-        .select("id")
-        .limit(1)
-        .single();
-
-      if (!org) {
-        return NextResponse.json(
-          { error: "조직 정보를 찾을 수 없어요." },
-          { status: 404 }
-        );
-      }
-
       const { error } = await supabase
         .from("organizations")
         .update({ name: trimmed })
-        .eq("id", org.id);
+        .eq("id", currentUser.organizationId);
 
       if (error) {
         console.error("기관명 변경 오류:", error);

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getCurrentUser } from "@/lib/auth";
 import {
   parseNoteType,
   type LeadNoteErrors,
@@ -69,12 +70,21 @@ export async function createLeadNote(
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      status: "error",
+      message: "로그인이 필요해요.",
+    };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
     const { data: leadRow, error: leadError } = await supabase
       .from("leads")
       .select("id")
       .eq("id", values.leadId)
+      .eq("organization_id", currentUser.organizationId)
       .maybeSingle();
 
     if (leadError) {

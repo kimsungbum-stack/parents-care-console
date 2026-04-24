@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import { LEAD_STATUS_ORDER, type LeadStatus } from "@/types/domain";
 
@@ -11,11 +12,17 @@ type FunnelStage = {
 
 export async function GET() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ message: "로그인이 필요해요." }, { status: 401 });
+    }
+
     const supabase = createSupabasePlainClient();
 
     const { data, error } = await supabase
       .from("leads")
-      .select("status, next_contact_date");
+      .select("status, next_contact_date")
+      .eq("organization_id", currentUser.organizationId);
 
     if (error) {
       return NextResponse.json(

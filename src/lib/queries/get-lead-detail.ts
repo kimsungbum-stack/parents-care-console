@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import { mapLeadRowsToLeadDetail } from "@/lib/mappers/lead-mappers";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { LeadDetail } from "@/types/domain";
@@ -33,12 +34,21 @@ export async function getLeadDetailPageData(
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      status: "error",
+      message: "로그인이 필요해요.",
+    };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
     const { data: leadRow, error: leadError } = await supabase
       .from("leads")
       .select("*")
       .eq("id", leadId)
+      .eq("organization_id", currentUser.organizationId)
       .maybeSingle();
 
     if (leadError) {

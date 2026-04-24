@@ -12,36 +12,26 @@ export type CurrentUser = {
 };
 
 /**
- * 현재 로그인한 사용자의 정보 + 역할을 가져온다.
- * 조직이 없으면 null 반환.
+ * 현재 로그인한 사용자의 조직/역할을 반환한다.
+ * 인증되지 않았거나 users 레코드가 없으면 null — fail closed.
  */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) return null;
 
     const plain = createSupabasePlainClient();
-    const { data: userRow } = await plain
+    const { data: userRow, error } = await plain
       .from("users")
       .select("organization_id, role")
       .eq("id", user.id)
-      .limit(1)
-      .single();
+      .maybeSingle();
 
-    if (!userRow) {
-      // MVP 폴백: 첫 번째 조직의 admin으로 취급
-      const { data: org } = await plain
-        .from("organizations")
-        .select("id")
-        .limit(1)
-        .single();
-
-      return org
-        ? { id: user.id, email: user.email ?? null, role: "admin", organizationId: org.id }
-        : null;
-    }
+    if (error || !userRow) return null;
 
     return {
       id: user.id,
@@ -49,7 +39,8 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       role: userRow.role as UserRole,
       organizationId: userRow.organization_id,
     };
-  } catch {
+  } catch (err) {
+    console.error("getCurrentUser error:", err);
     return null;
   }
 }

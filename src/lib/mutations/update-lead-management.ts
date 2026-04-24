@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getCurrentUser } from "@/lib/auth";
 import {
   parseLeadStatus,
   type LeadManagementErrors,
@@ -70,6 +71,14 @@ export async function updateLeadManagement(
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      status: "error",
+      message: "로그인이 필요해요.",
+    };
+  }
+
   try {
     const supabase = createSupabasePlainClient();
     const { data, error } = await supabase
@@ -79,6 +88,7 @@ export async function updateLeadManagement(
         next_contact_date: values.nextContactDate || null,
       })
       .eq("id", values.leadId)
+      .eq("organization_id", currentUser.organizationId)
       .select("id, status, next_contact_date")
       .maybeSingle();
 

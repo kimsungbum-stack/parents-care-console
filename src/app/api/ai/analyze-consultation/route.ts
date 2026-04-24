@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeConsultation } from "@/lib/ai/analyze-consultation";
+import { getCurrentUser } from "@/lib/auth";
+import { checkFeatureAccess } from "@/lib/plans/check-plan";
 
 export async function POST(request: NextRequest) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "로그인이 필요해요." },
+        { status: 401 }
+      );
+    }
+
+    const access = await checkFeatureAccess(currentUser.organizationId, "ai_analysis");
+    if (!access.allowed) {
+      return NextResponse.json(
+        { error: access.reason, code: "PLAN_RESTRICTED" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { consultationText } = body;
 

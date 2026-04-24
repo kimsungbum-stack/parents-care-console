@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { LeadRecord } from "@/types/domain";
 
@@ -55,8 +56,9 @@ function toLeadRecord(row: LeadRow): LeadRecord {
   };
 }
 
+// 월요일 시작 기준 이번 주 일요일 날짜
 function getWeekEnd(today: Date): string {
-  const day = today.getDay();
+  const day = today.getDay(); // 0(일) ~ 6(토)
   const daysUntilSunday = day === 0 ? 0 : 7 - day;
   const sunday = new Date(today);
   sunday.setDate(today.getDate() + daysUntilSunday);
@@ -65,11 +67,17 @@ function getWeekEnd(today: Date): string {
 
 export async function GET() {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ message: "로그인이 필요해요." }, { status: 401 });
+    }
+
     const supabase = createSupabasePlainClient();
 
     const { data, error } = await supabase
       .from("leads")
       .select("*")
+      .eq("organization_id", currentUser.organizationId)
       .order("next_contact_date", { ascending: true });
 
     if (error) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 
 /**
@@ -6,31 +7,26 @@ import { createSupabasePlainClient } from "@/lib/supabase/plain";
  */
 export async function GET() {
   try {
-    const supabase = createSupabasePlainClient();
-
-    // 조직 찾기
-    const { data: org } = await supabase
-      .from("organizations")
-      .select("id")
-      .limit(1)
-      .single();
-
-    if (!org) {
-      return NextResponse.json({ members: [], invitations: [] });
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
     }
+
+    const orgId = currentUser.organizationId;
+    const supabase = createSupabasePlainClient();
 
     // 팀원 목록
     const { data: members } = await supabase
       .from("users")
       .select("id, email, role, created_at")
-      .eq("organization_id", org.id)
+      .eq("organization_id", orgId)
       .order("created_at", { ascending: true });
 
     // 대기 중 초대
     const { data: invitations } = await supabase
       .from("invitations")
       .select("id, email, role, status, created_at")
-      .eq("organization_id", org.id)
+      .eq("organization_id", orgId)
       .eq("status", "pending")
       .order("created_at", { ascending: false });
 
@@ -59,6 +55,14 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+    if (currentUser.role !== "admin") {
+      return NextResponse.json({ error: "관리자만 팀원을 초대할 수 있어요." }, { status: 403 });
+    }
+
     const body = await request.json();
     const { email, role = "member" } = body;
 
@@ -76,29 +80,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const orgId = currentUser.organizationId;
     const supabase = createSupabasePlainClient();
-
-    const { data: org } = await supabase
-      .from("organizations")
-      .select("id")
-      .limit(1)
-      .single();
-
-    if (!org) {
-      return NextResponse.json(
-        { error: "조직 정보를 찾을 수 없어요." },
-        { status: 404 }
-      );
-    }
 
     // 이미 팀원인지 확인
     const { data: existingMember } = await supabase
       .from("users")
       .select("id")
-      .eq("organization_id", org.id)
+      .eq("organization_id", orgId)
       .eq("email", email.toLowerCase())
-      .limit(1)
-      .single();
+      .maybeSingle();
 
     if (existingMember) {
       return NextResponse.json(
@@ -111,11 +102,10 @@ export async function POST(request: NextRequest) {
     const { data: existingInvite } = await supabase
       .from("invitations")
       .select("id")
-      .eq("organization_id", org.id)
+      .eq("organization_id", orgId)
       .eq("email", email.toLowerCase())
       .eq("status", "pending")
-      .limit(1)
-      .single();
+      .maybeSingle();
 
     if (existingInvite) {
       return NextResponse.json(
@@ -125,7 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { error } = await supabase.from("invitations").insert({
-      organization_id: org.id,
+      organization_id: orgId,
       email: email.toLowerCase(),
       role,
     });
@@ -152,6 +142,14 @@ export async function POST(request: NextRequest) {
  */
 export async function DELETE(request: NextRequest) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+    if (currentUser.role !== "admin") {
+      return NextResponse.json({ error: "관리자만 초대를 취소할 수 있어요." }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const invitationId = searchParams.get("invitationId");
 
@@ -166,7 +164,8 @@ export async function DELETE(request: NextRequest) {
     await supabase
       .from("invitations")
       .delete()
-      .eq("id", invitationId);
+      .eq("id", invitationId)
+      .eq("organization_id", currentUser.organizationId);
 
     return NextResponse.json({ success: true });
   } catch {

@@ -9,13 +9,14 @@ import { RecordingAiAnalysisSection } from "@/components/leads/recording-ai-anal
 import { DetailHeader } from "@/components/leads/detail-header";
 import { DetailManagementPanel } from "@/components/leads/detail-management-panel";
 import { DetailTabs } from "@/components/leads/detail-tabs";
-import type { LeadDetail, LeadStatus } from "@/types/domain";
+import type { LeadDetail, LeadStatus, PlanTier } from "@/types/domain";
 
 type DetailWorkspaceProps = {
   lead: LeadDetail;
+  planTier?: PlanTier;
 };
 
-export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
+export function DetailWorkspace({ lead, planTier }: DetailWorkspaceProps) {
   const router = useRouter();
   const [currentStatus, setCurrentStatus] = useState<LeadStatus>(lead.status);
   const [currentNextContactDate, setCurrentNextContactDate] = useState(
@@ -72,6 +73,7 @@ export function DetailWorkspace({ lead }: DetailWorkspaceProps) {
               ? lead.consultations[0].details || lead.consultations[0].summary
               : undefined
           }
+          planTier={planTier}
         />
       )}
       <DetailTabs lead={lead} />

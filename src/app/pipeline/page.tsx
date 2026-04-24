@@ -1,4 +1,5 @@
 import { KanbanBoard } from "@/components/pipeline/kanban-board";
+import { getCurrentUser } from "@/lib/auth";
 import { createSupabasePlainClient } from "@/lib/supabase/plain";
 import type { LeadStatus } from "@/types/domain";
 
@@ -16,10 +17,14 @@ export type KanbanLead = {
 
 async function fetchPipelineLeads(): Promise<KanbanLead[]> {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) return [];
+
     const supabase = createSupabasePlainClient();
     const { data, error } = await supabase
       .from("leads")
       .select("id,guardian_name,care_recipient_name,care_recipient_age_group,status,next_contact_date,created_at")
+      .eq("organization_id", currentUser.organizationId)
       .order("created_at", { ascending: false });
 
     if (error || !data) return [];

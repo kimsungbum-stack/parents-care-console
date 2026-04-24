@@ -1,9 +1,10 @@
 ﻿import "server-only";
 
+import { getCurrentUser } from "@/lib/auth";
 import type { NewLeadFormErrors, NewLeadFormValues } from "@/lib/forms/new-lead";
 import { validateNewLeadFormValues } from "@/lib/forms/new-lead";
 import { mapNewLeadFormValuesToLeadInsert } from "@/lib/mappers/new-lead-mappers";
-import { createSupabasePlainClient } from "@/lib/supabase/plain";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type CreateLeadResult =
   | {
@@ -47,11 +48,19 @@ export async function createLead(
     };
   }
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      status: "error",
+      message: "로그인 정보를 확인할 수 없어요. 다시 로그인해 주세요.",
+    };
+  }
+
   try {
-    const supabase = createSupabasePlainClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("leads")
-      .insert(mapNewLeadFormValuesToLeadInsert(values))
+      .insert(mapNewLeadFormValuesToLeadInsert(values, currentUser.organizationId))
       .select("id")
       .single();
 
@@ -59,14 +68,14 @@ export async function createLead(
       console.error("Supabase insert error:", error);
       return {
         status: "error",
-        message: "케이스를 저장하지 못했어요. 연결 상태를 다시 확인해 주세요.",
+        message: `케이스를 저장하지 못했어요. [${error.code ?? "?"}] ${error.message}`,
       };
     }
 
     if (!data) {
       return {
         status: "error",
-        message: "케이스를 저장하지 못했어요. 연결 상태를 다시 확인해 주세요.",
+        message: "케이스를 저장하지 못했어요. 응답 데이터가 비어있어요.",
       };
     }
 
@@ -76,9 +85,10 @@ export async function createLead(
     };
   } catch (err) {
     console.error("Lead creation exception:", err);
+    const detail = err instanceof Error ? err.message : "알 수 없는 오류";
     return {
       status: "error",
-      message: "저장 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
+      message: `저장 중 문제가 발생했어요. ${detail}`,
     };
   }
 }

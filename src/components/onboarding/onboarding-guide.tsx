@@ -42,6 +42,7 @@ export function OnboardingGuide() {
     if (typeof window !== "undefined") {
       const done = localStorage.getItem(STORAGE_KEY);
       if (!done) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVisible(true);
       }
     }

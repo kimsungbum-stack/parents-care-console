@@ -5,19 +5,21 @@ import { useRouter } from "next/navigation";
 import { Mic, FileText, CheckCircle, AlertCircle, Loader2, Edit3, Sparkles } from "lucide-react";
 
 // 데모 모드 샘플 데이터 — API 키 없이도 UI 체험 가능
-const DEMO_ANALYSIS = {
-  guardianName: "김영희",
-  phone: "010-1234-5678",
-  relationship: "딸",
-  careRecipientName: "김철수",
-  careRecipientAge: "80대",
-  currentSituation: "거동이 불편하시고 최근 낙상 경험. 주간에 돌봐드릴 분이 필요한 상황.",
-  urgency: "보통" as const,
-  coreNeeds: "주간보호센터 연계, 낙상 예방 관리",
-  recommendedNextContactDate: null,
-  recommendedAction: "이번 주 내 인터뷰 일정 잡기",
-  summary: "80대 아버지 거동 불편 및 낙상 이력으로 주간 돌봄 서비스 문의. 딸분이 직장 다니셔서 평일 돌봄이 어려운 상황. 인터뷰 후 센터 연계 검토 필요.",
-};
+function makeDemoAnalysis() {
+  return {
+    guardianName: "김영희",
+    phone: "010-1234-5678",
+    relationship: "딸",
+    careRecipientName: "김철수",
+    careRecipientAge: "80대",
+    currentSituation: "거동이 불편하시고 최근 낙상 경험. 주간에 돌봐드릴 분이 필요한 상황.",
+    urgency: "보통" as const,
+    coreNeeds: "주간보호센터 연계, 낙상 예방 관리",
+    recommendedNextContactDate: new Date().toISOString().slice(0, 10),
+    recommendedAction: "이번 주 내 인터뷰 일정 잡기",
+    summary: "80대 아버지 거동 불편 및 낙상 이력으로 주간 돌봄 서비스 문의. 딸분이 직장 다니셔서 평일 돌봄이 어려운 상황. 인터뷰 후 센터 연계 검토 필요.",
+  };
+}
 
 const DEMO_TRANSCRIPT = "안녕하세요, 저희 아버지가 요즘 걸음이 너무 불편하셔서 혼자 계시기 불안해요. 얼마 전에도 한 번 넘어지셨거든요. 제가 회사를 다니고 있어서 평일에는 봐드리기가 어려워서 주간에 돌봐드릴 수 있는 곳을 찾고 있어요...";
 
@@ -215,7 +217,7 @@ export function RecordingUploadButton() {
   // --- 데모 체험: API 호출 없이 샘플 분석 결과 표시 ---
   const handleTryDemo = () => {
     setTranscript(DEMO_TRANSCRIPT);
-    setAnalysis({ ...DEMO_ANALYSIS });
+    setAnalysis(makeDemoAnalysis());
     setStage("preview");
   };
 
