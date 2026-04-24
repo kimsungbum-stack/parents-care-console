@@ -108,10 +108,10 @@ export async function upsertLeadReport(
       .single();
 
     if (reportError || !reportRow) {
+      console.error("Supabase report upsert error:", reportError);
       return {
         status: "error",
-        message:
-          "리포트를 저장하지 못했어요. 연결 상태를 확인해 주세요.",
+        message: `리포트를 저장하지 못했어요. [${reportError?.code ?? "?"}] ${reportError?.message ?? "응답 데이터 없음"}`,
       };
     }
 
